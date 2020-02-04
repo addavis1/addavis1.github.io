@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<title>Lookback Simulator</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta charset='UTF-8' />
+<link rel='stylesheet' type='text/css' href='css/lookback.css'/>
+<link rel='stylesheet' type='text/css' href='css/slider.css'/>
+<script type='text/javascript' src='naap_js/lookback.js'/>
+
+<script type='text/javascript'></script>
+<style type='text/css'>
+</style>
+</head>
+
+<body onload='init();'>
+<div class='container'>
+<div class='grid'>
+
+<div class='ftitle'><div>Lookback Time Simulator</div>
+<div><a onclick='document.getElementById("button1").value=1; goSupernova("button1");'>reset</a></div><div>help</div><div>about</div>
+</div>
+
+<div class='canvas'>
+<canvas id='canvas'></canvas>
+</div>
+
+<div class='controls'>
+<div><div>Timeline and Controls</div><div><hr/></div></div>
+
+<div id='slider_container'>
+<div id='sn_occurs' class='sn_label'>SN occurs<br/>&bull;</div>
+<div id='sn_observed' class='sn_label'>SN observed<br/>&bull;</div>
+<input type='range' class='slider' id='slider' min='-8000' max='10000' onchange='moveSlider(this.value)'; step='20' value='1200'/>
+<div id='sliderlabels'>
+  <div>8000 BC</div>
+  <div>6000 BC</div>
+  <div>4000 BC</div>
+  <div>2000 BC</div>
+  <div>1 AD</div>
+  <div>2000 AD</div>
+  <div>4000 AD</div>
+  <div>6000 AD</div>
+  <div>8000 AD</div>
+  <div>10000 AD</div>
+</div>
+</div>
+<div id='button_container'>
+<div></div>
+<div><button id='button1' onclick='goSupernova(this.id);' value='0'>go supernova</button></div>
+<div></div>
+<div><button id='button2' onclick='goSupernova(this.id);' disabled=true>&hellip;</button></div>
+<div></div>
+</div>
+<div id='input_container'><span>supernova occurs:</span> <span id='sn_year'>1200 AD</span> <span id='sv_observe1'><br/>and observed <span id='sn_observe2'>4200 AD</span></span></div>
+</div>
+
+</div><!-- end grid -->
+</div><!-- end container -->
+</body>
+</html>

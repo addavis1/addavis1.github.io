@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<title>Altitude/Azimuth Demonstrator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="css/azialt.css">
+
+<style type='text/css'>
+
+</style>
+
+<script src='js/three.js'></script>
+<script src='js/OrbitControls.js'></script> 
+<script src='js/texttexture.js'></script>   
+<script src='js/textsprite.js'></script>
+</head>
+<body onload='init();'  >
+
+<div class='grid-container'>
+<div class='side1'></div>
+<div class='title'>Azimuth/Altitude Demonstrator</div>
+
+<div class='scene'>
+  <div class='sectionTitle'><span>Horizon Diagram</span> <div><hr/></div></div>
+  <div id='scene-container'><!-- this is where the simulator goes--> </div>
+</div>
+
+<div class='controls1'>
+  <div class='sectionTitle'><span>Star Position</span> <div><hr/></div></div>
+  <div class='coordSlider'>
+    <div>azimuth: <input type='text' id='aziBox' value='XX' onchange='moveStar({azi:this.value});'/><span class='deg'>&deg;</span></div>
+    <div class='coordSlider2'><input type='range' min='0' max='360' value='' class='slider' id='aziSlider' step='0.1' oninput='moveStar({azi:this.value});'/></div>
+    <div></div>
+  </div>
+
+  <div class='coordSlider'>
+    <div>altitude: <input type='text' id='altBox' value='XX' onchange='moveStar({alt:this.value});'/><span class='deg'>&deg;</span></div>
+    <div class='coordSlider2'><input type='range' min='-90' max='90' value='' class='slider' id='altSlider' step='0.1' oninput='moveStar({alt:this.value});'/></div>
+    <div></div>
+  </div>
+  
+  
+  <div class='controls1a'>
+    <div class='controls1b'></div>
+    <div class='controls1c'>You may also change a star&rsquo;s position by dragging it.</div>
+    <div></div>
+  </div>
+</div>
+
+<div class='controls2'>
+<div class='sectionTitle'><span>Labels</span> <div><hr/></div></div>
+
+<div class='grid2'>
+<div></div>
+<div class='checkbox_box'>
+  <div><input type='checkbox' id='zenithCheckbox' checked='true' onchange='toggleElement(this.id);'/> Zenith</div>
+  <div><input type='checkbox' id='horizonCheckbox' checked='true' onchange='toggleElement(this.id);'/> Horizon Plane</div>
+  <div><input type='checkbox' id='nadirCheckbox' checked='true' onchange='toggleElement(this.id);'/> Nadir</div>
+  <div><input type='checkbox' id='meridianCheckbox' checked='true' onchange='toggleElement(this.id);'/> Meridian</div>
+</div>
+<div></div>
+</div>
+
+<div class='grid3'>
+<div></div>
+<div>
+<button id='toggleButton' onclick='toggleElement("all");'>show all</button>
+</div>
+<div></div>
+<div>
+<button id='toggleButton' onclick='toggleElement("none");'>hide all</button>
+</div>
+<div></div>
+</div>
+
+<input type='hidden' id='azi_value' value='150'/>
+<input type='hidden' id='alt_value' value='30'/>
+</div>
+<div class='side2'></div>   
+</div>
+
+<!-- NAAP Srcipt -->
+<script type='text/javascript' src='./naap_js/altaziDemonstrator.js'></script>
+
+
+
+</body>
+</html>

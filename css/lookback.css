@@ -1,0 +1,64 @@
+html,body { 
+  margin: 0; padding: 0;
+  font-family: Verdana;
+  font-size: 2vh;
+  background-color: rgb(200,200,200); 
+}
+a:hover { cursor: pointer; }
+
+.container { display: block; width: 50%; margin: 2rem auto; background-color: gray; }
+.grid { display: grid; 
+	grid-template-areas: "a" "b" "c";
+	grid-template-columns:  auto;
+	grid-template-rows: auto auto 1fr;
+	grid-gap: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+
+.ftitle { display: flex; font-variant: small-caps; font-size: 1.5rem; padding: 0.125rem 0.5rem 0.5rem; }
+.ftitle > div {  }
+.ftitle > div:nth-child(1) { flex: 8; }
+.ftitle > div:nth-child(n+2) { flex: 1; text-align: center; }
+
+.grid > div { background-color: white; }
+.grid > div:nth-child(2) { min-height: 300px; margin: 0 0.5rem; }
+.grid > div:nth-child(3) { min-height: 100px; margin: 0 0.5rem; }
+
+canvas { background-color: black; padding: 0; margin: 0 0 -0.22rem; }
+.canvas { margin: 0; padding: 0;  }
+
+.controls { display: grid;
+	grid-template-areas: "a a" "b b" "c d";
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: auto 1fr 1fr;
+	grid-gap: .25rem;
+	align-items: center;
+}
+
+.controls > div { padding: .5rem; }
+.controls > div:nth-child(1) { grid-area: a; }
+.controls > div:nth-child(2) { grid-area: b; }
+.controls > div:nth-child(3) { grid-area: c; }
+.controls > div:nth-child(4) { grid-area: d; }
+
+.controls > div:nth-child(1) { display: flex; }
+.controls > div:nth-child(1) > div:nth-child(1) { flex: 0; white-space: nowrap; }
+.controls > div:nth-child(1) > div:nth-child(2) { flex: 4; padding-left: 0.25rem; }
+.controls hr { height: 2px; background-color: rgba(0,0,0,0.25); border: none; position: relative; top: 2px;  }
+
+#slider_container { position: relative; }
+
+#button_container { text-align: center;	display: flex; }
+#button_container > div:nth-child(2n) { flex: 4; }
+#button_container > div:nth-child(2n+1) { flex: 2; }
+#button_container > div:nth-child(3) { flex: 1; }
+#button_container button { padding: 0.25rem 0.5rem; font-weight: bold; white-space: nowrap;  }
+
+#input_container { text-align: center; line-height: 1.75rem; }
+#input_container > input { padding: 0.25rem 0.5rem; width: 4rem; text-align: center; font-size: 1rem; }
+
+
+#sn_occurs, #sn_observed { position: absolute; font-size: 0.75rem; text-align: center; top: 0; left: -10%; width: 20%; display: none; background-color: none; border: 0px dashed blue; }
+
+
+

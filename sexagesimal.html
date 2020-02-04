@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+<title>Sexagesimal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+
+<style type='text/css'>
+input { padding: 0.25em .5em; text-align: center; }
+#dec { width: 4.5em; }
+#sex1 { width: 2em; }
+#sex2 { width: 1.5em; }
+#sex3 { width: 3em; }
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance:textfield;
+}
+
+
+html,body { 
+  margin: 0; padding: 0;
+  font-family: Calibri;
+  background-color: #555555;
+  color: dark-gray;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas: "a b b f"
+                     "a c c f";
+                     
+  grid-template-columns:  1fr 3fr 1fr 1fr;
+  grid-template-rows: auto 2fr 3fr;
+
+  grid-gap: 10px;
+  background-color: #555555;
+  padding: 10px;
+}
+
+.grid-container > div { background-color: white; font-size: 1em; font-variant-caps: petite-caps; }
+.grid-container > div.side1, .grid-container > div.side2 { background-color: #555555; }
+
+.side1 { grid-area: a; }
+.side2 { grid-area: f; }
+.title { grid-area: b; }
+.scene { grid-area: c; }
+.controls1 { grid-area: d; }
+.controls2 { grid-area: e; }
+
+.title { padding: 0.75em; padding-top: 0.75em;  }
+.sectionTitle { padding: 0.75em; padding-top: 0.25em; font-variant-caps: all-small-caps; }
+
+.grid-container > div { background-color: white; font-size: 1.5em; }
+
+
+
+
+</style>
+
+<script type='text/javascript'>
+function convertDS(place) {
+  var d,s1,s2,s3,x,y;
+  
+  d = document.getElementById('dec').value*1;  
+  s1 = document.getElementById('sex1').value*1;
+  s2 = document.getElementById('sex2').value*1;
+  s3 = document.getElementById('sex3').value*1;
+  
+  if( place === 0 ) {
+    x = d;
+    s1 = Math.floor(Math.round(x*1E12)/1E12);
+    x = (x - s1)*60;
+    s2 = Math.floor(Math.round(x*1E12)/1E12);
+    x = (x - s2)*60;
+    s3 = Math.abs((Math.round(x*1E12)/1E12)).toFixed(2);      
+  } else if ( place === 1 ) {
+    x = s1;
+    s1 = Math.floor(Math.round(s1*1E12)/1E12);
+    x = (x - s1)*60+s2+s3/60;
+    s2 = Math.floor(Math.round(x*1E12)/1E12);
+    x = (x - s2)*60;
+    s3 = Math.abs((Math.round(x*1E12)/1E12)).toFixed(2);    
+  } else if ( place === 2 ) {
+    x = s2;
+    s2 = Math.floor(Math.round(x*1E12)/1E12);
+    x = (x - s2)*60+s3;
+    s3 = Math.abs((Math.round(x*1E12)/1E12)).toFixed(2); 
+  } else if ( place === 3 ) {
+    x = s3;
+    s3 = Math.abs((Math.round(x*1E12)/1E12)).toFixed(2);  
+  }
+  
+  if( s3 / 60 >= 1 ) {
+    x = Math.floor(s3/60);
+    y = s3%60;
+    s3 = y;
+    s2 = s2+x;  
+  }
+  if( s2 / 60 >= 1 ) {
+    x = Math.floor(s2/60);
+    y = s2%60;
+    s2 = y;
+    s1 = s1+x;  
+  }
+  
+  d = s1+s2/60+s3/3600;  
+   
+  document.getElementById('sex1').value = s1;
+  document.getElementById('sex2').value = s2;
+  document.getElementById('sex3').value = s3;   
+  document.getElementById('dec').value = Math.round(d*1E4)/1E4;         
+}
+
+
+</script>
+</head>
+<body>
+
+<div class='grid-container'>
+<div class='side1'></div>
+<div class='title'>Sexagesimal &harr; Decimal Calculator</div>
+
+<div class='scene' style='padding: 2em;'>
+
+<input value='0' type='number' min='0' step='0.00001' id='dec' onchange='convertDS(0);'/>&deg; = <input value='0' type='number' id='sex1' onchange='convertDS(1);'>&deg; <input value='0' type='number'  id='sex2' onchange='convertDS(2);'/>&rsquo; <input value='0' type='number' min='0' step='0.01' id='sex3' onchange='convertDS(3);'/>&rdquo;
+
+</div>
+
+
+
+<div class='side2'></div>
+</div>
+
+
+
+
+</body>
+</html>
