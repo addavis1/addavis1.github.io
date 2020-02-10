@@ -248,30 +248,24 @@ function createMeshes() {
     
   // CELESTIAL SPHERE  
 	let sphereGeometry = new THREE.SphereGeometry( options.r, 32, 32 );	
-	let sphereMaterial = new THREE.MeshBasicMaterial( {color: 0x000000, transparent: true, opacity: 0.1 }); 
+	let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0x000000, transparent: true, opacity: 0.1, reflectivity: 0 }); 
 	let celSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 	celSphere.position.set( 0, 0, 0 );
 	scene.add( celSphere );
   celSphere.name = 'celestial sphere';
   celSphere.renderOrder = 1; // three.js handles transperency in a funny way for computational reasons ... this seems to help
   
-    // CELESTIAL sphere2  
-	let sphere2Geometry = new THREE.SphereGeometry( 0.4, 8, 8 );	
-	let sphere2Material = new THREE.MeshBasicMaterial( {color: 0xff0000, transparent: false, opacity: 1 }); 
-	let celsphere2 = new THREE.Mesh(sphere2Geometry, sphere2Material);
-	celsphere2.position.set( 0, 0, 0 );
-  //scene.add( celsphere2 );
-  celsphere2.name = 'celestial sphere2';
   
   
   // GROUND  
   let groundGeometry = new THREE.CylinderBufferGeometry( options.r, options.r, 0.03, 32 );
-  let groundMeshMaterial_param = { color: 0x20ff20,transparent:true,opacity:1 };  
+  let groundMeshMaterial_param = { color: 0x006600,transparent:true,opacity:1, reflectivity: 0 }; 
+  let groundMeshMaterial_param2 = { color: 0x002200,transparent:true,opacity:1, reflectivity: 0 };
   	
-  let groundMaterialArray = [];  // order to add materials: side, top, bottom   // StandardMaterial is the non-shiny version
-	groundMaterialArray.push( new THREE.MeshStandardMaterial( groundMeshMaterial_param ) );
-	groundMaterialArray.push( new THREE.MeshStandardMaterial( groundMeshMaterial_param ) );
-	groundMaterialArray.push( new THREE.MeshStandardMaterial( groundMeshMaterial_param ) );
+  let groundMaterialArray = [];  // order to add materials: side, top, bottom   // BasicMaterial is the non-shiny version
+	groundMaterialArray.push( new THREE.MeshBasicMaterial( groundMeshMaterial_param ) );
+	groundMaterialArray.push( new THREE.MeshBasicMaterial( groundMeshMaterial_param ) );
+	groundMaterialArray.push( new THREE.MeshBasicMaterial( groundMeshMaterial_param2 ) );
   //let groundMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } ); 
   let ground = new THREE.Mesh( groundGeometry, groundMaterialArray );
   ground.name = 'horizon';
