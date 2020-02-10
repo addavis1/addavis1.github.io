@@ -3,22 +3,24 @@ html,body {
   font-family: Calibri;
   background-color: #555555;
   color: dark-gray;
+  font-size: 10.5pt;
 }
 
 .grid-container {
   display: grid;
+
   grid-template-areas: "a b b f"
                      "a c d f"
                      "a c e f";
   grid-template-columns:  1fr 3fr 2fr 1fr;
-  grid-template-rows: auto 2fr 3fr;
+  grid-template-rows: auto 2fr 2fr;
 
   grid-gap: 10px;
   background-color: #555555;
   padding: 10px;
 }
 
-.grid-container > div { background-color: white; font-size: 1em; font-variant-caps: petite-caps; }
+.grid-container > div { background-color: white; font-size: 1rem; font-variant-caps: petite-caps; }
 .grid-container > div.side1, .grid-container > div.side2 { background-color: #555555; }
 
 .side1 { grid-area: a; }
@@ -28,10 +30,10 @@ html,body {
 .controls1 { grid-area: d; }
 .controls2 { grid-area: e; }
 
-.title { padding: 0.75em; padding-top: 0.75em;  }
-.sectionTitle { padding: 0.75em; padding-top: 0.25em; font-variant-caps: all-small-caps; }
+#title { font-size: 2rem; padding: 0.75rem; padding-top: 0.75rem;  }
+.sectionTitle { padding: 0.75rem; padding-top: 0.25rem; font-variant-caps: all-small-caps; }
 
-.grid-container > div { background-color: white; font-size: 1.5em; }
+.grid-container > div { background-color: white; font-size: 1.5rem; }
 
 .grid > .scene {
   position: relative;
@@ -42,38 +44,38 @@ html,body {
 #scene-container {
   width: calc(100%);
   height: 0;
-  padding-bottom: calc(100%);
+  padding-bottom: calc(95%);
   position: relative;
 }
 
-.coordSlider { width: 100%; display: grid; grid-auto-rows: auto; grid-template-columns: 2fr 3fr 1em; }
+.coordSlider { width: 100%; display: grid; grid-auto-rows: auto; grid-template-columns: 2fr 3fr 1rem; }
 .coordSlider > div:nth-child(1) {
   margin-top: 1.5vh;
   white-space: nowrap;
   text-align: right; 
   justify-content: center;
   align-items: center; 
-  padding: 0 .5em; }
-input[type='text'] { font-size: 1em; width: 3em; text-align: center; padding: 0 .25em; } 
-.coordSlider input[type='text'] { width: 2.5em; }
+  padding: 0 .5rem; }
+input[type='text'] { font-size: 1rem; width: 3rem; text-align: center; padding: 0 .25rem; } 
+.coordSlider input[type='text'] { width: 2.5rem; }
 
 
 
 
 .grid2 { display: grid; grid-template-columns: 1fr 2fr 1fr; margin-bottom: 4vh; margin-top: 4vh; }
 .grid2 > div { }
-.checkbox_box > div { white-space: nowrap; font-size: 1em; }
+.checkbox_box > div { white-space: nowrap; font-size: 1.5rem; }
 
 .grid3 { display: grid; grid-template-columns: 1fr 2fr 0.5fr 2fr 1fr; }
 .grid3 > div {  }
-.grid3 button { display: block; padding: 0.25em .5em; margin: 0 auto; font-size: 1em; width: 90%; }
+.grid3 button { display: block; padding: 0.25em .5rem; margin: 0 auto; font-size: 1rem; width: 90%; }
 
 .sectionTitle { display: flex;  }
-.sectionTitle span { display: inline-block; flex: 1; white-space: nowrap; padding-right: .25em; }
-.sectionTitle div { display: inline-block; flex: 20; padding-top: .12em; }
+.sectionTitle span { display: inline-block; flex: 1; white-space: nowrap; padding-right: .25rem; }
+.sectionTitle div { display: inline-block; flex: 20; padding-top: .12rem; }
 
-.controls1a { display: grid; grid-template-rows: 3fr 1fr 1fr; }
-.controls1c { font-style: italic; font-size: .6em; text-align: center; font-variant-caps: normal; }
+.controls1a { grid-template-rows: 3fr 1fr 3fr; padding-top: 5rem; }
+.controls1c { font-style: italic; font-size: 1rem; text-align: center; font-variant-caps: normal; }
 
 
 
