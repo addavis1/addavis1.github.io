@@ -1,3 +1,9 @@
+/* todo 
+fix the labels so that they come out normal to coordinate they are on
+add the touch events to move the star if there's no drag
+resize the canvas on the main grid
+add media grid layout adjustment
+*/
 
 // global variables
 let container;
@@ -51,7 +57,6 @@ function init() {
   let azi = document.getElementById('azi_value').value;
   let alt = document.getElementById('alt_value').value;
   moveStar({azi:azi,alt:alt});
-  //moveStar({azi:0,alt:00});
   // END INIT()
 }
 
@@ -63,7 +68,9 @@ function init() {
 function convertCoords(param) { 
   // +x:E , +z:S , +y:N
   let x,y,z,xz,alt,azi,q1,q2,r;
-  r = options.rr; 
+  if( param.r != undefined ) { r = options.r;  }
+  else { r = options.r; }
+
   if ( param.alt != undefined ) { // altitude and azimuth to sphere coords
     azi = param.azi, alt = param.alt;
     q1 = azi*Math.PI/180; q2 = alt*Math.PI/180;
@@ -204,7 +211,7 @@ function toggleElement(id) {
     }
   } else {
     for( let i = 0; i < label_array.length; i++ ) {
-       scene.getObjectByName(label_array[i]).visible = document.getElementById(id_array[i]).checked;
+      scene.getObjectByName(label_array[i]).visible = document.getElementById(id_array[i]).checked;
     } 
   }
 }
@@ -439,8 +446,6 @@ function createMeshes() {
     
   // CREATE SPHERE TEXT
   createSphereText();
-    
-
 }
 
 function createSphereText() {
@@ -451,24 +456,90 @@ function createSphereText() {
   createHorizonText('W');
 
 
-  createLabelText('Zenith',[0,10,0],-60,[4,1.5],[1,1.5]);
-  createLabelText('Nadir',[0,-10,0],60,[4,-1.5],[-1,1.5]);
-  
-  
-  let dir = new THREE.Vector3();
-  dir.x = 0; dir.y = 12; dir.z = 10;
-  dir.normalize();
-  dir.multiplyScalar(options.r);  
-  createLabelText('Meridian',[dir.x,dir.y,dir.z],-60,[-4.75,-1.5],[-1,-1.5]);
-  
-  dir.x = -12; dir.y = 0; dir.z = 10;
-  dir.normalize();
-  dir.multiplyScalar(options.r);  
-  createLabelText('Horizon Plane',[dir.x,dir.y,dir.z],-60,[-5.75,-1.5],[-1,-1.5]);
-
+  createLabelText('Zenith',[0,90],{'q':30,'dt':2.5});
+  createLabelText('Nadir',[0,-90],{'q':-30,'dt':2.5});
+  createLabelText('Meridian',[180,50],{'q':60,'dt':4});
+  createLabelText('Horizon Plane',[250,0],{'q':-30,'dt':5});
 }
 
-function createLabelText(txt,pos,q,d1,d2) {
+function createLabelText(txt,[azi,alt],param) {
+    // txt is the text to display
+    // azi,alt is the coordinate of the text
+    // q is the rotation about the z-axis
+    // dr is the extra space between sphere and line
+    // dt is the extra space between line and text
+    
+    if ( param == undefined ) { var param = {}; }
+    let dr = param['dr'] == undefined ? 0.25 : param['dr'];
+    let r = param['r'] == undefined ? 2 : param['r'];
+    let dt = param['dt'] == undefined ? 3: param['dt'];
+    let q = param['q'] == undefined ? q : param['q'];
+    
+    // textSprite custom creation by another
+  let sprite = new THREE.TextSprite({
+    material: {
+      color: 0x000000,
+      fog: true,
+    },
+    redrawInterval: 250,
+    textSize: 1,
+      texture: {
+      fontFamily: 'Arial, Helvetica, sans-serif',
+      text: txt,
+    },  
+  });
+  
+  let x,y,z,radius;
+  radius = options.rr;
+  [x,y,z] = convertCoords({alt:alt,azi:azi,r:r});
+  
+    // add label text line  
+  let lineMaterial = new THREE.MeshBasicMaterial( { color:'black',transparent:true,opacity:0.5,side: THREE.DoubleSide } );
+  let lineGeometry = new THREE.CylinderBufferGeometry( 0.04, 0.04,r, 32  ); // radius 1,radius 2, height, radial segments 
+  let line = new THREE.Mesh( lineGeometry, lineMaterial );
+  
+  line.translateY(r/2+dr);
+  line.translateX(-(r/2+dr)*Math.sin(q*Math.PI/180));
+  line.rotateZ(q*Math.PI/180);
+  
+  sprite.translateY(r+dt*dr);
+  sprite.translateX(-(r+dt*dr)*Math.sin(q*Math.PI/180));
+  
+  let textGroup = new THREE.Group();
+  textGroup.add(sprite);
+  textGroup.add(line);
+
+   // move start
+  let startVector = new THREE.Vector3;
+  startVector.x = 0;
+  startVector.y = 1;
+  startVector.z = 0;
+  startVector.normalize();
+  startVector.multiplyScalar(radius);
+  
+  let endVector = new THREE.Vector3;  
+  endVector.x = x;
+  endVector.y = y;
+  endVector.z = z;
+  endVector.normalize();
+  endVector.multiplyScalar(radius);
+
+  textGroup.position.set(endVector.x,endVector.y,endVector.z);  
+  
+  // rotate star so the plane of the star is flat
+  let qn = new THREE.Quaternion;
+  qn.setFromUnitVectors(startVector.normalize(), endVector.normalize());
+  textGroup.applyQuaternion(qn); 
+
+  
+  
+  scene.add(textGroup);
+  textGroup.name = txt+'_label';  
+  
+}
+
+
+function createLabelText2(txt,pos,q,d1,d2) {
 
   // textSprite custom creation by another
   let sprite = new THREE.TextSprite({
@@ -645,7 +716,7 @@ function createCamera() {
   const near = 0.1;
   const far = 100;
   camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
-  camera.position.set( 10, 20, 60 );
+  camera.position.set( 10, 20, 55 );
   camera.lookAt(0,0,0 ); // default, can omit unless changed
 }
 
@@ -679,6 +750,7 @@ function createRenderer() {
   renderer.domElement.addEventListener("mousedown", onMouseDown, true);
   renderer.domElement.addEventListener("mouseup", onMouseUp, true);
   renderer.domElement.addEventListener("mousemove",onMouseMove,true);
+  renderer.domElement.addEventListener("touchstart",onTouchEnd,true);
 }
 
 
@@ -693,7 +765,7 @@ function createRenderer() {
 // the mouse drag when not on the star
 function createControls() { 
   controls = new THREE.OrbitControls( camera, container ); 
-  controls.enablePan = false;
+  controls.enablePan = true;
   controls.enableZoom = true;
   //controls.addEventListener( 'change', () => renderer.render( scene, camera ) );
 }
@@ -727,8 +799,7 @@ function onMouseDown( event ) {
 let mouseUpdateCounter = 0;
 function onMouseMove( event ) {
   // the mouseUpdateCounter lets the scence update only on every few movements to reduce rendering glitches
-  if( controls.enabled == false && mouseUpdateCounter % 3 == 0 ) {  
-  //if( controls.enabled == false ) {
+  if( controls.enabled == false && mouseUpdateCounter % 4 == 0 ) {  
     event.preventDefault();
     /* LOCATE THE POINT ON THE SPHERE THAT IT INTERSECT */
     let array = getMousePosition( container, event.clientX, event.clientY );
@@ -755,5 +826,10 @@ function getMousePosition( dom, x, y ) {
   let rect = dom.getBoundingClientRect();
 	return [ ( x - rect.left ) / rect.width, ( y - rect.top ) / rect.height ];
 };
+
+function onTouchEnd( event ) {
+    alert("hey");
+  
+}
     
 
