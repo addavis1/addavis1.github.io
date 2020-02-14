@@ -59,9 +59,6 @@ html,body {
 input[type='text'] { font-size: 1rem; width: 3rem; text-align: center; padding: 0 .25rem; } 
 .coordSlider input[type='text'] { width: 2.5rem; }
 
-
-
-
 .grid2 { display: grid; grid-template-columns: 1fr 2fr 1fr; margin-bottom: 4vh; margin-top: 4vh; }
 .grid2 > div { }
 .checkbox_box > div { white-space: nowrap; font-size: 1.5rem; }
@@ -76,8 +73,30 @@ input[type='text'] { font-size: 1rem; width: 3rem; text-align: center; padding: 
 
 .controls1a { grid-template-rows: 3fr 1fr 3fr; padding-top: 5rem; }
 .controls1c { font-style: italic; font-size: 1rem; text-align: center; font-variant-caps: normal; }
+.controls1d { display: none; }
+
+/* css for touch screens */
+@media only screen and (max-device-width: 48000px) {
+  .grid-container {
+  display: grid;
+
+  grid-template-areas: "b" "c" "d" "e";
+  grid-template-columns:  1fr;
+  grid-template-rows: auto 2fr 1fr 1fr;
+
+  grid-gap: 10px;
+  background-color: #555555;
+  padding: 10px;
+}
+
+.side1 { grid-area: a; display: none; }
+.side2 { grid-area: f; display: none; }
+
+.controls1d { display: block; font-style: italic; font-size: 1rem; text-align: center; font-variant-caps: normal; }
+.controls1c { display: none; }
 
 
+}
 
 /* css for the slider is ornery */
 input[type=range] {
