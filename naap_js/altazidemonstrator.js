@@ -457,7 +457,7 @@ function createSphereText() {
   createLabelText('Zenith',[0,90],{'q':30,'dt':2.5});
   createLabelText('Nadir',[0,-90],{'q':-30,'dt':2.5});
   createLabelText('Meridian',[180,50],{'q':60,'dt':4});
-  createLabelText('Horizon Plane',[250,0],{'q':-30,'dt':5});
+  createLabelText('Horizon Plane',[250,0],{'q':30,'dt':5});
 }
 
 function createLabelText(txt,[azi,alt],param) {
