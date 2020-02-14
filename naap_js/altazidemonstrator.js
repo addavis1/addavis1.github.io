@@ -18,6 +18,8 @@ let onClickPosition = new THREE.Vector2();
 let textObjects = new Array();
 let touching;
 let touch_intersects;
+let touch_start;
+let touch_end;
   
   /* DEFINE object with the parameters */
 let options = new Object({
@@ -835,10 +837,18 @@ function onTouchStart( event ) {
   raycaster.setFromCamera( mouse, camera );
   let intersects = raycaster.intersectObjects( scene.children, true );
   touch_intersects = intersects;
+  touch_start = [touch.clientX,touch.clientY];
+  touch_end = undefined;
     
 }
 
 function onTouchEnd( event ) {
+  let x = 10; 
+    
+  if ( touch_end == undefined ) { touching = false; }
+  else if( Math.abs(touch_start[0]-touch_end[0]) < x && Math.abs(touch_start[1]-touch_end[1]) < x ) { touching = false; } 
+  else { touching = true }
+  
   if( touching == false ) {
     let intersects = touch_intersects;
     moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z});
@@ -846,7 +856,9 @@ function onTouchEnd( event ) {
 }
 
 function onTouchMove( event ) {
-  touching = true; 
+  let touch = event.targetTouches.item(0); 
+  touch_end = [touch.clientX,touch.clientY];
+  touching = true;
 }
     
 
