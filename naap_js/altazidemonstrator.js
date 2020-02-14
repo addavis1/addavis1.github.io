@@ -16,6 +16,8 @@ let mouse = new THREE.Vector2();
 var star;
 let onClickPosition = new THREE.Vector2();
 let textObjects = new Array();
+let touching;
+let touch_intersects;
   
   /* DEFINE object with the parameters */
 let options = new Object({
@@ -744,7 +746,9 @@ function createRenderer() {
   renderer.domElement.addEventListener("mousedown", onMouseDown, true);
   renderer.domElement.addEventListener("mouseup", onMouseUp, true);
   renderer.domElement.addEventListener("mousemove",onMouseMove,true);
-  renderer.domElement.addEventListener("touchstart",onTouchEnd,true);
+  renderer.domElement.addEventListener("touchstart",onTouchStart,true);
+  renderer.domElement.addEventListener("touchend",onTouchEnd,true);
+  renderer.domElement.addEventListener("touchmove",onTouchMove,true);
 }
 
 
@@ -821,9 +825,28 @@ function getMousePosition( dom, x, y ) {
 	return [ ( x - rect.left ) / rect.width, ( y - rect.top ) / rect.height ];
 };
 
-function onTouchEnd( event ) {
-    alert("hey");
+
+
+function onTouchStart( event ) {
+  let touch = event.targetTouches.item(0);
+  mouse.x = ( (touch.clientX - container.offsetLeft + window.scrollX) / container.clientWidth ) * 2 - 1; // works with 
+	mouse.y = - ( (touch.clientY - container.offsetTop + window.scrollY) / container.clientHeight ) * 2 + 1;
   
+  raycaster.setFromCamera( mouse, camera );
+  let intersects = raycaster.intersectObjects( scene.children, true );
+  touch_intersects = intersects;
+    
+}
+
+function onTouchEnd( event ) {
+  if( touching == false ) {
+    let intersects = touch_intersects;
+    moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z});
+  } else { touching = false; }
+}
+
+function onTouchMove( event ) {
+  touching = true; 
 }
     
 
