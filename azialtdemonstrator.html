@@ -29,14 +29,14 @@
 <div class='controls1'>
   <div class='sectionTitle'><span>Star Position</span> <div><hr/></div></div>
   <div class='coordSlider'>
-    <div>azimuth: <input type='text' id='aziBox' value='XX' onchange='moveStar({azi:this.value});'/><span class='deg'>&deg;</span></div>
-    <div class='coordSlider2'><input type='range' min='0' max='360' value='' class='slider' id='aziSlider' step='0.1' oninput='moveStar({azi:this.value});'/></div>
+    <div>azimuth: <input type='text' id='aziBox' value='XX' onchange='moveSlider({azi:this.value});'/><span class='deg'>&deg;</span></div>
+    <div class='coordSlider2'><input type='range' min='0' max='360' value='' class='slider' id='aziSlider' step='0.02' oninput='moveStar({azi:this.value});'/></div>
     <div></div>
   </div>
 
   <div class='coordSlider'>
-    <div>altitude: <input type='text' id='altBox' value='XX' onchange='moveStar({alt:this.value});'/><span class='deg'>&deg;</span></div>
-    <div class='coordSlider2'><input type='range' min='-90' max='90' value='' class='slider' id='altSlider' step='0.1' oninput='moveStar({alt:this.value});'/></div>
+    <div>altitude: <input type='text' id='altBox' value='XX' onchange='moveSlider({alt:this.value});'/><span class='deg'>&deg;</span></div>
+    <div class='coordSlider2'><input type='range' min='-90' max='90' value='' class='slider' id='altSlider' step='0.02' oninput='moveStar({alt:this.value});'/></div>
     <div></div>
   </div>
   
