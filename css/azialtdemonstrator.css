@@ -1,0 +1,73 @@
+html,body { 
+  margin: 0; padding: 0;
+  font-family: Calibri;
+  background-color: #555555;
+  color: black;
+  font-size: 12pt;
+  display: relative;
+}
+
+/* BASIC GRID LAYOUT */
+body { display: grid; grid-template-columns: 1fr 5fr 1fr; }
+.main { min-width: 600px; height: 100vh;
+  display: grid; 
+  grid-template-areas:  "a a" "b c" "b d";
+  grid-template-columns: 3fr 2fr;
+  grid-template-rows: auto 1fr 1fr;
+  grid-gap: 10px;
+}
+
+.main > div { background-color: white; padding: 0.5rem; font-variant-caps: all-small-caps;  }
+.title { grid-area: a; }
+.scene { grid-area: b; }
+.controls { grid-area: c; min-width: 200px; }
+.options { grid-area: d; }
+
+/* GRID LAYOUT FOR SMALL WIDTHS */
+
+/* GOES HERE */
+
+/* TITLES */
+.title { font-size: 2rem; padding: 0.75rem; padding-top: 0.75rem;  }
+.sectionTitle { display: grid; grid-template-columns: auto 1fr; font-size: 1.25rem;   }
+.sectionTitle > div:nth-child(1) { padding-right: 0.5rem; }
+.sectionTitle > div:nth-child(2) { align-self: center; border-bottom: 1.5px solid rgba(0,0,0,0.7); margin: 0; }
+
+/* SCENE CONTAINER */
+#scene-container {
+  width: calc(100%);
+  height: 0;
+  padding-bottom: calc(90%);
+  position: relative;
+}
+
+/* CONTROLS */
+.coordSlider { width: 100%; display: grid; grid-template-columns: 2fr 5fr; align-items: center; }
+.coordSlider > div:nth-child(1) { 
+  white-space: nowrap;
+  text-align: right; 
+  margin: 0 auto 0.12 5rem; }
+
+.coordSlider > div:nth-child(2) { padding: 0 0.25rem; }
+
+input[type='text'] { font-size: 1rem; width: 3rem; text-align: center; padding: 0.125rem 0.25rem; } 
+.coordSlider input[type='text'] { width: 2.5rem; }
+
+
+.controls { display: grid; grid-template-rows: auto 1fr 1fr 3fr; }
+.controls1 { font-style: italic; font-size: 0.8rem; text-align: center; font-variant-caps: normal; width: 100%; padding-bottom: 2rem; align-self: center; }
+.controls1a { display: block; }
+.controls1b { display: none; }
+
+/* OPTIONS */
+.options { display: grid; grid-template-rows: auto 3fr 2fr; align-items: center; }
+.options > div { }
+
+.options > div:nth-child(2) { display: grid; justify-items: center; }
+.options > div:nth-child(2) > div:nth-child(2)  { margin-top: 0.5rem; }
+.options > div:nth-child(2) > div:nth-child(2) > div { display: inline-block; padding: 0 0.5rem; }
+
+
+
+
+
