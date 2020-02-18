@@ -480,9 +480,9 @@ function createLabelText(txt,[azi,alt],param) {
       fog: true,
     },
     redrawInterval: 250,
-    textSize: 1,
+    textSize: 0.8,
       texture: {
-      fontFamily: 'Arial, Helvetica, sans-serif',
+      fontFamily: 'Helvetica, Arial, sans-serif',
       text: txt,
     },  
   });
@@ -639,7 +639,7 @@ function createCoordsText(opt) {
   } 
 
   let loader = new THREE.FontLoader(); 
-  let font = loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+  let font = loader.load( 'fonts/helvetiker_bold.typeface.json', function ( font ) {
  	  let textGeometry = new THREE.TextGeometry(txt, {
 		  font: font,
 		  size: 0.75,
@@ -799,17 +799,25 @@ function onMouseDown( event ) {
 let mouseUpdateCounter = 0;
 function onMouseMove( event ) {
   // the mouseUpdateCounter lets the scence update only on every few movements to reduce rendering glitches
-  if( controls.enabled == false && mouseUpdateCounter % 4 == 0 ) {  
+  if( controls.enabled == false && mouseUpdateCounter % 5 == 0 ) {  
     event.preventDefault();
     /* LOCATE THE POINT ON THE SPHERE THAT IT INTERSECT */
     let array = getMousePosition( container, event.clientX, event.clientY );
 	  onClickPosition.fromArray( array );
     let intersects = getIntersects( onClickPosition, scene.children, true );
     moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z});
-    mouseUpdateCounter = 0;
+    mouseUpdateCounter = 1;
   }
   mouseUpdateCounter++;
 }
+
+function moveSlider( param ) {
+    if( mouseUpdateCounter % 5 == 0 ) {
+        moveStart( param );
+        mouseUpdateCounter = 1;
+    } else { mouseUpdateCounter++; } 
+}
+
 
 function getIntersects ( point, objects ) {
 				mouse.set( ( point.x * 2 ) - 1, - ( point.y * 2 ) + 1 );
