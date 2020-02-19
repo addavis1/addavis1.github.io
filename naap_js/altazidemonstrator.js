@@ -1,10 +1,3 @@
-/* todo 
-fix the labels so that they come out normal to coordinate they are on
-add the touch events to move the star if there's no drag
-resize the canvas on the main grid
-add media grid layout adjustment
-*/
-
 // global variables
 let container;
 let camera;
@@ -811,9 +804,10 @@ function onMouseMove( event ) {
   mouseUpdateCounter++;
 }
 
-function moveSlider( param ) {
-    if( mouseUpdateCounter % 5 == 0 ) {
-        moveStart( param );
+
+function moveSlider( param ) {        
+    if( mouseUpdateCounter % 5 == 0 ) {        
+        moveStar( param );
         mouseUpdateCounter = 1;
     } else { mouseUpdateCounter++; } 
 }
