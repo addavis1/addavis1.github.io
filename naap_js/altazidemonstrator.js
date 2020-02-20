@@ -13,6 +13,8 @@ let touching;
 let touch_intersects;
 let touch_start;
 let touch_end;
+let mouse_start;
+let mouse_end;
   
   /* DEFINE object with the parameters */
 let options = new Object({
@@ -775,7 +777,7 @@ window.addEventListener( 'resize', onWindowResize );
 function onMouseDown( event ) {
 	mouse.x = ( (event.clientX - container.offsetLeft + window.scrollX) / container.clientWidth ) * 2 - 1; // works with 
 	mouse.y = - ( (event.clientY - container.offsetTop + window.scrollY) / container.clientHeight ) * 2 + 1;
-
+  mouse_start = [mouse.x,mouse.y];
   
   	// update the picking ray with the camera and mouse position                                               
 	raycaster.setFromCamera( mouse, camera );
@@ -821,6 +823,20 @@ function getIntersects ( point, objects ) {
 
 
 function onMouseUp( event ) {
+  mouse.x = ( (event.clientX - container.offsetLeft + window.scrollX) / container.clientWidth ) * 2 - 1; // works with 
+	mouse.y = - ( (event.clientY - container.offsetTop + window.scrollY) / container.clientHeight ) * 2 + 1;
+  mouse_end = [mouse.x,mouse.y];
+  
+  //alert( [Math.abs(mouse_start[0]-mouse_end[0]),Math.abs(mouse_start[1]-mouse_end[1])]);
+  
+  let x = 0.01;
+  if( Math.abs(mouse_start[0]-mouse_end[0]) < x && Math.abs(mouse_start[1]-mouse_end[1]) < x ) {
+    let array = getMousePosition( container, event.clientX, event.clientY );
+	  onClickPosition.fromArray( array );
+    let intersects = getIntersects( onClickPosition, scene.children, true );
+    moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z});
+  }
+  
   controls.enabled = true;
 }
 
