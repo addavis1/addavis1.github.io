@@ -15,9 +15,15 @@
 <script src='js/textsprite.js'></script>
 
 <script type='text/javascript'>
-function toggleMenu(id) {
-  document.getElementById(id).style.display = document.getElementById(id).style.display=='block' ? '' : 'block';
+function toggleMenu(id,opt) {
+  document.getElementById(id).style.display = document.getElementById(id).style.display == 'block' ? 'none' : 'block';
 }
+function toggleMenu2(id) {
+  document.getElementById(id).style.display = document.getElementById(id).style.display == 'block' ? 'block' : '';
+}
+
+
+
 </script>
 
 </head>
@@ -26,7 +32,7 @@ function toggleMenu(id) {
 <input type='hidden' id='alt_value' value='30'/>
 
 <section>
-<div id='container_title'><span id='menu' onclick='toggleMenu("menu_content");'>&#9776;
+<div id='container_title'><span id='menu' onclick='toggleMenu("menu_content");' onMouseOut='toggleMenu2("menu_content");'>&#9776;
 <div id='menu_content'>
 <div class='checkbox_box'>
   <div><input type='checkbox' id='zenithCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("zenithCheckbox",1);'>Zenith</span></div>
@@ -55,8 +61,9 @@ function toggleMenu(id) {
 <!-- NAAP Srcipt -->
 <script src='js_astro/altazidemonstrator.js'></script>
 
+<input id='info1' style='position: absolute; right: 30px; top: 0;'/>
+<script type='text/javascript'>document.getElementById('info1').value=window.innerWidth;</script>
 <!--
-<input id='info1' style='position: absolute; left: 0; top: 0;'/>
 <input id='info2' style='position: absolute; left: 0; top: 20px;'/>
 <input id='info3' style='position: absolute; left: 0; top: 40px;'/>
 <input id='info4' style='position: absolute; left: 0; top: 60px;'/>-->
