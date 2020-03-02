@@ -758,7 +758,9 @@ function onWindowResize(opt){
   //camera.aspect = container.clientWidth / container.clientHeight;
   //camera.updateProjectionMatrix();
   //renderer.setSize( container.clientWidth, container.clientHeight );
-  if( inputUse == false ) { location.replace(location.href); }
+  if( inputUse == false ) { /*location.replace(location.href); */ 
+    window.location.reload(); 
+  }
 }
 
 function onMouseDown( event ) {
