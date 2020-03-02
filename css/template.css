@@ -63,7 +63,7 @@ div[id^='container'] { background-color: white; }
   letter-spacing: .125rem;
 }
 #container_title > span:nth-child(1) { grid-area: x; text-align: center;   background-color: var(--menu);}
-#container_title > span:nth-child(2) { grid-area: y;   overflow: hidden;
+#container_title > span:nth-child(2) { grid-area: y; overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;}
 
@@ -82,9 +82,9 @@ div[id^='container'] { background-color: white; }
   text-align: left; 
 }
 
-#menu button { display: block; margin: .5rem 0 .5rem .25rem;  }
+#menu_content button { display: block; margin: .5rem 0 .5rem .25rem;  }
 
-#menu input[type='text'] { display: inline-block; width: 2.5rem; text-align: center; }
+.locButton { display: inline-block; width: 2.5rem; text-align: center; }
 
 #menu .input_box > div { margin-top: .5rem; }
 
