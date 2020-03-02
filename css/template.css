@@ -10,7 +10,6 @@ html,body {
 :root {
   --flex1: 1fr;
   --flex2: 1fr;
-  --min_width: 600px;
   --menu: #aaaaaa;
 }
 
@@ -18,6 +17,8 @@ div { padding: 0; margin: 0; }
 canvas { padding: 0; margin: 0; }
 div[id^='#container'] { }
 div[id^='flex'] { background-color: #555555; }
+
+
 
 
 /* BASIC GRID LAYOUT */
@@ -32,7 +33,7 @@ body > section { grid-area: main; }
 body { 
   display: grid;
   grid-template-areas:  'f1 main f2' 'f1 main f2';
-  grid-template-columns: var(--flex1) 4fr var(--flex2);
+  grid-template-columns: var(--flex1) 100vmin var(--flex2);
   grid-template-rows: auto 1fr;
 }
 
@@ -40,7 +41,7 @@ body > section {
   display: grid;
   grid-template-areas: 'a' 'b';     
   grid-template-columns: 1fr;
-  grid-template-rows: auto 85vh;
+  grid-template-rows: auto 90vmin;
   grid-gap: 10px;
 }
 
@@ -55,7 +56,13 @@ div[id^='container'] { background-color: white; }
   grid-gap: 1rem;
   position: relative;
 }
-#container_title > span { display: inline-block; font-size: 2rem; font-variant-caps: small-caps; letter-spacing: .125rem; }
+#container_title > span { 
+  display: inline-block;
+  font-size: 2rem; font-variant-caps: small-caps;
+  letter-spacing: .125rem;
+  text-overflow: ellipsis;
+  awhite-space: nowrap;
+}
 #container_title > span:nth-child(1) { grid-area: x; text-align: center; }
 #container_title > span:nth-child(2) { grid-area: y; }
 
