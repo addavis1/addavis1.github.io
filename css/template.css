@@ -43,6 +43,7 @@ body > section {
   grid-template-columns: 1fr;
   grid-template-rows: auto 90vmin;
   grid-gap: 10px;
+  min-width: 100vmin;
 }
 
 div[id^='container'] { background-color: white; }
