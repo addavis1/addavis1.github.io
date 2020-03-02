@@ -2,84 +2,64 @@
 <html>
 <head>
 <title>Altitude/Azimuth Demonstrator</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta charset="UTF-8" />
-<link rel="stylesheet" href="css/azialtdemonstrator.css">
-<link rel="stylesheet" href="css/slider.css">
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta charset='UTF-8' />
+<link rel='stylesheet' href='css/template.css'>
+<link rel='stylesheet' href='css/slider.css'>
+<link rel='stylesheet' href='css/azialtdemonstrator.css'>
 <style type='text/css'></style>
 
 <script src='js/three.js'></script>
 <script src='js/OrbitControls.js'></script> 
 <script src='js/texttexture.js'></script>   
 <script src='js/textsprite.js'></script>
+
+<script type='text/javascript'>
+function toggleMenu(id) {
+  document.getElementById(id).style.display = document.getElementById(id).style.display=='block' ? '' : 'block';
+}
+</script>
+
 </head>
 <body onload='init();'>
-
-<div class='side'></div>
-<div class='main'>
-
-
-<div class='title'>Azi/Alt Demonstrator v2.2</div>
-
-
-<div class='scene'>
-<div class='sectionTitle'><div>Horizon Diagram</div> <div></div></div>
-<div id='scene-container'><!-- this is where the simulator goes--> </div>
-</div>
- 
- 
-<div class='controls'>
 <input type='hidden' id='azi_value' value='150'/>
 <input type='hidden' id='alt_value' value='30'/>
 
-<div class='sectionTitle'><div>Star Position</div> <div></div></div> 
-  <div class='coordSlider'>
-    <div>azimuth: <input type='text' id='aziBox' value='XX' onchange='moveStar({azi:this.value});'/><span class='deg'>&deg;</span></div>
-    <div><input type='range' min='0' max='360' value='' class='slider' id='aziSlider' step='0.02' oninput='moveSlider({azi:this.value});'/></div>
-  </div>
-
-  <div class='coordSlider'>
-    <div>altitude: <input type='text' id='altBox' value='XX' onchange='moveStar({alt:this.value});'/><span class='deg'>&deg;</span></div>
-    <div><input type='range' min='-90' max='90' value='' class='slider' id='altSlider' step='0.02' oninput='moveSlider({alt:this.value});'/></div>
-  </div>
-  
-  
-  <div class='controls1'>
-    <div class='controls1a'>Move the star by clicking and dragging the star or simply clicking on the sphere.<br/>
-    Click and drag the sphere to rotate it, shift or right click to pan.<br/>
-    Mousewheel to zoom in or out.</div>
-    <div class='controls1b'>You may also change a star&rsquo;s position by touching the sphere.<br/>
-    Drag the sphere to rotate it. Pinch in or out to zoom.</div> 
-  </div>
+<section>
+<div id='container_title'><span id='menu' onclick='toggleMenu("menu_content");'>&#9776;
+<div id='menu_content'>
+<div class='checkbox_box'>
+  <div><input type='checkbox' id='zenithCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("zenithCheckbox",1);'>Zenith</span></div>
+  <div><input type='checkbox' id='horizonCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("horizonCheckbox",1);'>Horizon Plane</span></div>
+  <div><input type='checkbox' id='nadirCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("nadirCheckbox",1);'>Nadir</span></div>
+  <div><input type='checkbox' id='meridianCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("nadirCheckbox",1);'>Meridian</span></div>
+  <button id='toggleButton' onclick='toggleElement("all");'>show all</button>
+  <button id='toggleButton' onclick='toggleElement("none");'>hide all</button>
 </div>
 
-
-<div class='options'>
-<div class='sectionTitle'><div>Labels</div> <div></div></div>
-<div>
-<div>
-  <div><input type='checkbox' id='zenithCheckbox' checked='true' onchange='toggleElement(this.id);'/> Zenith</div>
-  <div><input type='checkbox' id='horizonCheckbox' checked='true' onchange='toggleElement(this.id);'/> Horizon Plane</div>
-  <div><input type='checkbox' id='nadirCheckbox' checked='true' onchange='toggleElement(this.id);'/> Nadir</div>
-  <div><input type='checkbox' id='meridianCheckbox' checked='true' onchange='toggleElement(this.id);'/> Meridian</div>
+<div class='input_box'>
+<div>azimuth: <input type='text' id='aziBox' value='XX' onchange='moveStar({azi:this.value});'/><span class='deg'>&deg;</span></div>
+<div>altitude: <input type='text' id='altBox' value='XX' onchange='moveStar({alt:this.value});'/><span class='deg'>&deg;</span></div>
 </div>
 
-<div>
-<div><button id='toggleButton' onclick='toggleElement("all");'>show all</button></div>
-<div><button id='toggleButton' onclick='toggleElement("all");'>hide all</button></div>
 </div>
-</div>
-<div></div>
-</div>
+</span><!-- end hamburger icon--><span>Azimuth/Altitude Demonstrator</span></div>
 
 
-</div> <!-- END MAIN -->
-<div class='side'></div>
+<div id='container_scene'></div>
+</section>
 
+<div id='flex1'></div>
+<div id='flex2'></div>
 
+<!-- NAAP Srcipt -->
+<script src='js_astro/altazidemonstrator.js'></script>
 
+<!--
+<input id='info1' style='position: absolute; left: 0; top: 0;'/>
+<input id='info2' style='position: absolute; left: 0; top: 20px;'/>
+<input id='info3' style='position: absolute; left: 0; top: 40px;'/>
+<input id='info4' style='position: absolute; left: 0; top: 60px;'/>-->
 
 </body>
-<!-- NAAP Srcipt -->
-<script src='naap_js/altazidemonstrator.js'></script>
 </html>

@@ -1,37 +1,31 @@
 <!doctype html>
 <html>
 <head>
-<title>Template</title>
+<title>Altitude/Azimuth Demonstrator</title>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <meta charset='UTF-8' />
-<!--<link rel='stylesheet' href='css/azialtdemonstrator.css'>
-<link rel='stylesheet' href='css/slider.css'>-->
 <link rel='stylesheet' href='css/template.css'>
-<style type='text/css'>
-#container_scene { height: 80vh; }
-</style>
-
+<link rel='stylesheet' href='css/slider.css'>
+<link rel='stylesheet' href='css/azialtdemonstrator.css'>
+<style type='text/css'></style>
 
 <script src='js/three.js'></script>
 <script src='js/OrbitControls.js'></script> 
 <script src='js/texttexture.js'></script>   
 <script src='js/textsprite.js'></script>
-
-
 </head>
 <body onload='init();'>
+<input type='hidden' id='azi_value' value='150'/>
+<input type='hidden' id='alt_value' value='30'/>
 
-<section>
-<div id='container_title'>Title of the Explorer</div>
+<div id='container_title'><span>Azimuth/Altitude Demonstrator</span><span>&#9776;</span></div>
 <div id='container_scene'></div>
-<div id='container_questions'>this is where the questions might go </div>
-</section>
+
 
 <div id='flex1'></div>
 <div id='flex2'></div>
 
-
 </body>
-<!-- load the simulator -->
-<script src='js_astro/test.js'></script>
+<!-- NAAP Srcipt -->
+<script src='js_astro/altazidemonstrator.js'></script>
 </html>
