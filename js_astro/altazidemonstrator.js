@@ -729,7 +729,6 @@ function createRenderer() {
   renderer.physicallyCorrectLights = true;                                        
   container.appendChild( renderer.domElement ); 
   
-
   renderer.domElement.addEventListener("mousedown", onMouseDown, true);
   renderer.domElement.addEventListener("mouseup", onMouseUp, true);
   renderer.domElement.addEventListener("mousemove",onMouseMove,true);
@@ -755,11 +754,12 @@ function createControls() {
 // a function that will be called every time the window gets resized. It can get called a lot, so don't put any heavy computation in here!
 window.addEventListener( 'resize', onWindowResize, false );
 function onWindowResize(){
-  camera.aspect = container.clientWidth / container.clientHeight;
-  camera.updateProjectionMatrix();
+  //camera.aspect = container.clientWidth / container.clientHeight;
+  //camera.updateProjectionMatrix();
   renderer.setSize( container.clientWidth, container.clientHeight );
+  location.replace(location.href);
 }
- 
+
 function onMouseDown( event ) {
 	mouse.x = ( (event.clientX - container.offsetLeft + window.scrollX) / container.clientWidth ) * 2 - 1; // works with 
 	mouse.y = - ( (event.clientY - container.offsetTop + window.scrollY) / container.clientHeight ) * 2 + 1;
@@ -864,5 +864,7 @@ function onTouchMove( event ) {
   touch_end = [touch.clientX,touch.clientY];
   touching = true;
 }
-    
+
+
+
 
