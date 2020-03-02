@@ -32,13 +32,14 @@ function toggleMenu2(id) {
 <input type='hidden' id='alt_value' value='30'/>
 
 <section>
-<div id='container_title'><span id='menu' onclick='toggleMenu("menu_content");' onMouseOut='toggleMenu2("menu_content");'>&#9776;
+<div id='container_title'><span><span id='menu' onclick='toggleMenu("menu_content");' onMouseOut='toggleMenu2("menu_content");'>&#9776;</span>
 <div id='menu_content'>
+
 <div class='checkbox_box'>
   <div><input type='checkbox' id='zenithCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("zenithCheckbox",1);'>Zenith</span></div>
   <div><input type='checkbox' id='horizonCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("horizonCheckbox",1);'>Horizon Plane</span></div>
   <div><input type='checkbox' id='nadirCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("nadirCheckbox",1);'>Nadir</span></div>
-  <div><input type='checkbox' id='meridianCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("nadirCheckbox",1);'>Meridian</span></div>
+  <div><input type='checkbox' id='meridianCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("meridianCheckbox",1);'>Meridian</span></div>
   <button id='toggleButton' onclick='toggleElement("all");'>show all</button>
   <button id='toggleButton' onclick='toggleElement("none");'>hide all</button>
 </div>
@@ -49,7 +50,8 @@ function toggleMenu2(id) {
 </div>
 
 </div>
-</span><!-- end hamburger icon--><span>Azimuth/Altitude Demonstrator</span></div>
+</span>
+<!-- end hamburger icon--><span title='Azimuth/Altitude Demonstrator'>Azimuth/Altitude Demonstrator</span></div>
 
 
 <div id='container_scene'></div>
