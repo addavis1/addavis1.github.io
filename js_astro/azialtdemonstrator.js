@@ -759,7 +759,7 @@ function onWindowResize(opt){
   //camera.updateProjectionMatrix();
   //renderer.setSize( container.clientWidth, container.clientHeight );
   if( inputUse == false ) { /*location.replace(location.href); */ 
-    window.location.reload(); 
+    window.location.reload(false); 
   }
 }
 
