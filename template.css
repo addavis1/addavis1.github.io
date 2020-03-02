@@ -1,0 +1,98 @@
+html,body { 
+  margin: 0; padding: 0;
+  font-family: Calibri;
+  background-color: #555555;
+  color: black;
+  font-size: 12pt;
+  display: relative;
+}
+
+:root {
+  --flex1: 1fr;
+  --flex2: 1fr;
+  --menu: #aaaaaa;
+}
+
+div { padding: 0; margin: 0; }
+canvas { padding: 0; margin: 0; }
+div[id^='#container'] { }
+div[id^='flex'] { background-color: #555555; }
+
+
+
+
+/* BASIC GRID LAYOUT */
+body > section { grid-area: main; }
+#container_title { grid-area: a; }
+#container_scene { grid-area: b; }
+#container_controls { grid-area: c; }
+#container_options { grid-area: d; }
+#flex1 { grid-area: f1; }
+#flex2 { grid-area: f2; }
+
+body { 
+  display: grid;
+  grid-template-areas:  'f1 main f2' 'f1 main f2';
+  grid-template-columns: var(--flex1) 100vmin var(--flex2);
+  grid-template-rows: auto 1fr;
+}
+
+body > section { 
+  display: grid;
+  grid-template-areas: 'a' 'b';     
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 90vmin;
+  grid-gap: 10px;
+  min-width: 100vmin;
+}
+
+div[id^='container'] { background-color: white; }
+
+#container_scene { min-width: var(--min_width);  }
+#container_title {
+  display: grid;
+  grid-template-areas: 'x y';
+  grid-template-columns: 3rem auto;
+  grid-template-rows: 2.75rem;
+  grid-gap: 1rem;
+  position: relative;
+}
+#container_title > span { 
+  display: inline-block;
+  font-size: 2rem; font-variant-caps: small-caps;
+  letter-spacing: .125rem;
+}
+#container_title > span:nth-child(1) { grid-area: x; text-align: center;   background-color: var(--menu);}
+#container_title > span:nth-child(2) { grid-area: y;   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;}
+
+/* MENU */
+#menu { cursor: pointer; background-color: var(--menu); }
+@media(hover: hover) and (pointer: fine) {
+  #menu:hover #menu_content { display: block; }
+}
+
+#menu_content { 
+  display: none;
+  width: 10rem;
+  background-color: var(--menu);
+  padding: 0.5rem 0.5rem 1rem; 
+  font-size: 1rem;
+  text-align: left; 
+}
+
+#menu button { display: block; margin: .5rem 0 .5rem .25rem;  }
+
+#menu input[type='text'] { display: inline-block; width: 2.5rem; text-align: center; }
+
+#menu .input_box > div { margin-top: .5rem; }
+
+
+
+
+
+
+
+
+
