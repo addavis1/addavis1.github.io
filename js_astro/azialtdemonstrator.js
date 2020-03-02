@@ -753,11 +753,12 @@ function createControls() {
 
 // a function that will be called every time the window gets resized. It can get called a lot, so don't put any heavy computation in here!
 window.addEventListener( 'resize', onWindowResize, false );
-function onWindowResize(){
+let inputUse = false;
+function onWindowResize(opt){
   //camera.aspect = container.clientWidth / container.clientHeight;
   //camera.updateProjectionMatrix();
   //renderer.setSize( container.clientWidth, container.clientHeight );
-  if( window.orientation == undefined ) {  location.replace(location.href); }
+  if( inputUse == false ) { location.replace(location.href); }
 }
 
 function onMouseDown( event ) {
