@@ -69,7 +69,10 @@ div[id^='container'] { background-color: white; }
 
 /* MENU */
 #menu { cursor: pointer; background-color: var(--menu); }
-#menu:hover #menu_content { display: block; }
+@media(hover: hover) and (pointer: fine) {
+  #menu:hover #menu_content { display: block; }
+}
+
 #menu_content { 
   display: none;
   width: 10rem;
