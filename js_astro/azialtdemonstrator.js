@@ -757,9 +757,7 @@ function onWindowResize(){
   //camera.aspect = container.clientWidth / container.clientHeight;
   //camera.updateProjectionMatrix();
   //renderer.setSize( container.clientWidth, container.clientHeight );
-  //location.replace(location.href);
-  //location.reload();
-  window.history.go(0);
+  location.replace(location.href);
 }
 
 function onMouseDown( event ) {
