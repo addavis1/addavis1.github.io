@@ -59,13 +59,15 @@ div[id^='container'] { background-color: white; }
 }
 #container_title > span { 
   display: inline-block;
-  font-size: 2rem; font-variant-caps: small-caps;
+  font-size: 2rem; 
   letter-spacing: .125rem;
 }
 #container_title > span:nth-child(1) { grid-area: x; text-align: center;   background-color: var(--menu);}
 #container_title > span:nth-child(2) { grid-area: y; overflow: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis;}
+  text-overflow: ellipsis;
+  font-variant-caps: small-caps;
+}
 
 /* MENU */
 #menu { cursor: pointer; background-color: var(--menu); }
@@ -82,13 +84,14 @@ div[id^='container'] { background-color: white; }
   text-align: left; 
 }
 
-#menu_content button { display: block; margin: .5rem 0 .5rem .25rem;  }
+.labelsButton { display: inline-block; margin: .5rem 0 .5rem .25rem;  }
 
 .locButton { display: inline-block; width: 2.5rem; text-align: center; }
 
 #menu .input_box > div { margin-top: .5rem; }
 
-
+#box_options { display: block; }
+#questions { display: none; }
 
 
 
