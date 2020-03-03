@@ -41,9 +41,33 @@ function init() {
   let azi = document.getElementById('azi_value').value;
   let alt = document.getElementById('alt_value').value;
   moveStar({azi:azi,alt:alt});
+  
+  let $_GET = readURL();
+  //alert($_GET['q']);
   // END INIT()
 }
 
+function readURL() { // produce a $_GET array much as PHP does
+	var $_GET = new Object();
+	var $qry_str = location.search.substr(1);
+
+	var $i = 0; var $j = $qry_str.indexOf('&',$i);
+	var $qry_sub;
+	while( $j != -1 ) {
+	  $sub = $qry_str.substring($i,$j);
+    $i = $j+1; $j = $qry_str.indexOf('&',$i);
+    $k = $sub.indexOf("=");
+    if( $k != -1 ) { $_GET[$sub.substring(0,$k)] = $sub.substring($k+1); }
+    else { $_GET[$sub] = true };
+  }
+	$sub = $qry_str.substring($i);
+	$k = $sub.indexOf("=");
+	if( $k != -1 ) { $_GET[$sub.substring(0,$k)] = $sub.substring($k+1); }
+  else { $_GET[$sub] = true };
+
+	//for(key in $_GET) { alert([key,$_GET[key]]); }
+	return($_GET);
+}
 
 /////////////////////////////////////
 // ASTRONOMY CALCULATION FUNCTIONS //
@@ -759,7 +783,7 @@ function onWindowResize(opt){
   //camera.updateProjectionMatrix();
   //renderer.setSize( container.clientWidth, container.clientHeight );
   if( inputUse == false ) { /*location.replace(location.href); */ 
-    window.location.reload(false); 
+    //window.location.reload(false); 
   }
 }
 
