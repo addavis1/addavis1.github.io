@@ -769,8 +769,10 @@ function createRenderer() {
 // the mouse drag when not on the star
 function createControls() { 
   controls = new THREE.OrbitControls( camera, container ); 
-  controls.enablePan = true;
+  controls.enablePan = false;
   controls.enableZoom = true;
+  controls.minDistance = 30;
+  controls.maxDistance = 80;
   //controls.addEventListener( 'change', () => renderer.render( scene, camera ) );
 }
 
@@ -779,9 +781,9 @@ function createControls() {
 window.addEventListener( 'resize', onWindowResize, false );
 let inputUse = false;
 function onWindowResize(opt){
-  //camera.aspect = container.clientWidth / container.clientHeight;
-  //camera.updateProjectionMatrix();
-  //renderer.setSize( container.clientWidth, container.clientHeight );
+  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize( container.clientWidth, container.clientHeight );
   if( inputUse == false ) { /*location.replace(location.href); */ 
     //window.location.reload(false); 
   }
@@ -892,6 +894,13 @@ function onTouchMove( event ) {
   touching = true;
 }
 
+/* QUESTION */
+
+function toggleQuestionMode(opt) {
+  alert('hey');
+  
+  
+}
 
 
 
