@@ -1,4 +1,9 @@
 <!doctype html>
+<!--
+change touch events to pointer events
+add questions -- differentiate from the hamburger menu
+disable pan
+-->
 <html>
 <head>
 <title>Altitude/Azimuth Demonstrator</title>
@@ -35,19 +40,25 @@ function toggleMenu2(id) {
 <div id='container_title'><span><span id='menu' onclick='toggleMenu("menu_content");' onMouseOut='toggleMenu2("menu_content");'>&#9776;</span>
 <div id='menu_content'>
 
-<div class='checkbox_box'>
+<div id='box_options'>
   <div><input type='checkbox' id='zenithCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("zenithCheckbox",1);'>Zenith</span></div>
   <div><input type='checkbox' id='horizonCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("horizonCheckbox",1);'>Horizon Plane</span></div>
   <div><input type='checkbox' id='nadirCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("nadirCheckbox",1);'>Nadir</span></div>
   <div><input type='checkbox' id='meridianCheckbox' checked='true' onchange='toggleElement(this.id);'/> <span onclick='toggleElement("meridianCheckbox",1);'>Meridian</span></div>
-  <button id='toggleButton' onclick='toggleElement("all");'>show all</button>
-  <button id='toggleButton' onclick='toggleElement("none");'>hide all</button>
-</div>
+  <button id='toggleButton' class='labelsButton' onclick='toggleElement("all");'>show all</button>
+  <button id='toggleButton' class='labelsButton' onclick='toggleElement("none");'>hide all</button>
+
 
 <div class='input_box'>
 <div>azimuth: <input type='text' id='aziBox' value='XX' class='locButton' onchange='moveStar({azi:this.value});' onclick='inputUse=true;' onmouseout='inputUse=false;'/><span class='deg'>&deg;</span></div>
 <div>altitude: <input type='text' id='altBox' value='XX' class='locButton' onchange='moveStar({alt:this.value});' onclick='inputUse=true;' onmouseout='inputUse=false;'/><span class='deg'>&deg;</span></div>
 </div>
+</div> <!-- end #box_options -->
+
+<div id='qmode'>
+<button class='labelsButton' onclick='toggleQuestionMode();'>enter question mode</button>
+</div>
+
 </div>
 </span>
 <!-- end hamburger icon--><span title='Azimuth/Altitude Demonstrator'>Azimuth/Altitude Demonstrator</span></div>
