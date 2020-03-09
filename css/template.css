@@ -62,7 +62,7 @@ div[id^='container'] { background-color: white; }
   font-size: 2rem; 
   letter-spacing: .125rem;
 }
-#container_title > span:nth-child(1) { grid-area: x; text-align: center;   background-color: var(--menu);}
+#container_title > span:nth-child(1) { grid-area: x; text-align: center;   background-color: var(--menu); padding-bottom: 0.25rem;}
 #container_title > span:nth-child(2) { grid-area: y; overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -79,7 +79,7 @@ div[id^='container'] { background-color: white; }
   display: none;
   width: 10rem;
   background-color: var(--menu);
-  padding: 0.5rem 0.5rem 1rem; 
+  padding: 0.5rem 0.5rem 1.5rem; 
   font-size: 1rem;
   text-align: left; 
 }
@@ -91,7 +91,7 @@ div[id^='container'] { background-color: white; }
 #menu .input_box > div { margin-top: .5rem; }
 
 #box_options { display: block; }
-#questions { display: none; }
+#qmode { margin-top: 1rem; margin-bottom: 0; }
 
 
 
