@@ -94,7 +94,37 @@ div[id^='container'] { background-color: white; }
 #qmode { margin-top: 1rem; margin-bottom: 0; }
 
 
+#box_question {
+  display: block; 
+  background-color: white;
+  min-width: 200px;
+  max-width: 30vw;
+  border: 1px solid black;
+  border-radius: 10px;  
+  position: absolute;
+  /* bottom: 0; have to set in the html element for easy javascript access */
+  left: 20vw;  
+}
 
+#box_question div:nth-child(1) { 
+  background-color: var(--menu);
+  border-radius: 10px 10px 0 0;
+  padding: 0.25rem;
+  font-weight: bold;
+  display: flex;
+  border-bottom: 1px solid rgba(0,0,0,0.75);
+}
+
+#box_question div:nth-child(1) span { flex: 1; }
+#box_question div:nth-child(1) span:nth-child(1) { text-align: left; cursor: pointer; }
+#box_question div:nth-child(1) span:nth-child(2) { text-align: center; flex: 40; cursor: move; }
+#box_question div:nth-child(1) span:nth-child(3) { text-align: center; cursor: pointer; }
+#box_question div:nth-child(1) span:nth-child(4) { text-align: right; cursor: pointer; }
+
+#box_question p:nth-child(2) {
+    padding: 0.5rem 1rem 1rem;
+    margin: 0;
+}
 
 
 
