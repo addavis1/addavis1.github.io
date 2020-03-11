@@ -5,7 +5,7 @@ let control;
 let renderer;
 let scene;
 let raycaster = new THREE.Raycaster();
-let mouse = new THREE.Vector2();
+let pointer = new THREE.Vector2();
 var star;
 let onClickPosition = new THREE.Vector2();
 let textObjects = new Array();
@@ -20,6 +20,9 @@ let mouse_end;
 let options = new Object({ r:10, rr:9.925, });
 
 function init() {
+  initQuestionMode();
+  
+  /* INITIALIZE THE THREE.JS */
   // CONTAINER for the CANVAS object
   container = document.querySelector( '#container_scene' );
   
@@ -41,11 +44,10 @@ function init() {
   let azi = document.getElementById('azi_value').value;
   let alt = document.getElementById('alt_value').value;
   moveStar({azi:azi,alt:alt});
-  
-  let $_GET = readURL();
-  //alert($_GET['q']);
-  // END INIT()
+    // END INIT()
 }
+
+function toggleMenu(id,opt) { document.getElementById(id).style.display = document.getElementById(id).style.display == 'block' ? 'none' : 'block'; }
 
 function readURL() { // produce a $_GET array much as PHP does
 	var $_GET = new Object();
@@ -463,8 +465,8 @@ function createSphereText() {
 
   createLabelText('Zenith',[0,90],{'q':30,'dt':2.5});
   createLabelText('Nadir',[0,-90],{'q':-30,'dt':2.5});
-  createLabelText('Meridian',[180,50],{'q':60,'dt':4});
-  createLabelText('Horizon Plane',[250,0],{'q':30,'dt':5});
+  createLabelText('Meridian',[180,50],{'q':60,'dt':2});
+  createLabelText('Horizon Plane',[250,0],{'q':30,'dt':6});
 }
 
 function createLabelText(txt,[azi,alt],param) {
@@ -479,19 +481,13 @@ function createLabelText(txt,[azi,alt],param) {
     let r = param['r'] == undefined ? 2 : param['r'];
     let dt = param['dt'] == undefined ? 3: param['dt'];
     let q = param['q'] == undefined ? q : param['q'];
-    
-    // textSprite custom creation by another
+ 
   let sprite = new THREE.TextSprite({
-    material: {
-      color: 0x000000,
-      fog: true,
-    },
-    redrawInterval: 250,
-    textSize: 0.8,
-      texture: {
-      fontFamily: 'Helvetica, Arial, sans-serif',
-      text: txt,
-    },  
+    fillStyle: 'rgba(0,0,0,1)',
+    fontFamily: 'Helvetica, Arial, sans-serif',
+    fontSize: 0.8,
+    fontStyle: 'normal',
+    text: txt
   });
   
   let x,y,z,radius;
@@ -536,48 +532,9 @@ function createLabelText(txt,[azi,alt],param) {
   qn.setFromUnitVectors(startVector.normalize(), endVector.normalize());
   textGroup.applyQuaternion(qn); 
 
-  
-  
   scene.add(textGroup);
   textGroup.name = txt+'_label';  
   
-}
-
-
-function createLabelText2(txt,pos,q,d1,d2) {
-
-  // textSprite custom creation by another
-  let sprite = new THREE.TextSprite({
-    material: {
-      color: 0x000000,
-      fog: true,
-    },
-    redrawInterval: 250,
-    textSize: 1,
-      texture: {
-      fontFamily: 'Arial, Helvetica, sans-serif',
-      text: txt,
-    },  
-  });
-  sprite.translateX(d1[0]);
-  sprite.translateY(d1[1]);
-  
-  // add label text line  
-  let lineMaterial = new THREE.MeshBasicMaterial( { color:'black',transparent:true,opacity:0.5,side: THREE.DoubleSide } );
-  let lineGeometry = new THREE.CylinderBufferGeometry( 0.04, 0.04,2, 32  );  
-  let line = new THREE.Mesh( lineGeometry, lineMaterial );
-  line.translateY(d2[0]);
-  line.translateX(d2[1]);
-  line.rotateZ(q*Math.PI/180);
-   
-  
-  let textGroup = new THREE.Group();
-  textGroup.add(sprite);
-  textGroup.add(line);
-  textGroup.position.set(pos[0],pos[1],pos[2]);
-  
-  scene.add(textGroup);
-  textGroup.name = txt+'_label';
 }
 
 function createHorizonText(txt) {
@@ -753,12 +710,9 @@ function createRenderer() {
   renderer.physicallyCorrectLights = true;                                        
   container.appendChild( renderer.domElement ); 
   
-  renderer.domElement.addEventListener("mousedown", onMouseDown, true);
-  renderer.domElement.addEventListener("mouseup", onMouseUp, true);
-  renderer.domElement.addEventListener("mousemove",onMouseMove,true);
-  renderer.domElement.addEventListener("touchstart",onTouchStart,true);
-  renderer.domElement.addEventListener("touchend",onTouchEnd,true);
-  renderer.domElement.addEventListener("touchmove",onTouchMove,true);
+  renderer.domElement.addEventListener("pointerdown", onpointerDown, true);
+  renderer.domElement.addEventListener("pointerup", onpointerUp, true);
+  renderer.domElement.addEventListener("pointermove",onpointerMove,true);
 }
 
 ///////////////////////
@@ -789,13 +743,13 @@ function onWindowResize(opt){
   }
 }
 
-function onMouseDown( event ) {
-	mouse.x = ( (event.clientX - container.offsetLeft + window.scrollX) / container.clientWidth ) * 2 - 1; // works with 
-	mouse.y = - ( (event.clientY - container.offsetTop + window.scrollY) / container.clientHeight ) * 2 + 1;
-  mouse_start = [mouse.x,mouse.y];
+function onpointerDown( event ) {
+	pointer.x = ( (event.clientX - container.offsetLeft + window.scrollX) / container.clientWidth ) * 2 - 1; // works with 
+	pointer.y = - ( (event.clientY - container.offsetTop + window.scrollY) / container.clientHeight ) * 2 + 1;
+  pointer_start = [pointer.x,pointer.y];
   
-  	// update the picking ray with the camera and mouse position                                               
-	raycaster.setFromCamera( mouse, camera );
+  	// update the picking ray with the camera and pointer position                                               
+	raycaster.setFromCamera( pointer, camera );
   let intersects = raycaster.intersectObjects( scene.children, true );
   
   for ( let i = 0; i < intersects.length; i++ ) {
@@ -806,47 +760,45 @@ function onMouseDown( event ) {
   }
 }
 
-let mouseUpdateCounter = 0;
-function onMouseMove( event ) {
-  // the mouseUpdateCounter lets the scence update only on every few movements to reduce rendering glitches
-  if( controls.enabled == false && mouseUpdateCounter % 5 == 0 ) {  
+let pointerUpdateCounter = 0;
+function onpointerMove( event ) {
+  // the pointerUpdateCounter lets the scence update only on every few movements to reduce rendering glitches
+  if( controls.enabled == false && pointerUpdateCounter % 5 == 0 ) {  
     event.preventDefault();
     /* LOCATE THE POINT ON THE SPHERE THAT IT INTERSECT */
-    let array = getMousePosition( container, event.clientX, event.clientY );
+    let array = getpointerPosition( container, event.clientX, event.clientY );
 	  onClickPosition.fromArray( array );
     let intersects = getIntersects( onClickPosition, scene.children, true );
     moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z});
-    mouseUpdateCounter = 1;
+    pointerUpdateCounter = 1;
   }
-  mouseUpdateCounter++;
+  pointerUpdateCounter++;
 }
 
 
 function moveSlider( param ) {        
-    if( mouseUpdateCounter % 5 == 0 ) {        
+    if( pointerUpdateCounter % 5 == 0 ) {        
         moveStar( param );
-        mouseUpdateCounter = 1;
-    } else { mouseUpdateCounter++; } 
+        pointerUpdateCounter = 1;
+    } else { pointerUpdateCounter++; } 
 }
 
 
 function getIntersects ( point, objects ) {
-				mouse.set( ( point.x * 2 ) - 1, - ( point.y * 2 ) + 1 );
-				raycaster.setFromCamera( mouse, camera );
+				pointer.set( ( point.x * 2 ) - 1, - ( point.y * 2 ) + 1 );
+				raycaster.setFromCamera( pointer, camera );
 				return raycaster.intersectObjects( objects );
 };
 
 
-function onMouseUp( event ) {
-  mouse.x = ( (event.clientX - container.offsetLeft + window.scrollX) / container.clientWidth ) * 2 - 1; // works with 
-	mouse.y = - ( (event.clientY - container.offsetTop + window.scrollY) / container.clientHeight ) * 2 + 1;
-  mouse_end = [mouse.x,mouse.y];
+function onpointerUp( event ) {
+  pointer.x = ( (event.clientX - container.offsetLeft + window.scrollX) / container.clientWidth ) * 2 - 1; // works with 
+	pointer.y = - ( (event.clientY - container.offsetTop + window.scrollY) / container.clientHeight ) * 2 + 1;
+  pointer_end = [pointer.x,pointer.y];
   
-  //alert( [Math.abs(mouse_start[0]-mouse_end[0]),Math.abs(mouse_start[1]-mouse_end[1])]);
-  
-  let x = 0.01;
-  if( Math.abs(mouse_start[0]-mouse_end[0]) < x && Math.abs(mouse_start[1]-mouse_end[1]) < x ) {
-    let array = getMousePosition( container, event.clientX, event.clientY );
+  let x = 0.05; // adjust this for sensitivity to touch (whether to drag sphere or move star)
+  if( Math.abs(pointer_start[0]-pointer_end[0]) < x && Math.abs(pointer_start[1]-pointer_end[1]) < x ) {
+    let array = getpointerPosition( container, event.clientX, event.clientY );
 	  onClickPosition.fromArray( array );
     let intersects = getIntersects( onClickPosition, scene.children, true );
     moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z});
@@ -855,52 +807,104 @@ function onMouseUp( event ) {
   controls.enabled = true;
 }
 
-function getMousePosition( dom, x, y ) {
+function getpointerPosition( dom, x, y ) {
   let rect = dom.getBoundingClientRect();
 	return [ ( x - rect.left ) / rect.width, ( y - rect.top ) / rect.height ];
 };
 
 
+// Make the DIV element draggable:
+dragElement('box_question');
 
-function onTouchStart( event ) {
-  let touch = event.targetTouches.item(0);
-  mouse.x = ( (touch.clientX - container.offsetLeft + window.scrollX) / container.clientWidth ) * 2 - 1; // works with 
-	mouse.y = - ( (touch.clientY - container.offsetTop + window.scrollY) / container.clientHeight ) * 2 + 1;
+function dragElement(id) {
+  let obj,obj2, pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+ 
+  obj = document.getElementById(id);
+  if ( document.getElementById(id + "_header") ) { obj2 = document.getElementById(id + "_header"); }
+  else { obj2 = document.getElementById(id); }
+  obj2.onpointerdown = dragpointerDown;
   
-  raycaster.setFromCamera( mouse, camera );
-  let intersects = raycaster.intersectObjects( scene.children, true );
-  touch_intersects = intersects;
-  touch_start = [touch.clientX,touch.clientY];
-  touch_end = undefined;
-    
-}
-
-function onTouchEnd( event ) {
-  let x = 10; 
-    
-  if ( touch_end == undefined ) { touching = false; }
-  else if( Math.abs(touch_start[0]-touch_end[0]) < x && Math.abs(touch_start[1]-touch_end[1]) < x ) { touching = false; } 
-  else { touching = true }
+  var rect = obj.getBoundingClientRect();
+  obj.style.top = rect.top+'px';
+  obj.style.bottom = '';  // get rid of the bottom element
   
-  if( touching == false ) {
-    let intersects = touch_intersects;
-    moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z});
-  } else { touching = false; }
+  function dragpointerDown(e) {
+       
+    e = e || window.event;
+    e.preventDefault();
+    // get the pointer cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onpointerup = closeDragElement;
+    document.onpointermove = elementDrag;
+  }
+  
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position: 
+    obj.style.top = (obj.offsetTop - pos2) + 'px';
+    obj.style.left = (obj.offsetLeft - pos1) + 'px';
+  }
+
+  function closeDragElement() {
+    document.onpointerup = null;
+    document.onpointermove = null;
+  }
+  
 }
 
-function onTouchMove( event ) {
-  let touch = event.targetTouches.item(0); 
-  touch_end = [touch.clientX,touch.clientY];
-  touching = true;
-}
 
-/* QUESTION */
+/* QUESTIONS */
+function initQuestionMode() {
+  let $_GET = readURL();
+  if( $_GET['q']*1 ) {
+    document.getElementById('question_number').value = $_GET['q']*1;
+    toggleQuestionMode(1);
+  } else { toggleQuestionMode(0); }
+  
+};
+
+
 
 function toggleQuestionMode(opt) {
-  alert('hey');
+  let box_opt = document.getElementById('box_options');
+  let box_que = document.getElementById('box_question');
+  let button_toggle = document.getElementById('button_toggle');
+  if( opt == undefined || opt == false || opt == 0 ) { // exit question mode
+    box_opt.style.display = 'block';
+    box_que.style.display = 'none';
+    button_toggle.value = 1;
+    button_toggle.innerHTML = 'enter question mode';
+  } else if ( opt == true || opt == 1 ) { // enter question mode
+    box_opt.style.display = 'none';
+    box_que.style.display = 'block';
+    button_toggle.value = 0;
+    button_toggle.innerHTML = 'exit question mode';
+  }  
+}
+
+function toggleQuestion() {
+  let qtext = document.getElementById('qtext');
+  let qArr = document.getElementById('qArr');
+  let obj = document.getElementById('box_question');
+  var rect = obj.getBoundingClientRect();
+  obj.style.width = rect.width+'px';
+  
+  if( qtext.style.display == 'none' ) { 
+    qtext.style.display = 'block';
+    qArr.innerHTML = '&utrif;';
+   }
+  else { 
+    qtext.style.display = 'none';
+    qArr.innerHTML = '&dtrif;';
+  }
+  
   
   
 }
-
-
-
