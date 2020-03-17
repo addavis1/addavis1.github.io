@@ -122,10 +122,10 @@ div[id^='container'] { background-color: white; }
 }
 
 #box_question div:nth-child(1) span { flex: 1; min-width: 1rem; }
-#box_question div:nth-child(1) span:nth-child(1) { text-align: left; }
+#box_question div:nth-child(1) span:nth-child(1) { text-align: center; }
 #box_question div:nth-child(1) span:nth-child(2) { text-align: center; flex: 40; cursor: move; }
 #box_question div:nth-child(1) span:nth-child(3) { text-align: center; cursor: pointer; }
-#box_question div:nth-child(1) span:nth-child(4) { text-align: right; }
+#box_question div:nth-child(1) span:nth-child(4) { text-align: center; }
 
 #box_question p:nth-child(2) {
     padding: 0.5rem 1rem 1rem;
