@@ -20,8 +20,7 @@ let mouse_end;
 let options = new Object({ r:10, rr:9.925, });
 
 function init() {
-  initQuestionMode();
-  
+ 
   /* INITIALIZE THE THREE.JS */
   // CONTAINER for the CANVAS object
   container = document.querySelector( '#container_scene' );
@@ -44,8 +43,15 @@ function init() {
   let azi = document.getElementById('azi_value').value;
   let alt = document.getElementById('alt_value').value;
   moveStar({azi:azi,alt:alt});
-    // END INIT()
-}
+    // END THREE.jS initialize
+    
+  // behavior, if the ?q tag is present, it should start and stay in question mode unless specifically exited (and that'll clear the url)
+  // the questions will move the # tag, however, with just the hash tag, it will load into normal mode
+  
+  // test for question mode with the 
+  let $_GET = readURL();
+  if( $_GET['q'] ) { toggleQuestionMode(1); }  
+} // END INIT():
 
 function toggleMenu(id,opt) { document.getElementById(id).style.display = document.getElementById(id).style.display == 'block' ? 'none' : 'block'; }
 
@@ -67,10 +73,19 @@ function readURL() { // produce a $_GET array much as PHP does
 	if( $k != -1 ) { $_GET[$sub.substring(0,$k)] = $sub.substring($k+1); }
   else { $_GET[$sub] = true };
 
-	//for(key in $_GET) { alert([key,$_GET[key]]); }
+	//for(key in $_GET) { a_lert([key,$_GET[key]]); }
 	return($_GET);
 }
 
+function loadXMLDoc(file_name,id)
+{
+var xmlhttp = new XMLHttpRequest();  
+xmlhttp.onreadystatechange=function() {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200) { document.getElementById(id).innerHTML=xmlhttp.responseText; }
+}
+xmlhttp.open("GET",file_name,true);
+xmlhttp.send();
+}
 /////////////////////////////////////
 // ASTRONOMY CALCULATION FUNCTIONS //
 /////////////////////////////////////
@@ -859,19 +874,6 @@ function dragElement(id) {
   
 }
 
-
-/* QUESTIONS */
-function initQuestionMode() {
-  let $_GET = readURL();
-  if( $_GET['q']*1 ) {
-    document.getElementById('question_number').value = $_GET['q']*1;
-    toggleQuestionMode(1);
-  } else { toggleQuestionMode(0); }
-  
-};
-
-
-
 function toggleQuestionMode(opt) {
   let box_opt = document.getElementById('box_options');
   let box_que = document.getElementById('box_question');
@@ -884,12 +886,14 @@ function toggleQuestionMode(opt) {
   } else if ( opt == true || opt == 1 ) { // enter question mode
     box_opt.style.display = 'none';
     box_que.style.display = 'block';
+    box_que.style.visibility = 'visible';
     button_toggle.value = 0;
     button_toggle.innerHTML = 'exit question mode';
-  }  
+    window.setTimeout(function() { loadQuestion(); }, 10 );
+  }
 }
 
-function toggleQuestion() {
+function toggleQuestionText() {
   let qtext = document.getElementById('qtext');
   let qArr = document.getElementById('qArr');
   let obj = document.getElementById('box_question');
@@ -904,7 +908,35 @@ function toggleQuestion() {
     qtext.style.display = 'none';
     qArr.innerHTML = '&dtrif;';
   }
+}
+
+function loadQuestion(q) {
+  let obj_qnum = document.getElementById('question_number');
+  let q_list = document.getElementById('q_list').children;  
+  let hash = (location.hash).substring(1,4)*1;  
+
+  q_num = ( hash > 0 && hash <= q_list.length ) ? hash : document.getElementById('question_number').value;
+ 
+  if( q == 'prev' && q_num != 1 ) { q_num -= 1; }
+  else if ( q == 'next' && q_num != q_list.length ) { q_num += 1; }
+  location.hash = q_num;
+  document.getElementById('question_number').value = q_num;
   
-  
+  // get all the questions in the question list    
+  for( let i = 0; i < q_list.length; i++ ) { 
+    //q_list.item(i).style.display = i == q_num - 1 ? 'block' : 'none';
+    if( i == q_num - 1 ) {
+      q_list.item(i).style.display = 'block';
+      document.getElementById('qnum').innerHTML = q_num;
+    } else {
+      q_list.item(i).style.display = 'none';
+    }
+  }
+  document.getElementById('qprev').style.opacity = ( q_num == 1 ) ? 0.25 : 1;
+  document.getElementById('qnext').style.opacity = ( q_num == q_list.length ) ? 0.25 : 1;
   
 }
+
+
+
+  
