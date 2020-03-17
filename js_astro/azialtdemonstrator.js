@@ -889,7 +889,7 @@ function toggleQuestionMode(opt) {
     box_que.style.visibility = 'visible';
     button_toggle.value = 0;
     button_toggle.innerHTML = 'exit question mode';
-    window.setTimeout(function() { loadQuestion(); }, 10 );
+    window.setTimeout(function() { loadQuestion(); }, 100 );
   }
 }
 
@@ -933,7 +933,9 @@ function loadQuestion(q) {
     }
   }
   document.getElementById('qprev').style.opacity = ( q_num == 1 ) ? 0.25 : 1;
+  document.getElementById('qprev').style.cursor = ( q_num == 1 ) ? 'default' : 'pointer';
   document.getElementById('qnext').style.opacity = ( q_num == q_list.length ) ? 0.25 : 1;
+  document.getElementById('qnext').style.opacity = ( q_num == q_list.length ) ? 'default' : 'pointer';
   
 }
 
