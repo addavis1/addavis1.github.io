@@ -889,7 +889,7 @@ function toggleQuestionMode(opt) {
     box_que.style.visibility = 'visible';
     button_toggle.value = 0;
     button_toggle.innerHTML = 'exit question mode';
-    window.setTimeout(function() { loadQuestion(); }, 100 );
+    window.setTimeout(function() { loadQuestion(); }, 0 );
   }
 }
 
