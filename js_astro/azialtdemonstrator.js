@@ -903,6 +903,7 @@ function toggleQuestionText() {
   if( qtext.style.display == 'none' ) { 
     qtext.style.display = 'block';
     qArr.innerHTML = '&utrif;';
+    obj.style.width = 'auto';
    }
   else { 
     qtext.style.display = 'none';
