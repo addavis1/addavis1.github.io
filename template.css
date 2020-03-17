@@ -59,13 +59,15 @@ div[id^='container'] { background-color: white; }
 }
 #container_title > span { 
   display: inline-block;
-  font-size: 2rem; font-variant-caps: small-caps;
+  font-size: 2rem; 
   letter-spacing: .125rem;
 }
-#container_title > span:nth-child(1) { grid-area: x; text-align: center;   background-color: var(--menu);}
-#container_title > span:nth-child(2) { grid-area: y;   overflow: hidden;
+#container_title > span:nth-child(1) { grid-area: x; text-align: center;   background-color: var(--menu); padding-bottom: 0.25rem;}
+#container_title > span:nth-child(2) { grid-area: y; overflow: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis;}
+  text-overflow: ellipsis;
+  font-variant-caps: small-caps;
+}
 
 /* MENU */
 #menu { cursor: pointer; background-color: var(--menu); }
@@ -77,21 +79,57 @@ div[id^='container'] { background-color: white; }
   display: none;
   width: 10rem;
   background-color: var(--menu);
-  padding: 0.5rem 0.5rem 1rem; 
+  padding: 0.5rem 0.5rem 1.5rem; 
   font-size: 1rem;
   text-align: left; 
 }
 
-#menu button { display: block; margin: .5rem 0 .5rem .25rem;  }
+.labelsButton { display: inline-block; margin: .5rem 0 .5rem .25rem;  }
 
-#menu input[type='text'] { display: inline-block; width: 2.5rem; text-align: center; }
+.locButton { display: inline-block; width: 2.5rem; text-align: center; }
 
 #menu .input_box > div { margin-top: .5rem; }
 
+#box_options { display: block; }
+#qmode { margin-top: 1rem; margin-bottom: 0; }
 
 
+#box_question {
+  display: block;
+  visibility: hidden;
+  background-color: white;
+  min-width: 200px;
+  max-width: 30vw;
+  border: 1px solid black;
+  border-radius: 10px 10px 5px 5px;  
+  position: absolute;
+  left: 60vw;  
+  top: 80vh;
+}
 
+#box_question > div:nth-child(1) { 
+  background-color: var(--menu);
+  border-radius: 10px 10px 0 0;
+  padding: 0.25rem;
+  font-weight: bold;
+  display: flex;
+  border-bottom: 1px solid rgba(0,0,0,0.75);
+}
 
+#box_question div:nth-child(1) span { flex: 1; min-width: 1rem; }
+#box_question div:nth-child(1) span:nth-child(1) { text-align: left; }
+#box_question div:nth-child(1) span:nth-child(2) { text-align: center; flex: 40; cursor: move; }
+#box_question div:nth-child(1) span:nth-child(3) { text-align: center; cursor: pointer; }
+#box_question div:nth-child(1) span:nth-child(4) { text-align: right; }
+
+#box_question p:nth-child(2) {
+    padding: 0.5rem 1rem 1rem;
+    margin: 0;
+}
+
+#qtext > section > div { display: block; }
+#qprev { cursor: pointer; }
+#qnext { cursor: pointer; }
 
 
 
