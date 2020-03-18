@@ -93,8 +93,7 @@ xmlhttp.send();
 function convertCoords(param) { 
   // +x:E , +z:S , +y:N
   let x,y,z,xz,alt,azi,q1,q2,r;
-  if( param.r != undefined ) { r = options.r;  }
-  else { r = options.r; }
+  r = param.r != undefined ? param.r : options.r;
 
   if ( param.alt != undefined ) { // altitude and azimuth to sphere coords
     azi = param.azi, alt = param.alt;
@@ -111,7 +110,8 @@ function convertCoords(param) {
     else if ( z >= 0 && x >= 0 ) { azi = 180-Math.atan( Math.abs(x/z) )*180/Math.PI; }
     else if ( z >= 0 && x < 0 ) { azi = 180+Math.atan( Math.abs(x/z) )*180/Math.PI; }
     else if ( z < 0 && x < 0 ) { azi = 360-Math.atan( Math.abs(x/z) )*180/Math.PI; }
-    return([azi,alt]);  
+    r = Math.sqrt( x*x+y*y+z*z );
+    return([azi,alt,r]);  
   }
 }
 
@@ -119,7 +119,7 @@ function moveStar(param) {
   let alt,azi,x,y,z;
   
     // if they are present need to remove and then redraw
-  if( scene.getObjectByName('coordsTextAlt') != undefined || true) {  
+  if( scene.getObjectByName('coordsTextAlt') != undefined || true ) {  // it always removes them
     scene.remove(scene.getObjectByName('azimuth line'));
     scene.remove(scene.getObjectByName('azimuth line2'));    
     scene.remove(scene.getObjectByName('altitude line'));
@@ -186,8 +186,7 @@ function moveStar(param) {
   let torus_azi2 = new THREE.Mesh( geometry_azi2, material_azi2 );
   torus_azi2.rotateY(Math.PI/2-q_azi);
   scene.add( torus_azi2 );
-  torus_azi2.name = 'azimuth line2';
-  
+  torus_azi2.name = 'azimuth line2';  
 
   // ALTITUDE AND AZIMUTH LINES    
   let q_alt = star.alt == 0 ? 1E-9 : star.alt*Math.PI/180;
@@ -205,13 +204,11 @@ function moveStar(param) {
   torus_alt2.rotateX(Math.PI/2);
   torus_alt2.translateZ(-options.r*Math.sin(q_alt));
   scene.add( torus_alt2 );
-  torus_alt2.name = 'altitude line2';
-  
+  torus_alt2.name = 'altitude line2';  
   
   // Add COORDINATE TEXT
   createCoordsText('azi');
-  createCoordsText('alt');
-  
+  createCoordsText('alt');  
     
   // CHANGE TEXT BOXES
   document.getElementById('aziBox').value = (star.azi).toFixed(1);
@@ -220,6 +217,7 @@ function moveStar(param) {
   document.getElementById('altSlider').value = (star.alt).toFixed(1); */
   document.getElementById('azi_value').value = (star.azi).toFixed(1);
   document.getElementById('alt_value').value = (star.alt).toFixed(1);
+  
   } // end scene.getObjectByName('coordsTextAlt') == undefined check   
 }  
 
@@ -693,7 +691,9 @@ function createCamera() {
   const near = 0.1;
   const far = 100;
   camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
-  camera.position.set( 10, 20, 55 );
+  let x,y,z;
+  [x,y,z] = convertCoords({'azi':170,'alt':20,'r':60});
+  camera.position.set( x,y,z );
   camera.lookAt(0,0,0 ); // default, can omit unless changed
 }
 
@@ -938,8 +938,111 @@ function loadQuestion(q) {
   document.getElementById('qnext').style.opacity = ( q_num == q_list.length ) ? 0.25 : 1;
   document.getElementById('qnext').style.opacity = ( q_num == q_list.length ) ? 'default' : 'pointer';
   
+  // initialize question
+  
+  let current_div = q_list.item(q_num-1);
+  let param_input = current_div.getElementsByClassName('initialize').item(0);
+
+  if( param_input != null ) {
+    let param = JSON.parse(param_input.value);
+    initializeQuestion(param);
+  }  
 }
 
-
-
+function submitQuestion(mode,param,opt) {
+  if( opt === undefined ) { var opt = {}; }
+  let dx = opt['dx'] === undefined ? 2.5 : opt['dx'];
+  let dx2 = opt['dx2'] === undefined ? 3 : opt['dx2'];
+  let ans = {};
+  let delta;
   
+  // mode is the question type
+  if( mode == 1 || mode == undefined ) { // compares star's location to a particular response      
+      ans.azi = param['azi'];
+      ans.alt = param['alt'];
+
+      delta = Math.sqrt( Math.pow(star.azi-ans.azi,2) + Math.pow(star.alt-ans.alt,2) );
+      if( delta < dx ) { alert('correct (or close enough at least)'); }
+      else if ( delta < dx*dx2 ) { alert('close … try to refine the position'); }
+      else { alert('incorrect'); }
+  } 
+}
+
+function initializeQuestion(param) {
+  let azi,alt,r,x,y,z,step,temp,i,n,opt;
+  if ( param === undefined ) { let param = {}; }
+  
+  if( param.movestar != undefined ) {
+    if( param.movestar.azi == 'random' ) {
+      if ( param.movestar.azirange ) { opt.azirange = param.movestar.azirange; }
+      [azi,temp] = getRandomCoord(opt);
+    } else if ( Array.isArray(param.movestar.azi) ) {
+      temp = param.movestar.azi;
+      i = Math.floor(Math.random()*temp.length);
+      azi = temp[i];      
+    } else { azi = param.movestar.azi; }    
+    
+    if( param.movestar.alt == 'random' ) {
+      if ( param.movestar.altrange ) { opt.altrange = param.movestar.altrange; }
+      [temp,alt] = getRandomCoord(opt);
+    } else if ( Array.isArray(param.movestar.alt) ) {
+      temp = param.movestar.alt;
+      if( !(param.movestar.sync == true )) { i = Math.floor(Math.random()*temp.length); }
+      alt = temp[i];      
+    } else { alt = param.movestar.alt; }
+    
+    // check for a step size and if so, round to the step size
+    azi = param.movestar.azistep != undefined ? Math.round(azi/param.movestar.azistep)*param.movestar.azistep : azi;
+    alt = param.movestar.altstep != undefined ? Math.round(alt/param.movestar.altstep)*param.movestar.altstep : alt;
+    
+    moveStar({'azi':azi,'alt':alt});
+  }
+  
+  if( param.lookat != undefined ) { // set the camera position
+    r = param.lookat.r != undefined ? param.lookat.r : 60;
+    if( param.lookat == 'star' ) {
+      azi = star.azi;
+      alt = star.alt;
+    } else {
+      
+      if( param.lookat.azi == 'random' || param.lookat.alt == 'random' ) {
+        if ( param.lookat.azirange ) { opt.azirange = param.lookat.azirange; }
+        if ( param.lookat.altrange ) { opt.altrange = param.lookat.altrange; }
+        [azi,alt] = getRandomCoord(opt);
+      }
+      azi = param.lookat.azi != 'random' ? param.lookat.azi : azi;
+      alt = param.lookat.alt != 'random' ? param.lookat.alt : alt;
+      
+    }
+    [x,y,z] = convertCoords({'azi':azi,'alt':alt,'r':r});
+    x = x.toFixed(3); y = y.toFixed(3); z = z.toFixed(3);
+    camera.position.set(x,y,z);  
+    camera.lookAt(0,0,0); // needed anytime the camera is moved
+  } // END lookat
+  
+}
+
+function getRandomCoord(param) {
+  let azi,alt,u,v,test;
+  test = true;
+  
+  if ( param === undefined ) { var param = {}; }
+    param.azirange = param.azirange == undefined ? [0,360] : param.azirange;
+    param.altrange = param.altrange == undefined ? [-90,90] : param.altrange;
+  
+    // just using random coordinates does not give a random distribution
+    // start with u and v, random variables over 0 .. 1
+ 
+    while ( test == true ) {
+      u = Math.random(); 
+      v = Math.random();  
+  
+      azi = 360*u;
+      alt = Math.acos(2*v-1)*180/Math.PI-90;
+
+      if( azi >= param.azirange[0] && azi <= param.azirange[1] && alt >= param.altrange[0] && alt <= param.altrange[1] ) { test = false; }
+    }
+  
+  return([azi,alt]);
+}
+
