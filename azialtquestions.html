@@ -1,23 +1,44 @@
 <section id='q_list'>
+
 <div>
 Place the star at the location the sun will rise on the Vernal Equinox.
-<button type='text' onlick='submitQuestion();'>submit</button>
-
-<input type='hidden' id='q_azi' value='180'/><input type='hidden' id='q_alt' value='45'/>
-<input type='hidden' id='a_azi' value='90'/><input type='hidden' id='a_alt' value='0'/>
+<button type='text' onclick='submitQuestion(1,{"azi":90,"alt":0});'>submit</button>
+<input type='hidden' class='initialize' value='{"lookat":{"azi":150",alt":30}}'/>
 </div>
 
 <div>
-Question 2
+This question causes the camera to look at a random point of the celestial sphere.
+<input type='hidden' class='initialize' value='{"lookat":{"azi":"random","alt":"random"}}'/>
 </div>
 
-<div>Question 3</div>
+<div>
+This moves the star to azimuth 220° and alt 40° and looks at the star.
+<input type='hidden' class='initialize' value='{"lookat":"star","movestar":{"azi":"220","alt":"40"}}'/>
+</div>
 
-<div>Question 4</div>
+<div>
+This question moves the star to a random position between azimuth 90° and 180° and altitude -20° to 70°, but does not move the camera.
+<input type='hidden' class='initialize' value='{"movestar":{"azi":"random","alt":"random","azirange":[90,180],"altrange":[-20,70]}}'/>
+</div>
 
-<div>Question 5</div>
+<div>
+This question moves the star to a random from a fixed choice of elements.
+<input type='hidden' class='initialize' value='{"movestar":{"azi":[0,90,180,270],"alt":[0,90,-90]} }'/>
+</div>
 
-<div>Question 6</div>
+<div>
+This question moves the star to a random coordinates are limited to azimuth steps of 45° and altitude steps of 30°.
+<input type='hidden' class='initialize' value='{"movestar":{"azi":"random","alt":"random","azistep":45,"altstep":15}}'/>
+</div>
 
-<div>Question 7</div>
+<div>
+This question moves the star to a random from a fixed choice of elements but the azi and alt are synced
+<input type='hidden' class='initialize' value='{"movestar":{"azi":[90,135,180],"alt":[10,20,30],"sync":true},"opt":{"noalt":1,"noazi":1} }'/>
+</div>
+
+<!-- to do list:
+## disable movement of start on some questions
+## set input for options in the question
+-->
+
 </section>
