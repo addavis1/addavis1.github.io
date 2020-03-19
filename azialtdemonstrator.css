@@ -1,0 +1,73 @@
+/* MENU */
+#menu { cursor: pointer; background-color: var(--menu); }
+@media(hover: hover) and (pointer: fine) {
+  #menu:hover #menu_content { display: block; }
+}
+
+#menu_content { 
+  display: none;
+  width: 10rem;
+  background-color: var(--menu);
+  padding: 0.5rem 0.5rem 1.5rem; 
+  font-size: 1rem;
+  text-align: left; 
+}
+
+.labelsButton { display: inline-block; margin: .5rem 0 .5rem .25rem;  }
+
+.locButton { display: inline-block; width: 2.5rem; text-align: center; }
+
+#menu .input_box > div { margin-top: .5rem; }
+
+#box_options { display: block; }
+#qmode { margin-top: 1rem; margin-bottom: 0; }
+
+
+#box_question {
+  display: block;
+  visibility: hidden;
+  background-color: white;
+  min-width: 200px;
+  max-width: 30vw;
+  border: 1px solid black;
+  border-radius: 10px 10px 5px 5px;  
+  position: absolute;
+  left: 60vw;  
+  top: 80vh;
+}
+
+@media (orientation: portrait) {
+#box_question {   left: 10vw; top: 60vh; }
+}
+
+
+#box_question > div:nth-child(1) { 
+  background-color: var(--menu);
+  border-radius: 10px 10px 0 0;
+  padding: 0.25rem;
+  font-weight: bold;
+  display: flex;
+  border-bottom: 1px solid rgba(0,0,0,0.75);
+}
+
+#box_question div:nth-child(1) span { flex: 1; min-width: 1.5rem; }
+#box_question div:nth-child(1) span:nth-child(1) { text-align: center; }
+#box_question div:nth-child(1) span:nth-child(2) { text-align: center; flex: 20; cursor: move; }
+#box_question div:nth-child(1) span:nth-child(4) { text-align: center; }
+
+#box_question p:nth-child(2) {
+    padding: 0.5rem 1rem 1rem;
+    margin: 0;
+}
+
+#qtext > section > div { display: block; }
+#qprev { cursor: pointer; }
+#qnext { cursor: pointer; }
+#qArr { display: inline-block; cursor: pointer !important; width: 2rem; text-align: center; }
+#box_question_header > span:nth-child(1) { display: inline-block; width: 0rem; }
+
+#q_list button { padding: auto 0.5rem; margin-left: 2rem; }
+
+
+
+
