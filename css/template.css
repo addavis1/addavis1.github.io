@@ -124,7 +124,6 @@ div[id^='container'] { background-color: white; }
 #box_question div:nth-child(1) span { flex: 1; min-width: 1.5rem; }
 #box_question div:nth-child(1) span:nth-child(1) { text-align: center; }
 #box_question div:nth-child(1) span:nth-child(2) { text-align: center; flex: 20; cursor: move; }
-#box_question div:nth-child(1) span:nth-child(3) { text-align: center; cursor: pointer; }
 #box_question div:nth-child(1) span:nth-child(4) { text-align: center; }
 
 #box_question p:nth-child(2) {
@@ -135,6 +134,10 @@ div[id^='container'] { background-color: white; }
 #qtext > section > div { display: block; }
 #qprev { cursor: pointer; }
 #qnext { cursor: pointer; }
+#qArr { display: inline-block; cursor: pointer !important; width: 2rem; text-align: center; }
+#box_question_header > span:nth-child(1) { display: inline-block; width: 0rem; }
+
+#q_list button { padding: auto 0.5rem; margin-left: 2rem; }
 
 
 
