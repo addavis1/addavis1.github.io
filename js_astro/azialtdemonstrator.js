@@ -9,12 +9,8 @@ let pointer = new THREE.Vector2();
 var star;
 let onClickPosition = new THREE.Vector2();
 let textObjects = new Array();
-let touching;
-let touch_intersects;
-let touch_start;
-let touch_end;
-let mouse_start;
-let mouse_end;
+let starmovable = true;
+
   
   /* DEFINE object with the parameters */
 let options = new Object({ r:10, rr:9.925, });
@@ -118,7 +114,7 @@ function convertCoords(param) {
 function moveStar(param) {
   let alt,azi,x,y,z;
   
-    // if they are present need to remove and then redraw
+  // if they are present need to remove and then redraw
   if( scene.getObjectByName('coordsTextAlt') != undefined || true ) {  // it always removes them
     scene.remove(scene.getObjectByName('azimuth line'));
     scene.remove(scene.getObjectByName('azimuth line2'));    
@@ -169,7 +165,25 @@ function moveStar(param) {
   let q = new THREE.Quaternion;
   q.setFromUnitVectors(startVector.normalize(), endVector.normalize());
   star.applyQuaternion(q);
-      
+
+  addAziAltLines();
+}
+
+function addAziAltLines() {
+  // check for the question options
+  let q_list, opt_input, azi_opt = 2, alt_opt = 2; // default values;
+  if( q_list = document.getElementById('q_list') != null ) {
+    q_list = document.getElementById('q_list').children;
+    let n_num = location.hash;
+    let current_div = q_list.item(q_num-1);
+    opt_input = current_div.getElementsByClassName('options').item(0);
+    if( opt_input != null ) {  
+      let opt = JSON.parse(opt_input.value);
+      azi_opt = opt.azi;
+      alt_opt = opt.alt;    
+    }
+  }
+  
   // ALTITUDE AND AZIMUTH LINES
   let q_azi = star.azi == 0 ? 1E-9 : star.azi*Math.PI/180;
   let geometry_azi = new THREE.TorusBufferGeometry( options.r, 0.05, 8, 100, q_azi );
@@ -177,8 +191,8 @@ function moveStar(param) {
   let torus_azi = new THREE.Mesh( geometry_azi, material_azi );   
   // torus is drawn the xy plane -- need to rotate it (order matters!)
   torus_azi.rotateX(Math.PI/2);
-  torus_azi.rotateZ(-Math.PI/2);            
-  scene.add( torus_azi );
+  torus_azi.rotateZ(-Math.PI/2);
+  if( azi_opt == 1 || azi_opt == 2 ) { scene.add( torus_azi ); }
   torus_azi.name = 'azimuth line';
   
   let geometry_azi2 = new THREE.TorusBufferGeometry( options.r, 0.04, 8, 100 );
@@ -195,7 +209,7 @@ function moveStar(param) {
   let torus_alt = new THREE.Mesh( geometry_alt, material_alt );   
   // torus is drawn the xy plane -- need to rotate it (order matters!)
   torus_alt.rotateY(Math.PI/2-q_azi);
-  scene.add(torus_alt);    
+  if( alt_opt == 1 || alt_opt == 2 ) { scene.add( torus_alt ); }
   torus_alt.name = 'altitude line';
   
   let geometry_alt2 = new THREE.TorusBufferGeometry( options.r*Math.cos(q_alt), 0.04, 8, 100 );
@@ -207,8 +221,8 @@ function moveStar(param) {
   torus_alt2.name = 'altitude line2';  
   
   // Add COORDINATE TEXT
-  createCoordsText('azi');
-  createCoordsText('alt');  
+  if( azi_opt == 2 ) { createCoordsText('azi'); }
+  if( alt_opt == 2 ) { createCoordsText('alt'); }
     
   // CHANGE TEXT BOXES
   document.getElementById('aziBox').value = (star.azi).toFixed(1);
@@ -231,7 +245,7 @@ function toggleElement(id,opt) {
       document.getElementById(id_array[i]).checked = id == 'all' ? true : false;
     }
   } else {
-    if( opt ) {
+    if( opt == 1 ) {
       let menu_item = document.getElementById(id);
       menu_item.checked = !(menu_item.checked);    
     }
@@ -748,14 +762,11 @@ function createControls() {
 
 // a function that will be called every time the window gets resized. It can get called a lot, so don't put any heavy computation in here!
 window.addEventListener( 'resize', onWindowResize, false );
-let inputUse = false;
+
 function onWindowResize(opt){
   camera.aspect = container.clientWidth / container.clientHeight;
   camera.updateProjectionMatrix();
   renderer.setSize( container.clientWidth, container.clientHeight );
-  if( inputUse == false ) { /*location.replace(location.href); */ 
-    //window.location.reload(false); 
-  }
 }
 
 function onpointerDown( event ) {
@@ -784,7 +795,7 @@ function onpointerMove( event ) {
     let array = getpointerPosition( container, event.clientX, event.clientY );
 	  onClickPosition.fromArray( array );
     let intersects = getIntersects( onClickPosition, scene.children, true );
-    moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z});
+    if( starmovable == true ) { moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z}); }
     pointerUpdateCounter = 1;
   }
   pointerUpdateCounter++;
@@ -815,8 +826,8 @@ function onpointerUp( event ) {
   if( Math.abs(pointer_start[0]-pointer_end[0]) < x && Math.abs(pointer_start[1]-pointer_end[1]) < x ) {
     let array = getpointerPosition( container, event.clientX, event.clientY );
 	  onClickPosition.fromArray( array );
-    let intersects = getIntersects( onClickPosition, scene.children, true );
-    moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z});
+    var intersects = getIntersects( onClickPosition, scene.children, true );
+    if( starmovable == true ) { moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z}); }
   }
   
   controls.enabled = true;
@@ -883,12 +894,14 @@ function toggleQuestionMode(opt) {
     box_que.style.display = 'none';
     button_toggle.value = 1;
     button_toggle.innerHTML = 'enter question mode';
+    starmovable = true;
   } else if ( opt == true || opt == 1 ) { // enter question mode
     box_opt.style.display = 'none';
     box_que.style.display = 'block';
     box_que.style.visibility = 'visible';
     button_toggle.value = 0;
     button_toggle.innerHTML = 'exit question mode';
+    starmovable = false; // default behavior in question mode
     window.setTimeout(function() { loadQuestion(); }, 0 );
   }
 }
@@ -941,18 +954,31 @@ function loadQuestion(q) {
   // initialize question
   
   let current_div = q_list.item(q_num-1);
-  let param_input = current_div.getElementsByClassName('initialize').item(0);
-
+  let param_input = current_div.getElementsByClassName('parameters').item(0);
+  let opt_input = current_div.getElementsByClassName('options').item(0);
+ 
   if( param_input != null ) {
     let param = JSON.parse(param_input.value);
+    //starmovable = param.starmovable != undefined ? param.starmovable : false;
     initializeQuestion(param);
-  }  
+  }
+  
+  if( opt_input != null ) {
+    let opt = JSON.parse(opt_input.value);
+    starmovable = opt.starmovable != undefined ? opt.starmovable : false;
+    initializeQuestionOptions(opt);
+  } else {
+    starmovable = false;
+    initializeQuestionOptions();
+  }
+  
 }
 
-function submitQuestion(mode,param,opt) {
-  if( opt === undefined ) { var opt = {}; }
-  let dx = opt['dx'] === undefined ? 2.5 : opt['dx'];
-  let dx2 = opt['dx2'] === undefined ? 3 : opt['dx2'];
+function submitQuestion(param,mode) {
+  if ( param == undefined ) { param = {}; }
+  let dx = param.dx == undefined ? 5 : param.dx;
+  let ddx = param.ddx == undefined ? 3 : param.ddx;
+
   let ans = {};
   let delta;
   
@@ -963,14 +989,16 @@ function submitQuestion(mode,param,opt) {
 
       delta = Math.sqrt( Math.pow(star.azi-ans.azi,2) + Math.pow(star.alt-ans.alt,2) );
       if( delta < dx ) { alert('correct (or close enough at least)'); }
-      else if ( delta < dx*dx2 ) { alert('close … try to refine the position'); }
+      else if ( delta < dx*ddx ) { alert('close … try to refine the position'); }
       else { alert('incorrect'); }
   } 
 }
 
 function initializeQuestion(param) {
-  let azi,alt,r,x,y,z,step,temp,i,n,opt;
-  if ( param === undefined ) { let param = {}; }
+  let azi,alt,r,x,y,z,step,temp,i,n;
+  let opt = {};
+  if ( param === undefined ) { var param = {}; }
+  azi = star.azi; alt = star.alt;
   
   if( param.movestar != undefined ) {
     if( param.movestar.azi == 'random' ) {
@@ -993,11 +1021,12 @@ function initializeQuestion(param) {
     
     // check for a step size and if so, round to the step size
     azi = param.movestar.azistep != undefined ? Math.round(azi/param.movestar.azistep)*param.movestar.azistep : azi;
-    alt = param.movestar.altstep != undefined ? Math.round(alt/param.movestar.altstep)*param.movestar.altstep : alt;
-    
-    moveStar({'azi':azi,'alt':alt});
+    alt = param.movestar.altstep != undefined ? Math.round(alt/param.movestar.altstep)*param.movestar.altstep : alt;    
   }
+  moveStar({'azi':azi,'alt':alt});
   
+  
+  /* LOOKAT FUNCTION */
   if( param.lookat != undefined ) { // set the camera position
     r = param.lookat.r != undefined ? param.lookat.r : 60;
     if( param.lookat == 'star' ) {
@@ -1046,3 +1075,25 @@ function getRandomCoord(param) {
   return([azi,alt]);
 }
 
+function initializeQuestionOptions(param) {
+  let i;
+  if ( param === undefined ) { var param = {}; }
+  
+  // togglelabels
+  let label_array= ['Zenith_label','Nadir_label','Horizon Plane_label','Meridian_label'];
+  let id_array = ['zenithCheckbox','nadirCheckbox','horizonCheckbox','meridianCheckbox'];
+  
+  if( param.labels != undefined ) {
+    if( param.labels == 'all' ) { toggleElement('all'); }
+    else if ( param.labels == 'none' ) { toggleElement('none'); }
+    else if ( Array.isArray(param.labels) ) {
+        for( let i = 0; i < label_array.length; i++ ) {
+        scene.getObjectByName(label_array[i]).visible = param.labels[i] == 1 ? true : false;
+        document.getElementById(id_array[i]).checked = param.labels[i] == 1 ? true : false;
+      }      
+    }
+  } else { // default state for the labels 
+    toggleElement('none');
+  }
+ 
+}
