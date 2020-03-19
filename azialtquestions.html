@@ -2,43 +2,54 @@
 
 <div>
 Place the star at the location the sun will rise on the Vernal Equinox.
-<button type='text' onclick='submitQuestion(1,{"azi":90,"alt":0});'>submit</button>
-<input type='hidden' class='initialize' value='{"lookat":{"azi":150",alt":30}}'/>
+<button type='text' onclick='submitQuestion({"azi":90,"alt":0});'>submit</button>
+<input type='hidden' class='parameters' value='{"lookat":{"azi":150,"alt":30}}'/>
+<input type='hidden' class='options' value='{"labels":[0,0,0,1],"azi":1,"alt":2,"starmovable":true}'/>
 </div>
 
 <div>
-This question causes the camera to look at a random point of the celestial sphere.
-<input type='hidden' class='initialize' value='{"lookat":{"azi":"random","alt":"random"}}'/>
+Place the star at the location the sun will set on the Vernal Equinox. (hit box size increased)
+<button type='text' onclick='submitQuestion({"azi":270,"alt":0,"dx":8},1);'>submit</button>
+<input type='hidden' class='parameters' value='{"lookat":{"azi":150,"alt":30}}'/>
+<input type='hidden' class='options' value='{"labels":[1,1,1,1],"azi":1,"alt":2,"starmovable":true}'/>
+</div>
+
+<div>
+This question causes the camera to look at a random point of the celestial sphere but does not move the star.
+<input type='hidden' class='parameters' value='{"lookat":{"azi":"random","alt":"random"}}'/>
+<input type='hidden' class='options' value='{"alt":1,"azi":1,"movable":true}'/>
 </div>
 
 <div>
 This moves the star to azimuth 220° and alt 40° and looks at the star.
-<input type='hidden' class='initialize' value='{"lookat":"star","movestar":{"azi":"220","alt":"40"}}'/>
+<input type='hidden' class='parameters' value='{"lookat":"star","movestar":{"azi":"220","alt":"40"}}'/>
+<input type='hidden' class='options' value='{"alt":0,"azi":0,"starmovable":1}'/>
 </div>
 
 <div>
 This question moves the star to a random position between azimuth 90° and 180° and altitude -20° to 70°, but does not move the camera.
-<input type='hidden' class='initialize' value='{"movestar":{"azi":"random","alt":"random","azirange":[90,180],"altrange":[-20,70]}}'/>
+<input type='hidden' class='parameters' value='{"movestar":{"azi":"random","alt":"random","azirange":[90,180],"altrange":[-20,70]}}'/>
 </div>
 
 <div>
 This question moves the star to a random from a fixed choice of elements.
-<input type='hidden' class='initialize' value='{"movestar":{"azi":[0,90,180,270],"alt":[0,90,-90]} }'/>
+<input type='hidden' class='parameters' value='{"movestar":{"azi":[0,90,180,270],"alt":[0,90,-90]} }'/>
 </div>
 
 <div>
 This question moves the star to a random coordinates are limited to azimuth steps of 45° and altitude steps of 30°.
-<input type='hidden' class='initialize' value='{"movestar":{"azi":"random","alt":"random","azistep":45,"altstep":15}}'/>
+<input type='hidden' class='parameters' value='{"movestar":{"azi":"random","alt":"random","azistep":45,"altstep":15}}'/>
 </div>
 
 <div>
 This question moves the star to a random from a fixed choice of elements but the azi and alt are synced
-<input type='hidden' class='initialize' value='{"movestar":{"azi":[90,135,180],"alt":[10,20,30],"sync":true},"opt":{"noalt":1,"noazi":1} }'/>
+<input type='hidden' class='parameters' value='{"movestar":{"azi":[90,135,180],"alt":[10,20,30],"sync":true},"opt":{"noalt":1,"noazi":1} }'/>
 </div>
 
 <!-- to do list:
 ## disable movement of start on some questions
 ## set input for options in the question
+## enable different question files to be loaded
 -->
 
 </section>
