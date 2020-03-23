@@ -4,26 +4,26 @@
 Place the star at the location the sun will rise on the Vernal Equinox.
 <button type='text' onclick='submitQuestion({"azi":90,"alt":0});'>submit</button>
 <input type='hidden' class='parameters' value='{"lookat":{"azi":150,"alt":30}}'/>
-<input type='hidden' class='options' value='{"labels":[0,0,0,1],"azi":1,"alt":2,"starmovable":true}'/>
+<input type='hidden' class='options' value='{"labels":[0,0,0,1],"azi":1,"alt":1,"starmovable":true}'/>
 </div>
 
 <div>
 Place the star at the location the sun will set on the Vernal Equinox. (hit box size increased)
 <button type='text' onclick='submitQuestion({"azi":270,"alt":0,"dx":8},1);'>submit</button>
 <input type='hidden' class='parameters' value='{"lookat":{"azi":150,"alt":30}}'/>
-<input type='hidden' class='options' value='{"labels":[1,1,1,1],"azi":1,"alt":2,"starmovable":true}'/>
+<input type='hidden' class='options' value='{"labels":[1,1,1,1],"azi":0,"alt":2,"starmovable":true}'/>
 </div>
 
 <div>
 This question causes the camera to look at a random point of the celestial sphere but does not move the star.
 <input type='hidden' class='parameters' value='{"lookat":{"azi":"random","alt":"random"}}'/>
-<input type='hidden' class='options' value='{"alt":1,"azi":1,"movable":true}'/>
+<input type='hidden' class='options' value='{"alt":2,"azi":2,"movable":true}'/>
 </div>
 
 <div>
 This moves the star to azimuth 220° and alt 40° and looks at the star.
 <input type='hidden' class='parameters' value='{"lookat":"star","movestar":{"azi":"220","alt":"40"}}'/>
-<input type='hidden' class='options' value='{"alt":0,"azi":0,"starmovable":1}'/>
+<input type='hidden' class='options' value='{"alt":2,"azi":2,"starmovable":1}'/>
 </div>
 
 <div>
