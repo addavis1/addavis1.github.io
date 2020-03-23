@@ -73,8 +73,7 @@ function readURL() { // produce a $_GET array much as PHP does
 	return($_GET);
 }
 
-function loadXMLDoc(file_name,id)
-{
+function loadXMLDoc(file_name,id) {
 var xmlhttp = new XMLHttpRequest();  
 xmlhttp.onreadystatechange=function() {
   if (xmlhttp.readyState==4 && xmlhttp.status==200) { document.getElementById(id).innerHTML=xmlhttp.responseText; }
@@ -115,16 +114,20 @@ function moveStar(param) {
   let alt,azi,x,y,z;
   
   // if they are present need to remove and then redraw
-  if( scene.getObjectByName('coordsTextAlt') != undefined || true ) {  // it always removes them
-    scene.remove(scene.getObjectByName('azimuth line'));
-    scene.remove(scene.getObjectByName('azimuth line2'));    
-    scene.remove(scene.getObjectByName('altitude line'));
-    scene.remove(scene.getObjectByName('altitude line2'));
-    scene.remove(scene.getObjectByName('coordsTextAzi'));
-    scene.remove(scene.getObjectByName('coordsTextAlt'));
+  let objects = ['azimuth line','azimuth line2','altitude line','altitude line2','coordsTextAzi','coordsTextAlt'];
+  for ( let i = 0; i < objects.length; i++ ) {
+    if( scene.getObjectByName(objects[i]) != undefined ) { scene.remove(scene.getObjectByName(objects[i])); }
   }
   
-  if( scene.getObjectByName('coordsTextAlt') == undefined ) { 
+  let button_toggle = document.getElementById('button_toggle');
+  if( button_toggle.value == 0 && starmovable == false ) {
+    scene.remove(scene.getObjectByName('star'));
+    createStarMesh({'extrudeColor':0x000000});
+  } else {
+    scene.remove(scene.getObjectByName('star'));
+    createStarMesh({'extrudeColor':0x515333});  
+  }
+  
 
   // get parameters either is as cartesian or celestial
   if( param != undefined ) { 
@@ -143,7 +146,7 @@ function moveStar(param) {
     }
   }
  
-  // move start
+  // move star
   let startVector = new THREE.Vector3;
   startVector.x = star.position.x;
   startVector.y = star.position.y;
@@ -171,10 +174,10 @@ function moveStar(param) {
 
 function addAziAltLines() {
   // check for the question options
-  let q_list, opt_input, azi_opt = 2, alt_opt = 2; // default values;
-  if( q_list = document.getElementById('q_list') != null ) {
+  let q_list, opt_input, azi_opt = 0, alt_opt = 0; // default values;
+  if( document.getElementById('q_list') != null ) {    
     q_list = document.getElementById('q_list').children;
-    let n_num = location.hash;
+    let q_num = (location.hash).substring(1,3);
     let current_div = q_list.item(q_num-1);
     opt_input = current_div.getElementsByClassName('options').item(0);
     if( opt_input != null ) {  
@@ -183,6 +186,7 @@ function addAziAltLines() {
       alt_opt = opt.alt;    
     }
   }
+  let q_mode = document.getElementById('button_toggle').value; // q_mode = 0 == question mode
   
   // ALTITUDE AND AZIMUTH LINES
   let q_azi = star.azi == 0 ? 1E-9 : star.azi*Math.PI/180;
@@ -192,7 +196,7 @@ function addAziAltLines() {
   // torus is drawn the xy plane -- need to rotate it (order matters!)
   torus_azi.rotateX(Math.PI/2);
   torus_azi.rotateZ(-Math.PI/2);
-  if( azi_opt == 1 || azi_opt == 2 ) { scene.add( torus_azi ); }
+  if( azi_opt == 1 || azi_opt == 2 || q_mode == 1 ) { scene.add( torus_azi ); }
   torus_azi.name = 'azimuth line';
   
   let geometry_azi2 = new THREE.TorusBufferGeometry( options.r, 0.04, 8, 100 );
@@ -209,7 +213,7 @@ function addAziAltLines() {
   let torus_alt = new THREE.Mesh( geometry_alt, material_alt );   
   // torus is drawn the xy plane -- need to rotate it (order matters!)
   torus_alt.rotateY(Math.PI/2-q_azi);
-  if( alt_opt == 1 || alt_opt == 2 ) { scene.add( torus_alt ); }
+  if( alt_opt == 1 || alt_opt == 2 || q_mode == 1 ) { scene.add( torus_alt ); }
   torus_alt.name = 'altitude line';
   
   let geometry_alt2 = new THREE.TorusBufferGeometry( options.r*Math.cos(q_alt), 0.04, 8, 100 );
@@ -221,8 +225,8 @@ function addAziAltLines() {
   torus_alt2.name = 'altitude line2';  
   
   // Add COORDINATE TEXT
-  if( azi_opt == 2 ) { createCoordsText('azi'); }
-  if( alt_opt == 2 ) { createCoordsText('alt'); }
+  if( azi_opt == 2 || q_mode == 1 ) { createCoordsText('azi'); }
+  if( alt_opt == 2 || q_mode == 1 ) { createCoordsText('alt'); }
     
   // CHANGE TEXT BOXES
   document.getElementById('aziBox').value = (star.azi).toFixed(1);
@@ -232,8 +236,8 @@ function addAziAltLines() {
   document.getElementById('azi_value').value = (star.azi).toFixed(1);
   document.getElementById('alt_value').value = (star.alt).toFixed(1);
   
-  } // end scene.getObjectByName('coordsTextAlt') == undefined check   
-}  
+} // end scene.getObjectByName('coordsTextAlt') == undefined check   
+  
 
 function toggleElement(id,opt) {
   let label_array= ['Zenith_label','Nadir_label','Horizon Plane_label','Meridian_label'];
@@ -267,6 +271,7 @@ function createMeshes() {
   let r = options.r, radius = options.r;
   
   // cube
+  /*
   let cs = 0.5;
   const cubeGeometry = new THREE.BoxBufferGeometry( cs,cs,cs );
   //const material = new THREE.MeshStandardMaterial( { color: 0x800080 } );  
@@ -284,7 +289,7 @@ function createMeshes() {
   //cube.translateY(0.25);
   cube.position.set(0, 0, 0);
   //scene.add( cube );
-  
+  */ 
     
   // CELESTIAL SPHERE  
 	let sphereGeometry = new THREE.SphereGeometry( options.r, 32, 32 );	
@@ -294,9 +299,7 @@ function createMeshes() {
 	scene.add( celSphere );
   celSphere.name = 'celestial sphere';
   celSphere.renderOrder = 1; // three.js handles transperency in a funny way for computational reasons ... this seems to help
-  
-  
-  
+
   // GROUND  
   let groundGeometry = new THREE.CylinderBufferGeometry( options.r, options.r, 0.03, 32 );
   let groundMeshMaterial_param = { color: 0x006600,transparent:true,opacity:1, reflectivity: 0 }; 
@@ -309,8 +312,7 @@ function createMeshes() {
   //let groundMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } ); 
   let ground = new THREE.Mesh( groundGeometry, groundMaterialArray );
   ground.name = 'horizon';
-  scene.add(ground);
-  
+  scene.add(ground);  
   
   // HORIZON PERSON
   let person = new THREE.Group();
@@ -424,7 +426,19 @@ function createMeshes() {
   pole_Nadir.translateY(-options.r-0.05);
   scene.add( pole_Nadir );
   pole_Nadir.name = 'nadir';
-    
+ 
+  // CREATE STAR
+  createStarMesh();
+  
+  // CREATE SPHERE TEXT
+  createSphereText();
+}
+
+function createStarMesh (opt) {
+  if (opt == undefined) { var opt = {}; }
+  opt.extrudeColor = opt.extrudeColor == undefined || starmovable == true ? 0x515333 : opt.extrudeColor;
+  
+  
   // STAR  
   let R1 = 0.6;
   let R2 = R1*Math.sin(18*Math.PI/180)/Math.sin(52*Math.PI/180);
@@ -437,14 +451,14 @@ function createMeshes() {
     star1Shape.lineTo( R*Math.sin(q),R*Math.cos(q) );
   }   
   let extrudeSettings = { steps: 1, depth: 0.15, bevelEnabled: false }
-  let starMashBasic_param = { color: 0xFDFD33 };
-  let starMashBasic_param2 = { color: 0x515333 };   
+  let starMeshBasic_param = { color: 0xFDFD33 };
+  let starMeshBasic_param2 = { color: opt.extrudeColor };  
   //let starMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00,side: THREE.DoubleSide } );
   //let starGeometry = new THREE.ShapeGeometry( starShape );
   let starMaterialArray = [];  // order to add materials: side, top, bottom
-	starMaterialArray.push( new THREE.MeshBasicMaterial( starMashBasic_param ) );
-	starMaterialArray.push( new THREE.MeshBasicMaterial( starMashBasic_param2 ) );
-	starMaterialArray.push( new THREE.MeshBasicMaterial( starMashBasic_param ) );
+	starMaterialArray.push( new THREE.MeshBasicMaterial( starMeshBasic_param ) );
+	starMaterialArray.push( new THREE.MeshBasicMaterial( starMeshBasic_param2 ) );
+	starMaterialArray.push( new THREE.MeshBasicMaterial( starMeshBasic_param ) );
   let starGeometry = new THREE.ExtrudeBufferGeometry( star1Shape, extrudeSettings );
   star1 = new THREE.Mesh( starGeometry, starMaterialArray );
   star1.name = 'star1'; 
@@ -476,10 +490,6 @@ function createMeshes() {
   star.name = 'star';
   star.position.set(0,0,options.rr);
   [star.azi,star.alt] = convertCoords({x:0,y:0,z:options.rr});
-  
-    
-  // CREATE SPHERE TEXT
-  createSphereText();
 }
 
 function createSphereText() {
@@ -488,7 +498,6 @@ function createSphereText() {
   createHorizonText('E');
   createHorizonText('S');
   createHorizonText('W');
-
 
   createLabelText('Zenith',[0,90],{'q':30,'dt':2.5});
   createLabelText('Nadir',[0,-90],{'q':-30,'dt':2.5});
@@ -582,8 +591,7 @@ function createHorizonText(txt) {
  
     let textMesh = new THREE.Mesh( textGeometry, textMaterial );
     textMesh.name = 'horizon text '+txt;
-    scene.add(textMesh);
-    
+    scene.add(textMesh);    
       
     let bbox = new THREE.Box3().setFromObject(textMesh);
     let dX = -0.5*(bbox.max.x-bbox.min.x);
@@ -658,15 +666,12 @@ function createCoordsText(opt) {
       textMesh.translateX(-dX/2);    
       textMesh.translateY(0);
       textMesh.translateZ(dZ);
-    }
-
-    
+    }    
     
     var helper = new THREE.Box3Helper( bbox, 0xff0000 );
     var coordGroup = new THREE.Group();
     //coordGroup.add(helper);
-    coordGroup.add(textMesh);
-   
+    coordGroup.add(textMesh);   
     
     if( opt == 'azi' ) {
       coordGroup.translateOnAxis(textAxis,-options.r);
@@ -678,9 +683,8 @@ function createCoordsText(opt) {
       coordGroup.rotateY(Math.PI/2-q2_azi+5*Math.PI/180);
       coordGroup.rotateX(-q_alt/2);    
       coordGroup.name = 'coordsTextAlt';
-     } 
-     
-      scene.add(coordGroup);       
+     }      
+     scene.add(coordGroup);       
   } );
 }  
   
@@ -778,9 +782,9 @@ function onpointerDown( event ) {
 	raycaster.setFromCamera( pointer, camera );
   let intersects = raycaster.intersectObjects( scene.children, true );
   
-  for ( let i = 0; i < intersects.length; i++ ) {
- 
-    if( (intersects[i].object.name === 'star1' || intersects[i].object.name === 'star2') && i < 1) { // i=0 means its the foreground object and so won't trigger movement if it is behind   
+  for ( let i = 0; i < intersects.length; i++ ) { 
+    if( (intersects[i].object.name === 'star1' || intersects[i].object.name === 'star2') && i < 1) { 
+      // i=0 means its the foreground object and so won't trigger movement if it is behind   
       i = intersects.length;
       controls.enabled = false; }
   }
@@ -801,19 +805,19 @@ function onpointerMove( event ) {
   pointerUpdateCounter++;
 }
 
-
+/*
 function moveSlider( param ) {        
     if( pointerUpdateCounter % 5 == 0 ) {        
         moveStar( param );
         pointerUpdateCounter = 1;
     } else { pointerUpdateCounter++; } 
 }
+*/
 
-
-function getIntersects ( point, objects ) {
+function getIntersects ( point, objects, opt ) {
 				pointer.set( ( point.x * 2 ) - 1, - ( point.y * 2 ) + 1 );
 				raycaster.setFromCamera( pointer, camera );
-				return raycaster.intersectObjects( objects );
+				return raycaster.intersectObjects( objects, opt );
 };
 
 
@@ -889,10 +893,12 @@ function toggleQuestionMode(opt) {
   let box_opt = document.getElementById('box_options');
   let box_que = document.getElementById('box_question');
   let button_toggle = document.getElementById('button_toggle');
+  
   if( opt == undefined || opt == false || opt == 0 ) { // exit question mode
     box_opt.style.display = 'block';
     box_que.style.display = 'none';
     button_toggle.value = 1;
+    input_qm.value = 1;
     button_toggle.innerHTML = 'enter question mode';
     starmovable = true;
   } else if ( opt == true || opt == 1 ) { // enter question mode
@@ -959,7 +965,6 @@ function loadQuestion(q) {
  
   if( param_input != null ) {
     let param = JSON.parse(param_input.value);
-    //starmovable = param.starmovable != undefined ? param.starmovable : false;
     initializeQuestion(param);
   }
   
@@ -1021,10 +1026,9 @@ function initializeQuestion(param) {
     
     // check for a step size and if so, round to the step size
     azi = param.movestar.azistep != undefined ? Math.round(azi/param.movestar.azistep)*param.movestar.azistep : azi;
-    alt = param.movestar.altstep != undefined ? Math.round(alt/param.movestar.altstep)*param.movestar.altstep : alt;    
+    alt = param.movestar.altstep != undefined ? Math.round(alt/param.movestar.altstep)*param.movestar.altstep : alt;      
   }
   moveStar({'azi':azi,'alt':alt});
-  
   
   /* LOOKAT FUNCTION */
   if( param.lookat != undefined ) { // set the camera position
@@ -1033,7 +1037,6 @@ function initializeQuestion(param) {
       azi = star.azi;
       alt = star.alt;
     } else {
-      
       if( param.lookat.azi == 'random' || param.lookat.alt == 'random' ) {
         if ( param.lookat.azirange ) { opt.azirange = param.lookat.azirange; }
         if ( param.lookat.altrange ) { opt.altrange = param.lookat.altrange; }
