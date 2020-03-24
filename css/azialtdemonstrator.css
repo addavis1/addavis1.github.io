@@ -1,4 +1,4 @@
-/* MENU */
+  /* MENU */
 #menu { cursor: pointer; background-color: var(--menu); }
 @media(hover: hover) and (pointer: fine) {
   #menu:hover #menu_content { display: block; }
@@ -24,6 +24,7 @@
 
 
 #box_question {
+  position: absolute;
   display: block;
   visibility: hidden;
   background-color: white;
@@ -31,7 +32,6 @@
   max-width: 30vw;
   border: 1px solid black;
   border-radius: 10px 10px 5px 5px;  
-  position: absolute;
   left: 60vw;  
   top: 80vh;
 }

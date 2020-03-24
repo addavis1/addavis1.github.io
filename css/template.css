@@ -7,6 +7,8 @@ html,body {
   display: relative;
 }
 
+body { overflow-y: hidden; }
+
 :root {
   --flex1: 1fr;
   --flex2: 1fr;
