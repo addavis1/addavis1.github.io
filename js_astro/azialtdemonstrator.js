@@ -893,9 +893,8 @@ function toggleQuestionMode(opt) {
   let box_opt = document.getElementById('box_options');
   let box_que = document.getElementById('box_question');
   let button_toggle = document.getElementById('button_toggle');
-  alert(opt);
+  
   if( opt == undefined || opt == false || opt == 0 ) { // exit question mode
-   alert('hey');
     box_opt.style.display = 'block';
     box_que.style.display = 'none';
     button_toggle.value = 1;
