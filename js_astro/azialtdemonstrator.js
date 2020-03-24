@@ -893,14 +893,15 @@ function toggleQuestionMode(opt) {
   let box_opt = document.getElementById('box_options');
   let box_que = document.getElementById('box_question');
   let button_toggle = document.getElementById('button_toggle');
-  
+  alert(opt);
   if( opt == undefined || opt == false || opt == 0 ) { // exit question mode
+   alert('hey');
     box_opt.style.display = 'block';
     box_que.style.display = 'none';
     button_toggle.value = 1;
-    input_qm.value = 1;
     button_toggle.innerHTML = 'enter question mode';
     starmovable = true;
+   
   } else if ( opt == true || opt == 1 ) { // enter question mode
     box_opt.style.display = 'none';
     box_que.style.display = 'block';
