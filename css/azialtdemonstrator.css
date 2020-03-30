@@ -68,6 +68,6 @@
 
 #q_list button { padding: auto 0.5rem; margin-left: 2rem; }
 
-
+#disabled { position: absolute; bottom: 2rem; padding-left: 1rem; color: red; font-size: 1.25rem; }
 
 
