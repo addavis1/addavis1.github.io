@@ -47,6 +47,16 @@ function init() {
   // test for question mode with the 
   let $_GET = readURL();
   if( $_GET['q'] ) { toggleQuestionMode(1); }  
+  
+ 
+  if( $_GET['file'] ) { 
+    let $file = $_GET["file"].concat(".html");
+    alert($file);
+    loadXMLDoc($file,"qtext");    
+  }
+  else { loadXMLDoc("azialtquestions.html","qtext"); }
+  
+  
 } // END INIT():
 
 function toggleMenu(id,opt) { document.getElementById(id).style.display = document.getElementById(id).style.display == 'block' ? 'none' : 'block'; }
@@ -980,6 +990,9 @@ function loadQuestion(q) {
     starmovable = false;
     initializeQuestionOptions();
   }
+
+  /* indicator text */
+  document.getElementById('disabled').style.display = starmovable ? 'none' : 'block';
   
 }
 
@@ -1040,7 +1053,10 @@ function initializeQuestion(param) {
     if( param.lookat == 'star' ) {
       azi = star.azi;
       alt = star.alt;
-    } else {
+    }  else if ( param.lookat == 'random' ) {
+      [azi,alt] = getRandomCoord(opt);     
+    }
+    else {
       if( param.lookat.azi == 'random' || param.lookat.alt == 'random' ) {
         if ( param.lookat.azirange ) { opt.azirange = param.lookat.azirange; }
         if ( param.lookat.altrange ) { opt.altrange = param.lookat.altrange; }
