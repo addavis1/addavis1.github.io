@@ -1,9 +1,4 @@
 <!doctype html>
-<!--
-change touch events to pointer events
-add questions -- differentiate from the hamburger menu
-disable pan
--->
 <html>
 <head>
 <title>Azimuth/Altitude Demonstrator</title>
@@ -22,7 +17,7 @@ disable pan
 <script type='text/javascript'></script>
 
 </head>
-<body onload='init(); loadXMLDoc("azialtquestions.html","qtext");'>
+<body onload='init();'>
 <input type='hidden' id='azi_value' value='150'/>
 <input type='hidden' id='alt_value' value='30'/>
 <input type='hidden' id='question_number' value='1'/>
@@ -51,8 +46,9 @@ disable pan
 </div>
 
 </div>
-</span>
-<!-- end hamburger icon--><span title='Azimuth/Altitude Demonstrator'>Azimuth/Altitude Demonstrator</span></div>
+</span><!-- end hamburger icon-->
+<span title='Azimuth/Altitude Demonstrator'>Azimuth/Altitude Demonstrator</span>
+<span id='help'><a href='azialthelp.html' title='instructions'>?</a></span></div>
 
 
 <div id='container_scene'></div>
@@ -69,6 +65,8 @@ disable pan
 </div>
 <p id='qtext' style='display: block;'></p>
 </div>
+
+<div id='disabled'>star repositioning has been disabled</div>
 </section>
 
 <div id='flex1'></div>

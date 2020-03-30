@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+<title>Azimuth/Altitude Demonstrator</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta charset='UTF-8' />
+<link rel='stylesheet' href='css/help.css'>
+<style type='text/css'></style>
+<script type='text/javascript'></script>
+
+</head>
+<body>
+<h1>Azimuth/Altitude Demonstrator</h1>
+<p>The demonstrator has two basic modes: <b>demonstration mode</b> and <b>question mode</b>. The basic controls are as follow:</p>
+<ul>
+<li>clicking (or touching) on the sphere will move the star (unless movement is disabled for some questions in question mode)</li>
+<li>clicking and dragging will rotate the sphere</li>
+<li>mousewheel (or pinch in or out for touchscreens) will zoom in and zoom out</li>
+</ul>
+<p>Demonstration mode is the default mode on the demonstrator. One can enter question mode by clicking on the question mode button from the &#9776; menu.
+ unless the query string <code>?q</code> is included in the url. If <code>?q</code> is present, it will default to question mode (though one can manually exit question mode in the &#9776; menu).</p>
+ 
+<h2>Known Issues</h2>
+<ul>
+<li>Resizing the screen may create some sizing/placement issues. Reloading the screen should solve things.</li>
+<li>Switchincg between portrait and landscape mode can result in the question box being inaccessible. Reloading the screen should solve things.</li>
+<li>Sometimes the first click or few will not reposition the star. Continued clicking results in expected behavior.</li>
+</ul>
+
+
+
+<h2>Question Mode</h2>
+<p>This brings up a questions and has the following default behavior:</p>
+<ul>
+<li>loads questions from the <code>azialtquestions.html</code></li>
+<li>the first question is loaded unless there is a <code>#[number]</code> (e.g. <code>#3</code> will load question 3)</li>
+<if>if an invalid question # is requested, the first question will be loaded</li>
+<li>the question box can be dragged to different parts of the screen<sup>&dagger;</sup></li>
+</ul>
+
+<p><b>&dagger;</b> For technical reasons, overflow of the screen has been disabled. When switching between landscape and portrait mode, it is possible to move the question off screen. See known issues.</p>
+
+<h2>Custom Question Files</h2>
+<p>One can load a custom question html file with the <code>?file=[filename]</code> query string (omit the .html file extension). The question file has the following format:</p>
+<pre><code>&lt;section id='q_list'&gt;
+&lt;div&gt;
+[question 1 text]
+&lt;button type='text' onclick='submitQuestion({&hellip;});'&gt;submit&lt;/button&gt;
+&lt;input type='hidden' class='parameters' value='{&hellip;}'/&gt;
+&lt;input type='hidden' class='options' value='{&hellip;}'/&gt;
+&lt;/div&gt;
+
+&lt;div&gt;
+[question 2 text]
+&lt;input type='hidden' class='parameters' value='{&hellip;}'/&gt;
+&lt;input type='hidden' class='options' value='{&hellip;}'/&gt;
+&lt;/div&gt;
+
+etc.
+&lt;/section&gt;
+</code></pre>
+<h3>Parameters</h3>
+<p>The <code>&lt;input type='hidden' class='parameters' value='{&hellip;}'/&gt;</code> provides an object denoted by the curly brackets {} and is written in the form <code>{'name1':'value1','name2':'value2','name3':'value3'&ctdot;}</code> and currently takes the two optional parameters:</p>
+
+<p><b>lookat</b>: This parameter tells the camera were to position itself (and then looks at the center. The lookat name takes one of three values: {"azi":#,"alt":#}, "star", or "random". </p>
+<ul>
+<li><b>{"azi":#,"alt":#}</b> this object takes a number value or the text "random"
+<ol>
+<li><code>"lookat":{"azi":150,"alt":30}</code></li>
+<li><code>"lookat":{"azi":"random","alt":"random"}</code></li>
+<li><code>"lookat":{"azi":220,"alt":"random"}</code>
+</ol></li>
+<li><b>"star"</b> tells the lookat variable to look at the star</li>
+<li><b>"random"</b> gives the same result as <code>"lookat":{"azi":"random","alt":"random"}</code></li>
+</ul>
+
+<p><b>movestar</b>: The movestar parameter moves the star to a location and can take one an object parameter which can have the following names: "azi","alt","azirange","altrange","sync","azistep","altstep"</p>
+<ul>
+<li><b>azi</b> and <b>alt</b>: takes an coordinate value, an array, or the text "random"</li>
+<li><b>sync</b>: If azi or alt are an array, a random choice of the array values will be selected. If "sync":"true" is given, then a random azimuth variable is selected and the same position of the altitude array is selected. Example: <code>{"movestar":{"azi":[90,135,180],"alt":[10,20,30],"sync":true}"</code> will move the star to one of three positions (90,10),(135,20), or (180,30) instead of the six possible permutations if "sync":"false" is given (or "sync" is omitted)</li>
+<li><b>azirange</b> and <b>altrange</b>: is an array that defines the range in which the "random" variable can be defined
+<ul>
+<li>"altrange":[-20,70]</li>
+<li>"azirange":[90:180]</li>
+</ul>
+</li>
+<li><b>azistep</b> and <b>altstep</b>: defines the steps in which a random variable can be given. Example:
+<ul>
+<li>"azistep":45 only allows the values 0,45,90,135,180,225,270,315</li>
+<li>"altstep":15 only allows the values -90,-75,-45,-15,0,15,45,60,75,90</li>
+</ul></li>
+</ul>
+
+<h4>A note on "random"</h4>
+<p>A random distribution on the numbers values for the coordinates does not create a random distribution on a sphere. A modified method is used. See <a href='https://mathworld.wolfram.com/SpherePointPicking.html'>https://mathworld.wolfram.com/SpherePointPicking.html</a> for details.</p>
+
+<h3>Options</h3>
+<p>The <code>&lt;input type='hidden' class='options' value='{&hellip;}'/&gt;</code> provides an object denoted by the curly brackets {} and is written in the form <code>{'name1':'value1','name2':'value2','name3':'value3'&ctdot;}</code> and currently takes the two optional parameters: "azi","alt","labels","starmovable".</p>
+<ul>
+<li><b>azi</b> and <b>alt</b>: these take the variables 0,1,2. 0 = show neither the line nor the coordinate label, 1 = show the line only, 2 = show both line and text</li>
+<li><b>labels</b>: is an array for the four labels ['Zenith','Nadir','Horizon Plane','Meridian']. Each array value is either 0 for don&rsquo;t display the label or 1 for display the label (e.g. [1,0,0,0] shows only the "Zenith" label). The default is the current situation before question mode was entered.</li>
+<li><b>starmovable</b>: is true or false variable. If true, the star can be manipulated and moved. If false, the star is fixed in position. Indicator text near the bottom will show when the false state is entered. The default state is false for question mode.</li>
+</ul>
+
+</body>
+</html>
