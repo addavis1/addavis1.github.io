@@ -120,6 +120,8 @@ function moveStar(param) {
   }
   
   let button_toggle = document.getElementById('button_toggle');
+  
+  /* CREATES A MEMORY LEAK, so removed
   if( button_toggle.value == 0 && starmovable == false ) {
     scene.remove(scene.getObjectByName('star'));
     createStarMesh({'extrudeColor':0x000000});
@@ -127,6 +129,7 @@ function moveStar(param) {
     scene.remove(scene.getObjectByName('star'));
     createStarMesh({'extrudeColor':0x515333});  
   }
+  */
   
 
   // get parameters either is as cartesian or celestial
@@ -189,36 +192,36 @@ function addAziAltLines() {
   let q_mode = document.getElementById('button_toggle').value; // q_mode = 0 == question mode
   
   // ALTITUDE AND AZIMUTH LINES
-  let q_azi = star.azi == 0 ? 1E-9 : star.azi*Math.PI/180;
-  let geometry_azi = new THREE.TorusBufferGeometry( options.r, 0.05, 8, 100, q_azi );
-  let material_azi = new THREE.MeshBasicMaterial( { color: 0x0000ff,transparent:true,opacity:0.75 } );
-  let torus_azi = new THREE.Mesh( geometry_azi, material_azi );   
+  const q_azi = star.azi == 0 ? 1E-9 : star.azi*Math.PI/180;
+  const geometry_azi = new THREE.TorusBufferGeometry( options.r, 0.05, 8, 100, q_azi );
+  const material_azi = new THREE.MeshBasicMaterial( { color: 0x0000ff,transparent:true,opacity:0.75 } );
+  const torus_azi = new THREE.Mesh( geometry_azi, material_azi );   
   // torus is drawn the xy plane -- need to rotate it (order matters!)
   torus_azi.rotateX(Math.PI/2);
   torus_azi.rotateZ(-Math.PI/2);
   if( azi_opt == 1 || azi_opt == 2 || q_mode == 1 ) { scene.add( torus_azi ); }
   torus_azi.name = 'azimuth line';
   
-  let geometry_azi2 = new THREE.TorusBufferGeometry( options.r, 0.04, 8, 100 );
-  let material_azi2 = new THREE.MeshBasicMaterial( { color: 0x000000,transparent:true,opacity:0.25 } );
-  let torus_azi2 = new THREE.Mesh( geometry_azi2, material_azi2 );
+  const geometry_azi2 = new THREE.TorusBufferGeometry( options.r, 0.04, 8, 100 );
+  const material_azi2 = new THREE.MeshBasicMaterial( { color: 0x000000,transparent:true,opacity:0.25 } );
+  const torus_azi2 = new THREE.Mesh( geometry_azi2, material_azi2 );
   torus_azi2.rotateY(Math.PI/2-q_azi);
   scene.add( torus_azi2 );
   torus_azi2.name = 'azimuth line2';  
 
   // ALTITUDE AND AZIMUTH LINES    
-  let q_alt = star.alt == 0 ? 1E-9 : star.alt*Math.PI/180;
-  let geometry_alt = new THREE.TorusBufferGeometry( options.r, 0.05, 8, 100, q_alt );
-  let material_alt = new THREE.MeshBasicMaterial( { color: 0xff0000} );
-  let torus_alt = new THREE.Mesh( geometry_alt, material_alt );   
+  const q_alt = star.alt == 0 ? 1E-9 : star.alt*Math.PI/180;
+  const geometry_alt = new THREE.TorusBufferGeometry( options.r, 0.05, 8, 100, q_alt );
+  const material_alt = new THREE.MeshBasicMaterial( { color: 0xff0000} );
+  const torus_alt = new THREE.Mesh( geometry_alt, material_alt );   
   // torus is drawn the xy plane -- need to rotate it (order matters!)
   torus_alt.rotateY(Math.PI/2-q_azi);
   if( alt_opt == 1 || alt_opt == 2 || q_mode == 1 ) { scene.add( torus_alt ); }
   torus_alt.name = 'altitude line';
   
-  let geometry_alt2 = new THREE.TorusBufferGeometry( options.r*Math.cos(q_alt), 0.04, 8, 100 );
-  let material_alt2 = new THREE.MeshBasicMaterial( { color: 0x000000,transparent:true,opacity:0.25 } );
-  let torus_alt2 = new THREE.Mesh( geometry_alt2, material_alt2 );
+  const geometry_alt2 = new THREE.TorusBufferGeometry( options.r*Math.cos(q_alt), 0.04, 8, 100 );
+  const material_alt2 = new THREE.MeshBasicMaterial( { color: 0x000000,transparent:true,opacity:0.25 } );
+  const torus_alt2 = new THREE.Mesh( geometry_alt2, material_alt2 );
   torus_alt2.rotateX(Math.PI/2);
   torus_alt2.translateZ(-options.r*Math.sin(q_alt));
   scene.add( torus_alt2 );
@@ -900,6 +903,7 @@ function toggleQuestionMode(opt) {
     button_toggle.value = 1;
     button_toggle.innerHTML = 'enter question mode';
     starmovable = true;
+    moveStar({azi:star.azi,alt:star.alt});
    
   } else if ( opt == true || opt == 1 ) { // enter question mode
     box_opt.style.display = 'none';
