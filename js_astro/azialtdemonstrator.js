@@ -190,7 +190,7 @@ function addAziAltLines() {
   let q_list, opt_input, azi_opt = 0, alt_opt = 0; // default values;
   if( document.getElementById('q_list') != null ) {    
     q_list = document.getElementById('q_list').children;
-    let q_num = (location.hash).substring(1,3);
+    let q_num = ( location.hash == "" || location.hash == undefined ) ? 1 : (location.hash).substring(1,3);
     let current_div = q_list.item(q_num-1);
     opt_input = current_div.getElementsByClassName('options').item(0);
     if( opt_input != null ) {  
