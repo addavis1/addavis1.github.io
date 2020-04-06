@@ -10,6 +10,7 @@ var star;
 let onClickPosition = new THREE.Vector2();
 let textObjects = new Array();
 let starmovable = true;
+let current_div;
 
   
   /* DEFINE object with the parameters */
@@ -51,7 +52,6 @@ function init() {
  
   if( $_GET['file'] ) { 
     let $file = $_GET["file"].concat(".html");
-    alert($file);
     loadXMLDoc($file,"qtext");    
   }
   else { loadXMLDoc("azialtquestions.html","qtext"); }
@@ -902,6 +902,11 @@ function dragElement(id) {
   
 }
 
+
+
+//////////////////////////
+// QUESTION FUNCTCIONS //
+/////////////////////////
 function toggleQuestionMode(opt) {
   let box_opt = document.getElementById('box_options');
   let box_que = document.getElementById('box_question');
@@ -922,6 +927,7 @@ function toggleQuestionMode(opt) {
     button_toggle.value = 0;
     button_toggle.innerHTML = 'exit question mode';
     starmovable = false; // default behavior in question mode
+    window.location 
     window.setTimeout(function() { loadQuestion(); }, 0 );
   }
 }
@@ -971,9 +977,8 @@ function loadQuestion(q) {
   document.getElementById('qnext').style.opacity = ( q_num == q_list.length ) ? 0.25 : 1;
   document.getElementById('qnext').style.opacity = ( q_num == q_list.length ) ? 'default' : 'pointer';
   
-  // initialize question
-  
-  let current_div = q_list.item(q_num-1);
+  // initialize question  
+  current_div = q_list.item(q_num-1);
   let param_input = current_div.getElementsByClassName('parameters').item(0);
   let opt_input = current_div.getElementsByClassName('options').item(0);
  
@@ -996,33 +1001,15 @@ function loadQuestion(q) {
   
 }
 
-function submitQuestion(param,mode) {
-  if ( param == undefined ) { param = {}; }
-  let dx = param.dx == undefined ? 5 : param.dx;
-  let ddx = param.ddx == undefined ? 3 : param.ddx;
-
-  let ans = {};
-  let delta;
-  
-  // mode is the question type
-  if( mode == 1 || mode == undefined ) { // compares star's location to a particular response      
-      ans.azi = param['azi'];
-      ans.alt = param['alt'];
-
-      delta = Math.sqrt( Math.pow(star.azi-ans.azi,2) + Math.pow(star.alt-ans.alt,2) );
-      if( delta < dx ) { alert('correct (or close enough at least)'); }
-      else if ( delta < dx*ddx ) { alert('close … try to refine the position'); }
-      else { alert('incorrect'); }
-  } 
-}
-
 function initializeQuestion(param) {
-  let azi,alt,r,x,y,z,step,temp,i,n;
+  let azi,alt,r,x,y,z,step,temp,i,j,n;
   let opt = {};
   if ( param === undefined ) { var param = {}; }
   azi = star.azi; alt = star.alt;
   
-  if( param.movestar != undefined ) {
+  if( param.movestar != undefined ) {    
+    if( param.movestar == 'random' ) { param.movestar = {'azi':'random','alt':'random'}; }    
+    
     if( param.movestar.azi == 'random' ) {
       if ( param.movestar.azirange ) { opt.azirange = param.movestar.azirange; }
       [azi,temp] = getRandomCoord(opt);
@@ -1030,7 +1017,7 @@ function initializeQuestion(param) {
       temp = param.movestar.azi;
       i = Math.floor(Math.random()*temp.length);
       azi = temp[i];      
-    } else { azi = param.movestar.azi; }    
+    } else { azi = param.movestar.azi; } 
     
     if( param.movestar.alt == 'random' ) {
       if ( param.movestar.altrange ) { opt.altrange = param.movestar.altrange; }
@@ -1041,6 +1028,7 @@ function initializeQuestion(param) {
       alt = temp[i];      
     } else { alt = param.movestar.alt; }
     
+   
     // check for a step size and if so, round to the step size
     azi = param.movestar.azistep != undefined ? Math.round(azi/param.movestar.azistep)*param.movestar.azistep : azi;
     alt = param.movestar.altstep != undefined ? Math.round(alt/param.movestar.altstep)*param.movestar.altstep : alt;      
@@ -1070,32 +1058,40 @@ function initializeQuestion(param) {
     x = x.toFixed(3); y = y.toFixed(3); z = z.toFixed(3);
     camera.position.set(x,y,z);  
     camera.lookAt(0,0,0); // needed anytime the camera is moved
-  } // END lookat
-  
-}
+  } // END lookat  
 
-function getRandomCoord(param) {
-  let azi,alt,u,v,test;
-  test = true;
-  
-  if ( param === undefined ) { var param = {}; }
-    param.azirange = param.azirange == undefined ? [0,360] : param.azirange;
-    param.altrange = param.altrange == undefined ? [-90,90] : param.altrange;
-  
-    // just using random coordinates does not give a random distribution
-    // start with u and v, random variables over 0 .. 1
- 
-    while ( test == true ) {
-      u = Math.random(); 
-      v = Math.random();  
-  
-      azi = 360*u;
-      alt = Math.acos(2*v-1)*180/Math.PI-90;
+  if ( param.answer != undefined ) { // answer question
+    azi = param.answer.azi;
+    alt = param.answer.alt;
+    
+    if( Array.isArray(azi) ) { azi = azi[Math.floor(Math.random()*azi.length)]; }
+    if( Array.isArray(alt) ) { alt = alt[Math.floor(Math.random()*alt.length)]; }
 
-      if( azi >= param.azirange[0] && azi <= param.azirange[1] && alt >= param.altrange[0] && alt <= param.altrange[1] ) { test = false; }
+    let coord1 = document.getElementById('coord1');
+    let coord2 = document.getElementById('coord2');
+    if ( coord1 ) { coord1.innerHTML = azi; }
+    if ( coord2 ) { coord2.innerHTML = alt; }  
+  }
+  
+  if ( param.text != undefined ) { // text
+    // so far just works for the azimuth
+    let answer_input = current_div.getElementsByClassName('answer').item(0);
+    let txt = [];
+    let n = Object.keys(param.text).length;
+    for( i = 0; i < n; i++ ) {
+      let name = Object.keys(param.text)[i];
+      let val = param.text[name];   
+      if( Array.isArray(val) ) {
+        j = Math.floor(Math.random()*val.length);
+        param.text[name] = val[j];
+        txt[i] = val[j];        
+      } else { txt[i] = val; }
+      document.getElementById(name).innerHTML = val[j];
     }
-  
-  return([azi,alt]);
+    answer_input.value = txt;
+
+
+  }
 }
 
 function initializeQuestionOptions(param) {
@@ -1119,4 +1115,109 @@ function initializeQuestionOptions(param) {
     toggleElement('none');
   }
  
+}
+
+function submitQuestion(param,mode) {
+  if ( param == undefined ) { param = {}; }
+  let dx = param.dx == undefined ? 5 : param.dx;
+  let ddx = param.ddx == undefined ? 3 : param.ddx;
+  if( param.mode != undefined ) { mode = param.mode; } 
+
+  let ans = {};
+  let response = {};
+  let delta;
+  
+  // mode is the question type
+  if( mode == 1 || mode == undefined ) { // compares star's location to a particular response         
+      ans.azi = param.azi == "coord1" ? document.getElementById('coord1').innerHTML*1 : param.azi;
+      ans.alt = param.alt == "coord2" ? document.getElementById('coord2').innerHTML*1 : param.alt;
+      delta = Math.sqrt( Math.pow(star.azi-ans.azi,2) + Math.pow(star.alt-ans.alt,2) );
+      if( delta < dx ) { alert('correct (or close enough at least)'); }
+      else if ( delta < dx*ddx ) { alert('close … try to refine the position'); }
+      else { alert('incorrect'); }
+  } else if ( mode == 2 ) {
+      if( param.ans == true ) { alert('correct'); }
+      else { alert('incorrect'); }    
+  } else if ( mode == 3 ) {
+    ans.azi = param.azi;
+    ans.alt = param.alt;
+    response.azi = document.getElementById('response1').value;
+    response.alt = document.getElementById('response2').value;
+    
+    if( response.azi == ans.azi && response.alt == ans.alt ) { alert('correct'); }
+    else if( (response.azi != ans.azi && response.alt == ans.alt) || (response.azi == ans.azi && response.alt != ans.alt) ) { alert('one correct, one incorrect'); }
+    else if( response.azi != ans.azi && response.alt != ans.alt) { alent('both incorrect'); }    
+  } else if ( mode == 'Lee1' ) { // football post question
+    let dy = 20,azi0,azi1,azi2,delta2;
+    
+    if( param.azi == 'text' ) {
+      let answer_input = current_div.getElementsByClassName('answer').item(0);
+      var answer = (answer_input.value).split(",");
+      
+      if( answer[0].toLowerCase() == 'north' ) { azi0 = 0; }
+      else if ( answer[0].toLowerCase() == 'east' ) { azi0 = 90; }
+      else if ( answer[0].toLowerCase() == 'south' )  { azi0 = 180; }
+      else if ( answer[0].toLowerCase() == 'west' ) { azi0 = 270; }      
+      azi2 = azi0;
+      
+      if( answer[1].toLowerCase() == 'left' ) {
+        azi1 = azi0-dy; azi2 = azi0+dy;
+        azi1 = azi1 < 0 ? 360+azi1 : azi1;
+      } else if ( answer[1].toLowerCase() == 'right' ) {
+        azi1 = azi0+dy; azi2 = azi0-dy;
+        azi2 = azi2 < 0 ? 360+azi2 : azi2;        
+      }
+    }   
+    ans.azi = azi1;
+    ans.alt = param.alt;
+    
+    // now check to see if correct
+    delta = Math.sqrt( Math.pow(star.azi-azi1,2) + Math.pow(star.alt-ans.alt,2) );
+    delta2 = Math.sqrt( Math.pow(star.azi-azi2,2) + Math.pow(star.alt-ans.alt,2) );    
+    let hint_txt = 'Be mindful of how left and right adjust when looking from outside the sphere vs looking from inside the sphere.';
+    if( answer[1] == 'right' && (
+        (azi0 == 90 && star.azi < 90 && delta2 < dx ) ||
+        (azi0 == 180 && star.azi < 180 && delta2 < dx ) ||
+        (azi0 == 270 && star.azi < 270 && delta2 < dx ) ||
+        (azi0 == 0 && star.azi > 300 && delta2 < dx )
+      ) ) { alert(hint_txt); } 
+    else if ( answer[1] == 'left' && ( 
+        (azi0 == 90 && star.azi > 90 && delta2 < dx ) ||
+        (azi0 == 180 && star.azi > 180 && delta2 < dx ) ||
+        (azi0 == 270 && star.azi > 270 && delta2 < dx ) ||
+        (azi0 == 0 && star.azi > 0 && delta2 < dx )
+      ) ) { alert(hint_txt); }          
+    else if( delta < dx ) { alert('correct (or close enough at least)'); }
+    else if ( delta < dx*ddx ) { alert('close … try to refine the position'); }
+    else { alert('incorrect'); }
+
+  } // end Lee1
+}
+
+////////////////////
+// MISC FUNCTIONS //
+////////////////////
+
+function getRandomCoord(param) {
+  let azi,alt,u,v,test;
+  test = true;
+  
+  if ( param === undefined ) { var param = {}; }
+    param.azirange = param.azirange == undefined ? [0,360] : param.azirange;
+    param.altrange = param.altrange == undefined ? [-90,90] : param.altrange;
+  
+    // just using random coordinates does not give a random distribution
+    // start with u and v, random variables over 0 .. 1
+ 
+    while ( test == true ) {
+      u = Math.random(); 
+      v = Math.random();  
+  
+      azi = 360*u;
+      alt = Math.acos(2*v-1)*180/Math.PI-90;
+
+      if( azi >= param.azirange[0] && azi <= param.azirange[1] && alt >= param.altrange[0] && alt <= param.altrange[1] ) { test = false; }
+    }
+  
+  return([azi,alt]);
 }
