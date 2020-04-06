@@ -36,6 +36,7 @@
   border-radius: 10px 10px 5px 5px;  
   left: 60vw;  
   top: 80vh;
+  z-index: 10;
 }
 
 @media (orientation: portrait) {
@@ -68,8 +69,15 @@
 #qArr { display: inline-block; cursor: pointer !important; width: 2rem; text-align: center; }
 #box_question_header > span:nth-child(1) { display: inline-block; width: 0rem; }
 
-#q_list button { padding: auto 0.5rem; margin-left: 2rem; }
+#q_list button { padding: auto 0.5rem; }
+#q_list ol { list-style-type: upper-alpha; columns: 2; cursor: pointer; }
+#q_list ol[class~="columns1"] { columns: 1; }
+#q_list ol[class~="columns2"] { columns: 2; }
+#q_list ol[class~="columns3"] { columns: 3; }
+#q_list ol[class~="columns4"] { columns: 4; }
 
-#disabled { display: none; position: absolute; bottom: 2rem; padding-left: 1rem; color: red; font-size: 1.25rem; }
+#disabled { display: none; position: absolute; bottom: 2rem; padding-left: 1rem; color: red; font-size: 1.25rem; z-index: 5; }
+
+input[type='number'] { width: 3rem; text-align: center; }
 
 
