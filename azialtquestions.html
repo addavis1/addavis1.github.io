@@ -1,50 +1,69 @@
 <section id='q_list'>
 
 <div>
-Place the star at the location the sun will rise on the Vernal Equinox.
-<button type='text' onclick='submitQuestion({"azi":90,"alt":0});'>submit</button>
-<input type='hidden' class='parameters' value='{"lookat":{"azi":150,"alt":30}}'/>
-<input type='hidden' class='options' value='{"labels":[0,0,0,1],"azi":1,"alt":1,"starmovable":true}'/>
+Drag the star shown to the coordinate azimuth <span id='coord1'>##</span>&#xb0;, altitude <span id='coord2'>##</span>&#xb0;.
+<button type='text' onclick='submitQuestion({"azi":"coord1","alt":"coord2","dx":8});'>submit</button>
+<input type='hidden' class='parameters' value='{"lookat":{"azi":150,"alt":30},"answer":{"azi":[45,135,225,315],"alt":[20,50,80]}}'/>
+<input type='hidden' class='options' value='{"labels":[1,1,1,1],"azi":1,"alt":1,"starmovable":true}'/>
 </div>
 
 <div>
-Place the star at the location the sun will set on the Vernal Equinox. (hit box size increased)
-<button type='text' onclick='submitQuestion({"azi":270,"alt":0,"dx":8},1);'>submit</button>
-<input type='hidden' class='parameters' value='{"lookat":{"azi":150,"alt":30}}'/>
-<input type='hidden' class='options' value='{"labels":[1,1,1,1],"azi":0,"alt":2,"starmovable":true}'/>
+Which way should one move the star shown to <em>increase</em> its <b>altitude</b>?
+<ol class='columns2'>
+<li onclick='submitQuestion({"ans":true},2);'>up</li>
+<li onclick='submitQuestion({"ans":false},2);'>down</li>
+<li onclick='submitQuestion({"ans":false},2);'>clockwise</li>
+<li onclick='submitQuestion({"ans":false},2);'>counterclockwise</li>
+</ol>
+<input type='hidden' class='parameters' value='{"lookat":"star","movestar":{"azi":"random","alt":"random","altrange":[-40,40]}}'/>
+<input type='hidden' class='options' value='{"labels":[1,1,1,1],"azi":0,"alt":0,"starmovable":true}'/>
 </div>
 
 <div>
-This question causes the camera to look at a random point of the celestial sphere but does not move the star.
-<input type='hidden' class='parameters' value='{"lookat":{"azi":"random","alt":"random"}}'/>
-<input type='hidden' class='options' value='{"alt":2,"azi":2,"movable":true}'/>
+Which way should one move the star shown to <em>increase</em> its <b>azimuth</b>?
+<ol class='columns1'>
+<li onclick='submitQuestion({"ans":false},2);'>up</li>
+<li onclick='submitQuestion({"ans":false},2);'>down</li>
+<li onclick='submitQuestion({"ans":true},2);'>clockwise</li>
+<li onclick='submitQuestion({"ans":false},2);'>counterclockwise</li>
+</ol>
+<input type='hidden' class='parameters' value='{"lookat":"star","movestar":{"azi":"random","alt":"random","altrange":[-40,40]}}'/>
+<input type='hidden' class='options' value='{"labels":[1,1,1,1],"azi":0,"alt":0,"starmovable":true}'/>
 </div>
 
 <div>
-This moves the star to azimuth 220° and alt 40° and looks at the star.
-<input type='hidden' class='parameters' value='{"lookat":"star","movestar":{"azi":"220","alt":"40"}}'/>
-<input type='hidden' class='options' value='{"alt":2,"azi":2,"starmovable":1}'/>
+What are the coordinates of the zenith point? (<button onclick='alert("Hint: On Earth, what is the longitude of the north pole?");'>hint</button>)<br/>
+Azimuth: <input type='number' id='response1' step='5' max='360' min='0'/>&#xb0; (enter nothing for any value)<br/>
+Altitude: <input type='number' id='response2' step='5' max='90' min='-90'/>&#xb0; (enter nothing for any value)<br/>
+<button type='text' onclick='submitQuestion({"azi":"","alt":"90"},3);'>submit</button>
+<input type='hidden' class='parameters' value='{}'/>
+<input type='hidden' class='options' value='{"labels":[0,0,0,0],"azi":"any","alt":90,"starmovable":true}'/>
 </div>
 
 <div>
-This question moves the star to a random position between azimuth 90° and 180° and altitude -20° to 70°, but does not move the camera.
-<input type='hidden' class='parameters' value='{"movestar":{"azi":"random","alt":"random","azirange":[90,180],"altrange":[-20,70]}}'/>
+A fellow student asks: “I found the north star Polaris very useful in learning to find things in the sky because it is always in the same place and we learned that it was very useful historically for navigation. Is there an object like that for the Zenith?” How would you respond to this student? 
+(<a onclick='alert("The zenith is relative to the observer and so will change for each observor.");'>discussion answer</a>)
 </div>
 
 <div>
-This question moves the star to a random from a fixed choice of elements.
-<input type='hidden' class='parameters' value='{"movestar":{"azi":[0,90,180,270],"alt":[0,90,-90]} }'/>
+You notice that the planet Venus is at Az=75°, Alt=25° and its vibrancy is particularly striking. Excited, you pick up the phone to reach out and share the information.  How would this coordinate information be useful to each of the following people? (discussion answer)
+<ol class='columns1'>
+<li><a onclick='alert("Both of you will basically share the same observed sky.");'>Talking with your friend living in the adjacent dormitory</a></li>
+<li><a onclick='alert("The star will be at a different altitude (and potentially below the horizon).");'>Talking with our grandmother who is currently over 800 miles away to the south</a></li>
+<li><a onclick='alert("The star will have rotated about 40&#xb0; through its circular path which changes both azimuth and altitude.");'>Leaving a message for your father who gets off work in 4 hours.</a></li>
+</ol>
+<input type='hidden' class='parameters' value='{"lookat":"star","movestar":{"azi":75,"alt":24}}'/>
+<input type='hidden' class='options' value='{"labels":[1,1,1,1],"starmovable":true}'/>
 </div>
 
-<div>
-This question moves the star to a random coordinates are limited to azimuth steps of 45° and altitude steps of 30°.
-<input type='hidden' class='parameters' value='{"movestar":{"azi":"random","alt":"random","azistep":45,"altstep":15}}'/>
-<input type='hidden' class='options' value='{"alt":2,"azi":2,"starmovable":1}'/>
+<div>Goofing around on the football field, you try to kick a field goal from the <span id='yardline'>10</span> yard line. You are facing the goal post and looking <b><span id='value1'>--</span></b>. Place the star reasonably close to coordinates of top of the <b><span id='value2'>--</span></b> post of goal post. <span style='white-space: nowrap;'>(<button onclick='alert("Hint: The goal post is 30 feet tall, and 18.5 feet wide.");'>hint</button>)</span>
+
+<button type='text' onclick='submitQuestion({"azi":"text","alt":"yardline","dx":5,"ddx":1.5},"Lee1");'>submit</button>
+<input type='hidden' class='parameters' value='{"text":{"value1":["north","south","east","west"],"value2":["left","right"]}}'/>
+<input type='hidden' class='options' value='{"labels":[1,1,1,1],"azi":2,"alt":2,"starmovable":true}'/>
+<input type='hidden' class='answer' value=''/>
 </div>
 
-<div>
-This question moves the star to a random from a fixed choice of elements but the azi and alt are synced
-<input type='hidden' class='parameters' value='{"movestar":{"azi":[90,135,180],"alt":[10,20,30],"sync":true}} }'/>
-</div>
+
 
 </section>
