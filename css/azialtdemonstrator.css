@@ -40,7 +40,7 @@
 }
 
 @media (orientation: portrait) {
-#box_question {   left: 10vw; top: 60vh; }
+#box_question {   left: 10vw; top: 60vh; min-width: 80vw; }
 }
 
 
