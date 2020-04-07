@@ -1148,7 +1148,7 @@ function submitQuestion(param,mode) {
     else if( (response.azi != ans.azi && response.alt == ans.alt) || (response.azi == ans.azi && response.alt != ans.alt) ) { alert('one correct, one incorrect'); }
     else if( response.azi != ans.azi && response.alt != ans.alt) { alent('both incorrect'); }    
   } else if ( mode == 'Lee1' ) { // football post question
-    let dy = 20,azi0,azi1,azi2,delta2;
+    let dy = 8.764,azi0,azi1,azi2,delta2;
     
     if( param.azi == 'text' ) {
       let answer_input = current_div.getElementsByClassName('answer').item(0);
