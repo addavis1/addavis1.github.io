@@ -1189,7 +1189,7 @@ function submitQuestion(param,mode) {
         (azi0 == 270 && star.azi > 270 && delta2 < dx ) ||
         (azi0 == 0 && star.azi > 0 && delta2 < dx )
       ) ) { alert(hint_txt); }          
-    else if( delta < dx ) { alert('correct (or close enough to azimuth '+((ans.azi).toFixed(1))+'\xB0; and altitude '+((ans.alt).toFixed(1))+'\xB0;)'); }
+    else if( delta < dx ) { alert('correct (or close enough to azimuth '+((ans.azi).toFixed(1))+'\xB0 and altitude '+((ans.alt).toFixed(1))+'\xB0)'); }
     else if ( delta < dx*ddx ) { alert('close … try to refine the position'); }
     else { alert('incorrect'); }
 
