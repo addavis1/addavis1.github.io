@@ -1148,7 +1148,8 @@ function submitQuestion(param,mode) {
     else if( (response.azi != ans.azi && response.alt == ans.alt) || (response.azi == ans.azi && response.alt != ans.alt) ) { alert('one correct, one incorrect'); }
     else if( response.azi != ans.azi && response.alt != ans.alt) { alent('both incorrect'); }    
   } else if ( mode == 'Lee1' ) { // football post question
-    let dy = 8.764,azi0,azi1,azi2,delta2;
+    let Dx = 8.764,azi0,azi1,azi2,delta2;
+    // Dx = half angle of goal post width (18.5ft)
     
     if( param.azi == 'text' ) {
       let answer_input = current_div.getElementsByClassName('answer').item(0);
@@ -1161,15 +1162,16 @@ function submitQuestion(param,mode) {
       azi2 = azi0;
       
       if( answer[1].toLowerCase() == 'left' ) {
-        azi1 = azi0-dy; azi2 = azi0+dy;
+        azi1 = azi0-Dx; azi2 = azi0+Dx;
         azi1 = azi1 < 0 ? 360+azi1 : azi1;
       } else if ( answer[1].toLowerCase() == 'right' ) {
-        azi1 = azi0+dy; azi2 = azi0-dy;
+        azi1 = azi0+Dx; azi2 = azi0-Dx;
         azi2 = azi2 < 0 ? 360+azi2 : azi2;        
       }
     }   
     ans.azi = azi1;
-    ans.alt = param.alt;
+    let dl = document.getElementById(param.alt).innerHTML*1+10;
+    ans.alt = (10/dl)*180/Math.PI;
     
     // now check to see if correct
     delta = Math.sqrt( Math.pow(star.azi-azi1,2) + Math.pow(star.alt-ans.alt,2) );
@@ -1187,7 +1189,7 @@ function submitQuestion(param,mode) {
         (azi0 == 270 && star.azi > 270 && delta2 < dx ) ||
         (azi0 == 0 && star.azi > 0 && delta2 < dx )
       ) ) { alert(hint_txt); }          
-    else if( delta < dx ) { alert('correct (or close enough at least)'); }
+    else if( delta < dx ) { alert('correct (or close enough to azimuth '+((ans.azi).toFixed(1))+'\xB0; and altitude '+((ans.alt).toFixed(1))+'\xB0;)'); }
     else if ( delta < dx*ddx ) { alert('close … try to refine the position'); }
     else { alert('incorrect'); }
 
