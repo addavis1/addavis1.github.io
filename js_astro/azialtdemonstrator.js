@@ -790,8 +790,6 @@ function onWindowResize(opt){
   camera.aspect = container.clientWidth / container.clientHeight;
   camera.updateProjectionMatrix();
   renderer.setSize( container.clientWidth, container.clientHeight );
-  
-  alert('hey');
  
   // check if question box is outside of the view 
   let rect = box_question.getBoundingClientRect();
