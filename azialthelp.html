@@ -59,6 +59,28 @@
 etc.
 &lt;/section&gt;
 </code></pre>
+<h3>Submit</h3>
+<p>The submitQuestion function can be added to elements such as a <code>&lt;button&gt;</code> or <code>&lt;li&gt;</code>. It has two parameters, the parameters and question mode/type which is just an integer 1,2, or 3 (or optionally a specially coded question mode). If the mode isn&rsquo;t given, mode 1 is assumed.
+
+<p><b>Question Mode 1</b>: This mode checks the star&rsquo;s position against an answer. It is the default mode. The <code>options</code> input should have <code>starmovable</code> set to true (see below). The parameters are as below:</p>
+<ul>
+<li><b>"azi":# and "alt":#</b>: The number specifies the correct response and are required parameters.
+<ul><li>The number can also refer to an element id where the element is a plaintext number</li>
+<li>E.g. "azi":"coord1" where <span id='coord1'>##</span> contains the number. When a random variable selection is used in the <code>parameters</code> input, this method should be use.</li>
+</ul></li>
+<li><b>"dx":#</b>: This is the radius of the hit box. It is an optional parameter with the default value of 5. If the answer is inside the radius, the response <q>correct</q> is opened in an alert window. </li>
+<li><b>"ddx":#</b> This is a secondary radius hit box which is almost right. If the submission is in the radius &gt; dx and &lt; ddx the alert response will be <q>close … try to refine the position</q></li>
+</ul>
+
+<p><b>Question Mode 2</b>: This mode is designed for multiple choice response elements. It <code>ans</code> which is either <code>true</code> or <code>false</code> for whether or not the selection is correct or incorrect.</p>
+
+<p><b>Question Mode 3</b>: This mode is designed for a text input of the coordinate parameters. It has the following four required parameters:
+<ul>
+<li><b>"azi":# and "alt":#</b> These numbers are either the correct responses. A blank may also be used for an any number response.</li>
+<li><b>"id1":? and "id2":?</b> The ids refer to the element id of the input response for the question. For example, &lt;input type='number' id='response1' step='5' max='360' min='0'/&gt; would be the user input field.</li>
+</ul></p>
+
+
 <h3>Parameters</h3>
 <p>The <code>&lt;input type='hidden' class='parameters' value='{&hellip;}'/&gt;</code> provides an object denoted by the curly brackets {} and is written in the form <code>{'name1':'value1','name2':'value2','name3':'value3'&ctdot;}</code> and currently takes the two optional parameters:</p>
 
@@ -94,7 +116,7 @@ etc.
 <h4>A note on "random"</h4>
 <p>A random distribution on the numbers values for the coordinates does not create a random distribution on a sphere. A modified method is used. See <a href='https://mathworld.wolfram.com/SpherePointPicking.html'>https://mathworld.wolfram.com/SpherePointPicking.html</a> for details.</p>
 
-<h3>Options</h3>
+<h3>Options</h3 >
 <p>The <code>&lt;input type='hidden' class='options' value='{&hellip;}'/&gt;</code> provides an object denoted by the curly brackets {} and is written in the form <code>{'name1':'value1','name2':'value2','name3':'value3'&ctdot;}</code> and currently takes the two optional parameters: "azi","alt","labels","starmovable".</p>
 <ul>
 <li><b>azi</b> and <b>alt</b>: these take the variables 0,1,2. 0 = show neither the line nor the coordinate label, 1 = show the line only, 2 = show both line and text</li>
