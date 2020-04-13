@@ -790,13 +790,12 @@ function onWindowResize(opt){
   camera.aspect = container.clientWidth / container.clientHeight;
   camera.updateProjectionMatrix();
   renderer.setSize( container.clientWidth, container.clientHeight );
-  
+ 
   // check if question box is outside of the view 
   let rect = box_question.getBoundingClientRect();
-  //alert([rect.left,screen.width,screen.height]);
-  if( rect.left > screen.width ) { box_question.style.left = screen.width - (rect.left-rect.right); }
-  if( rect.top > screen.height ) { box_question.stylpe.top = screen.height - (rect.top-rect.bottom); }  
-  
+  if( rect.left > window.innerWidth ) { box_question.style.left = (window.innerWidth - (rect.right-rect.left)-10)+'px'; }
+  if( rect.top > window.innerHeight ) { box_question.style.top = (window.innerHeight - (rect.bottom-rect.top)-10)+'px'; } 
+ 
 }
 
 function onpointerDown( event ) {
