@@ -1,3 +1,8 @@
+// question 
+// media fix question from portrait to landscape
+// check that question drag handler is removed for iphone
+// update documentation on question window
+
 // global variables
 let container;
 let camera;
@@ -11,6 +16,7 @@ let onClickPosition = new THREE.Vector2();
 let textObjects = new Array();
 let starmovable = true;
 let current_div;
+let box_question = document.getElementById('box_question');
 
   
   /* DEFINE object with the parameters */
@@ -784,6 +790,13 @@ function onWindowResize(opt){
   camera.aspect = container.clientWidth / container.clientHeight;
   camera.updateProjectionMatrix();
   renderer.setSize( container.clientWidth, container.clientHeight );
+  
+  // check if question box is outside of the view 
+  let rect = box_question.getBoundingClientRect();
+  //alert([rect.left,screen.width,screen.height]);
+  if( rect.left > screen.width ) { box_question.style.left = screen.width - (rect.left-rect.right); }
+  if( rect.top > screen.height ) { box_question.stylpe.top = screen.height - (rect.top-rect.bottom); }  
+  
 }
 
 function onpointerDown( event ) {
@@ -845,8 +858,7 @@ function onpointerUp( event ) {
 	  onClickPosition.fromArray( array );
     var intersects = getIntersects( onClickPosition, scene.children, true );
     if( starmovable == true ) { moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z}); }
-  }
-  
+  }  
   controls.enabled = true;
 }
 
@@ -871,15 +883,14 @@ function dragElement(id) {
   obj.style.top = rect.top+'px';
   obj.style.bottom = '';  // get rid of the bottom element
   
-  function dragpointerDown(e) {
-       
+  function dragpointerDown(e) {       
     e = e || window.event;
     e.preventDefault();
     // get the pointer cursor position at startup:
     pos3 = e.clientX;
     pos4 = e.clientY;
-    document.onpointerup = closeDragElement;
     document.onpointermove = elementDrag;
+    document.onpointerup = closeDragElement;
   }
   
   function elementDrag(e) {
@@ -905,7 +916,7 @@ function dragElement(id) {
 
 
 //////////////////////////
-// QUESTION FUNCTCIONS //
+// QUESTION FUNCTIONS //
 /////////////////////////
 function toggleQuestionMode(opt) {
   let box_opt = document.getElementById('box_options');
@@ -1120,7 +1131,7 @@ function initializeQuestionOptions(param) {
 function submitQuestion(param,mode) {
   if ( param == undefined ) { param = {}; }
   let dx = param.dx == undefined ? 5 : param.dx;
-  let ddx = param.ddx == undefined ? 3 : param.ddx;
+  let ddx = param.ddx == undefined ? 15 : param.ddx;
   if( param.mode != undefined ) { mode = param.mode; } 
 
   let ans = {};
@@ -1133,7 +1144,7 @@ function submitQuestion(param,mode) {
       ans.alt = param.alt == "coord2" ? document.getElementById('coord2').innerHTML*1 : param.alt;
       delta = Math.sqrt( Math.pow(star.azi-ans.azi,2) + Math.pow(star.alt-ans.alt,2) );
       if( delta < dx ) { alert('correct (or close enough at least)'); }
-      else if ( delta < dx*ddx ) { alert('close … try to refine the position'); }
+      else if ( delta < ddx ) { alert('close … try to refine the position'); }
       else { alert('incorrect'); }
   } else if ( mode == 2 ) {
       if( param.ans == true ) { alert('correct'); }
@@ -1141,12 +1152,12 @@ function submitQuestion(param,mode) {
   } else if ( mode == 3 ) {
     ans.azi = param.azi;
     ans.alt = param.alt;
-    response.azi = document.getElementById('response1').value;
-    response.alt = document.getElementById('response2').value;
+    response.azi = document.getElementById(param.id1).value;
+    response.alt = document.getElementById(param.id2).value;
     
     if( response.azi == ans.azi && response.alt == ans.alt ) { alert('correct'); }
     else if( (response.azi != ans.azi && response.alt == ans.alt) || (response.azi == ans.azi && response.alt != ans.alt) ) { alert('one correct, one incorrect'); }
-    else if( response.azi != ans.azi && response.alt != ans.alt) { alent('both incorrect'); }    
+    else if( response.azi != ans.azi && response.alt != ans.alt) { alert('both incorrect'); }    
   } else if ( mode == 'Lee1' ) { // football post question
     let Dx = 8.764,azi0,azi1,azi2,delta2;
     // Dx = half angle of goal post width (18.5ft)
@@ -1190,7 +1201,7 @@ function submitQuestion(param,mode) {
         (azi0 == 0 && star.azi > 0 && delta2 < dx )
       ) ) { alert(hint_txt); }          
     else if( delta < dx ) { alert('correct (or close enough to azimuth '+((ans.azi).toFixed(1))+'\xB0 and altitude '+((ans.alt).toFixed(1))+'\xB0)'); }
-    else if ( delta < dx*ddx ) { alert('close … try to refine the position'); }
+    else if ( delta < ddx ) { alert('close … try to refine the position'); }
     else { alert('incorrect'); }
 
   } // end Lee1
