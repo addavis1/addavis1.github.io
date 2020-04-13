@@ -16,7 +16,6 @@
 }
 
 .labelsButton { display: inline-block; margin: .5rem 0 .5rem .25rem;  }
-
 .locButton { display: inline-block; width: 2.5rem; text-align: center; }
 
 #menu .input_box > div { margin-top: .5rem; }
@@ -24,13 +23,12 @@
 #box_options { display: block; }
 #qmode { margin-top: 1rem; margin-bottom: 0; }
 
-
 #box_question {
   position: absolute;
   display: block;
   visibility: hidden;
   background-color: white;
-  min-width: 200px;
+  min-width: 15rem;
   max-width: 30vw;
   border: 1px solid black;
   border-radius: 10px 10px 5px 5px;  
@@ -40,9 +38,12 @@
 }
 
 @media (orientation: portrait) {
-#box_question {   left: 10vw; top: 60vh; min-width: 80vw; }
+  #box_question {   left: 10vw; top: 60vh; min-width: 80vw; }
 }
 
+@media (orientation: landscape;) {
+  #box_question {   left: 60vw; top: 80vh; min-width: 15rem; }
+}
 
 #box_question > div:nth-child(1) { 
   background-color: var(--menu);
@@ -62,6 +63,7 @@
     padding: 0.5rem 1rem 1rem;
     margin: 0;
 }
+#box_question ul, #box_question ol { margin: 0; }
 
 #qtext > section > div { display: block; }
 #qprev { cursor: pointer; }
