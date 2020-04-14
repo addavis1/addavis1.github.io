@@ -17,7 +17,7 @@
 <script type='text/javascript'></script>
 
 </head>
-<body onload='init();'>
+<body onload='init();' ondrop="drop(event)">
 <input type='hidden' id='azi_value' value='150'/>
 <input type='hidden' id='alt_value' value='30'/>
 <input type='hidden' id='question_number' value='1'/>
@@ -49,12 +49,11 @@
 </div>
 </span><!-- end hamburger icon-->
 <span title='Azimuth/Altitude Demonstrator'>Azimuth/Altitude Demonstrator</span>
-<span id='help'><a href='azialthelp.html' title='instructions' style='color: red;'>?</a></span></div>
-
+<span id='help'><a href='azialthelp.html' title='instructions'>?</a></span></div>
 
 <div id='container_scene'></div>
 
-<div id='box_question' style=''>
+<div id='box_question'>
 <div>
   <span onclick='loadQuestion("prev");' id='qprev'>&ltrif;</span>
     <span id='box_question_header'>
