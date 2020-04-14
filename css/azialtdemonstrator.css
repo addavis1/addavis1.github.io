@@ -68,12 +68,12 @@
 
 #qtext > section > div { display: block; }
 #qprev0 { position: relative; }
-#qprev { cursor: pointer; position: absolute; width: 4rem; height: 4rem; left: -1.5rem; top: -1.5rem; border-radius: 1rem; z-index: 100; background-color: rgba(0,255,0,0.5); }
+#qprev { cursor: pointer; position: absolute; width: 4rem; height: 4rem; left: -1.5rem; top: -1.5rem; border-radius: 1rem; z-index: 100; background-color: rgba(0,255,0,0); }
 #qnext0 { position: relative; }
-#qnext { cursor: pointer; position: absolute; width: 4rem; height: 4rem; left: -1.5rem; top: -1.5rem; border-radius: 1rem; z-index: 100; background-color: rgba(255,0,0,0.5); }
+#qnext { cursor: pointer; position: absolute; width: 4rem; height: 4rem; left: -1.5rem; top: -1.5rem; border-radius: 1rem; z-index: 100; background-color: rgba(255,0,0,0); }
 #qarr0 { position: relative; }
 #qArr { display: inline-block; cursor: pointer !important; width: 2rem; text-align: center; }
-#qarr {  position: absolute; width: 4rem; height: 4rem; left: -1rem; top: -1.5rem; border-radius: 1rem; z-index: 100; background-color: rgba(0,0,255,0.5); }
+#qarr {  position: absolute; width: 3rem; height: 3rem; left: -0.5rem; top: -1rem; border-radius: 1rem; z-index: 100; background-color: rgba(0,0,255,0); }
 #box_question_header > span:nth-child(1) { display: inline-block; width: 0rem; }
 
 #q_list button { padding: auto 0.5rem; }
