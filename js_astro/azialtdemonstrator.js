@@ -763,8 +763,6 @@ function createRenderer() {
   container.appendChild( renderer.domElement ); 
   
   renderer.domElement.addEventListener("pointerdown", onpointerDown, true);
-  renderer.domElement.addEventListener("pointerup", onpointerUp, true);
-  renderer.domElement.addEventListener("pointermove",onpointerMove,true);
 }
 
 ///////////////////////
@@ -813,6 +811,10 @@ function onpointerDown( event ) {
       i = intersects.length;
       controls.enabled = false; }
   }
+  
+  renderer.domElement.addEventListener("pointermove",onpointerMove,true);
+  renderer.domElement.addEventListener("pointerup", onpointerUp, true);
+
 }
 
 let pointerUpdateCounter = 0;
@@ -824,20 +826,11 @@ function onpointerMove( event ) {
     let array = getpointerPosition( container, event.clientX, event.clientY );
 	  onClickPosition.fromArray( array );
     let intersects = getIntersects( onClickPosition, scene.children, true );
-    if( starmovable == true ) { moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z}); }
+    if( starmovable == true && intersects[0] != undefined ) { moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z}); }
     pointerUpdateCounter = 1;
   }
   pointerUpdateCounter++;
 }
-
-/*
-function moveSlider( param ) {        
-    if( pointerUpdateCounter % 5 == 0 ) {        
-        moveStar( param );
-        pointerUpdateCounter = 1;
-    } else { pointerUpdateCounter++; } 
-}
-*/
 
 function getIntersects ( point, objects, opt ) {
 				pointer.set( ( point.x * 2 ) - 1, - ( point.y * 2 ) + 1 );
@@ -856,8 +849,10 @@ function onpointerUp( event ) {
     let array = getpointerPosition( container, event.clientX, event.clientY );
 	  onClickPosition.fromArray( array );
     var intersects = getIntersects( onClickPosition, scene.children, true );
-    if( starmovable == true ) { moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z}); }
-  }  
+    if( intersects[0] != undefined && starmovable == true ) { moveStar({x:intersects[0].point.x,y:intersects[0].point.y, z:intersects[0].point.z}); }
+  }
+  renderer.domElement.removeEventListener("pointermove",onpointerMove,true);
+  renderer.domElement.removeEventListener("pointerup", onpointerUp, true);  
   controls.enabled = true;
 }
 
@@ -874,40 +869,72 @@ function dragElement(id) {
   let obj,obj2, pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
  
   obj = document.getElementById(id);
-  if ( document.getElementById(id + "_header") ) { obj2 = document.getElementById(id + "_header"); }
-  else { obj2 = document.getElementById(id); }
-  obj2.onpointerdown = dragpointerDown;
+  obj.addEventListener("touchstart", touchStart, false);
+  obj.addEventListener("mousedown", mouseDown, false);
   
   var rect = obj.getBoundingClientRect();
   obj.style.top = rect.top+'px';
   obj.style.bottom = '';  // get rid of the bottom element
   
-  function dragpointerDown(e) {       
+  ///// START /////
+  function touchStart(e) { 
     e = e || window.event;
-    e.preventDefault();
-    // get the pointer cursor position at startup:
+    e.preventDefault();    
+    // get the touch cursor position at startup:
     pos3 = e.clientX;
     pos4 = e.clientY;
-    document.onpointermove = elementDrag;
-    document.onpointerup = closeDragElement;
+    
+    document.addEventListener('touchend',touchEnd,false);
+    document.addEventListener('touchmove',touchMove,false);
+    
+    // disable the sphere
+    controls.enabled = false;
+  }
+  function mouseDown(e) { 
+    e = e || window.event;
+    e.preventDefault();    
+    // get the touch cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    
+    document.addEventListener('mouseup',mouseEnd,false);
+    document.addEventListener('mousemove',mouseMove,false);
+    
+    // disable the sphere
+    controls.enabled = false;
   }
   
-  function elementDrag(e) {
-    e = e || window.event;
+  ///// MOVIING //////
+  function touchMove(e) {
+    e.preventDefault();    
+    let touches = e.changedTouches;
+    pos1 = pos3 - touches[0].pageX;
+    pos2 = pos4 - touches[0].pageY;
+    pos4 = touches[0].pageY;
+    pos3 = touches[0].pageX; 
+    obj.style.top = (obj.offsetTop - pos2) + 'px';
+    obj.style.left = (obj.offsetLeft - pos1) + 'px';
+  }
+  function mouseMove(e) {
     e.preventDefault();
-    // calculate the new cursor position:
     pos1 = pos3 - e.clientX;
     pos2 = pos4 - e.clientY;
     pos3 = e.clientX;
     pos4 = e.clientY;
-    // set the element's new position: 
     obj.style.top = (obj.offsetTop - pos2) + 'px';
     obj.style.left = (obj.offsetLeft - pos1) + 'px';
   }
-
-  function closeDragElement() {
-    document.onpointerup = null;
-    document.onpointermove = null;
+  
+  ///// ENDING /////
+  function touchEnd() {
+    document.removeEventListener('touchmove', touchMove, false);
+    document.removeEventListener('touchend', touchEnd, false); 
+    controls.enabled = true;
+  }  
+  function mouseEnd() {
+    document.removeEventListener('mouseup',mouseEnd,false);
+    document.removeEventListener('mousemove',mouseMove,false);
+    controls.enabled = true;
   }
   
 }
