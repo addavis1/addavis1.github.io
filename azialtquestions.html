@@ -2,7 +2,7 @@
 
 <div>
 Drag the star shown to the coordinate azimuth <span id='coord1'>##</span>&#xb0;, altitude <span id='coord2'>##</span>&#xb0;.
-<button type='text' onclick='submitQuestion({"azi":"coord1","alt":"coord2","dx":8});'>submit</button>
+<button type='text' onclick='submitQuestion({"azi":"coord1","alt":"coord2","dx":8});' ontouchstart='submitQuestion({"azi":"coord1","alt":"coord2","dx":8});'>submit</button>
 <input type='hidden' class='parameters' value='{"lookat":{"azi":150,"alt":30},"answer":{"azi":[45,135,225,315],"alt":[20,50,80]}}'/>
 <input type='hidden' class='options' value='{"labels":[1,1,1,1],"azi":1,"alt":1,"starmovable":true}'/>
 </div>
@@ -57,7 +57,7 @@ You notice that the planet Venus is at Az=75°, Alt=25° and its vibrancy is par
 <input type='hidden' class='options' value='{"labels":[1,1,1,1],"azi":2,"alt":2,"starmovable":true}'/>
 </div>
 
-<div>Goofing around on the football field, you try to kick a field goal from the <span id='yardline'>10</span> yard line. You are facing the goal post and looking <b><span id='value1'>--</span></b>. Place the star reasonably close to coordinates of top of the <b><span id='value2'>--</span></b> post of goal post. <span style='white-space: nowrap;'>(<button onclick='alert("Hint: The goal post is 30 feet tall, and 18.5 feet wide.");' ontouchstart='alert("Hint: The goal post is 30 feet tall, and 18.5 feet wide.");>hint</button>)</span>
+<div>Goofing around on the football field, you try to kick a field goal from the <span id='yardline'>10</span> yard line. You are facing the goal post and looking <b><span id='value1'>--</span></b>. Place the star reasonably close to coordinates of top of the <b><span id='value2'>--</span></b> post of goal post. <span style='white-space: nowrap;'>(<button onclick='alert("Hint: The goal post is 30 feet tall, and 18.5 feet wide.");' ontouchstart='alert("Hint: The goal post is 30 feet tall, and 18.5 feet wide.");'>hint</button>)</span>
 
 <button type='text' onclick='submitQuestion({"azi":"text","alt":"yardline","dx":10,"ddx":15},"Lee1");' ontouchstart='submitQuestion({"azi":"text","alt":"yardline","dx":10,"ddx":15},"Lee1");'>submit</button>
 <input type='hidden' class='parameters' value='{"text":{"value1":["north","south","east","west"],"value2":["left","right"]}}'/>
