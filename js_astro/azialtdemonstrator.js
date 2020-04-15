@@ -868,7 +868,7 @@ dragElement('box_question');
 function dragElement(id) {
   let obj,obj2, pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
  
-  obj = document.getElementById(id);
+  obj = document.getElementById(id+'_header');
   obj2 = document.getElementById(id+'_header');
   obj.addEventListener("touchstart", touchStart, false);
   obj2.addEventListener("mousedown", mouseDown, false);
