@@ -870,8 +870,8 @@ function dragElement(id) {
  
   obj = document.getElementById(id);
   obj2 = document.getElementById(id+'_header');
-  obj2.addEventListener("touchstart", touchStart,{capture:true,once:true});
-  obj2.addEventListener("mousedown", mouseDown,{capture:true,once:true});
+  obj2.addEventListener("touchstart", touchStart,{capture:true,once:false});
+  obj2.addEventListener("mousedown", mouseDown,{capture:true,once:false});
   
   var rect = obj.getBoundingClientRect();
   obj.style.top = rect.top+'px';
