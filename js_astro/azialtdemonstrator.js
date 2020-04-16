@@ -870,8 +870,8 @@ function dragElement(id) {
  
   obj = document.getElementById(id);
   obj2 = document.getElementById(id+'_header');
-  obj2.addEventListener("touchstart", touchStart, false);
-  obj2.addEventListener("mousedown", mouseDown, false);
+  obj2.addEventListener("touchstart", touchStart,{capture:true,once:true});
+  obj2.addEventListener("mousedown", mouseDown,{capture:true,once:true});
   
   var rect = obj.getBoundingClientRect();
   obj.style.top = rect.top+'px';
@@ -1010,10 +1010,10 @@ function loadQuestion(q) {
       q_list.item(i).style.display = 'none';
     }
   }
-  document.getElementById('qprev').style.opacity = ( q_num == 1 ) ? 0.25 : 1;
-  document.getElementById('qprev').style.cursor = ( q_num == 1 ) ? 'default' : 'pointer';
-  document.getElementById('qnext').style.opacity = ( q_num == q_list.length ) ? 0.25 : 1;
-  document.getElementById('qnext').style.opacity = ( q_num == q_list.length ) ? 'default' : 'pointer';
+  document.getElementById('qprev0').style.opacity = ( q_num == 1 ) ? 0.25 : 1;
+  document.getElementById('qprev0').style.cursor = ( q_num == 1 ) ? 'default' : 'pointer';
+  document.getElementById('qnext0').style.opacity = ( q_num == q_list.length ) ? 0.25 : 1;
+  document.getElementById('qnext0').style.opacity = ( q_num == q_list.length ) ? 'default' : 'pointer';
   
   // initialize question  
   current_div = q_list.item(q_num-1);
