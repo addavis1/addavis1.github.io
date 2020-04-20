@@ -39,12 +39,12 @@
 
 @media (orientation: portrait) {
   #box_question {   left: 10vw; top: 60vh; max-width: 80vw; }
-  #alertBox { min-width: 80vw; left: 10vw; top: 10vh; }
+  #box_response { min-width: 80vw; left: 10vw; top: 10vh; }
 }
 
 @media (orientation: landscape;) {
   #box_question {   left: 60vw; top: 80vh; max-width: 15rem; }
-  #alertBox { min-width: 60vw; left: 20vw; top: 20vh; }
+  #box_response { min-width: 60vw; left: 20vw; top: 20vh; }
 }
 
 #box_question { z-index: 10; }
@@ -90,29 +90,30 @@
 
 input[type='number'] { width: 3rem; text-align: center; }
 
-#alertBox { position: absolute; left: 20vw; width: auto; top: 20vh; display: none; z-index: 500;
+
+#box_response { position: absolute; top: 20vh; left: 20vw;
+            display: block; z-index: 500; visibility: hidden;
             margin: 0; padding: 0; background-color: white; 
-            border: 1px solid rgba(0,0,0,0.75); border-radius: 10px 10px 5px 5px; }
-#alertBox p {
+            border: 1px solid rgba(0,0,0,0.75); border-radius: 10px 10px 5px 5px;
+}
+#box_response p {
   padding: 0.5rem 1rem;
   margin: 0;
 }
-#alertBox_header { 
-  cursor: move;
+
+#box_response > div { 
   background-color: var(--menu);
+  display: flex;
   border-radius: 10px 10px 0 0;
   padding: 0.25rem;
-  font-weight: bold;
-  text-align: right;
-  padding-right: 0.5rem;
   border-bottom: 1px solid rgba(0,0,0,0.75);
   position: relative;
 }
-
-#alertBox_header > span { position: relative; }
-#alertBoxClose { cursor: pointer; 
-position: absolute; left: 0; width: 2.5rem; height: 2.5rem; left: -1rem; top: -0.75rem; border-radius: 0.5rem; z-index: 100; background-color: rgba(0,0,255,0);
-
+#box_response > div > span:nth-child(1) { flex: 20; cursor: move; }
+#box_response > div > span:nth-child(2) { flex: 0; text-align: center; padding-right: 0.25rem; font-weight: bold; position: relative; }
+#box_responseClose { 
+  cursor: pointer; 
+  position: absolute; width: 2rem; height: 2.5rem; left: -0.75rem; top: -0.75rem; border-radius: 0.5rem; z-index: 100; background-color: rgba(0,0,255,0);
 }
 
 
