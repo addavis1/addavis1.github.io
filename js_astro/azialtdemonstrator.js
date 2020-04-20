@@ -17,6 +17,8 @@ let textObjects = new Array();
 let starmovable = true;
 let current_div;
 let box_question = document.getElementById('box_question');
+let submit_id;
+let submit_id_old;
 
   
   /* DEFINE object with the parameters */
@@ -38,6 +40,9 @@ function init() {
   createMeshes();
   createRenderer();
   toggleElement();
+  
+  dragElement('box_question');
+  dragElement('box_response');
 
   // start the animation loop
   window.requestAnimationFrame(render);
@@ -862,86 +867,6 @@ function getpointerPosition( dom, x, y ) {
 };
 
 
-// Make the DIV element draggable:
-dragElement('box_question');
-
-function dragElement(id) {
-  let obj,obj2, pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
- 
-  obj = document.getElementById(id);
-  obj2 = document.getElementById(id+'_header');
-  obj2.addEventListener("touchstart", touchStart,{capture:true,once:false});
-  obj2.addEventListener("mousedown", mouseDown,{capture:true,once:false});
-  
-  var rect = obj.getBoundingClientRect();
-  obj.style.top = rect.top+'px';
-  obj.style.bottom = '';  // get rid of the bottom element
-  
-  ///// START /////
-  function touchStart(e) { 
-    e = e || window.event;
-    e.preventDefault();    
-    // get the touch cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    
-    document.addEventListener('touchend',touchEnd,false);
-    document.addEventListener('touchmove',touchMove,false);
-    
-    // disable the sphere
-    controls.enabled = false;
-  }
-  function mouseDown(e) { 
-    e = e || window.event;
-    e.preventDefault();    
-    // get the touch cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    
-    document.addEventListener('mouseup',mouseEnd,false);
-    document.addEventListener('mousemove',mouseMove,false);
-    
-    // disable the sphere
-    controls.enabled = false;
-  }
-  
-  ///// MOVIING //////
-  function touchMove(e) {
-    e.preventDefault();    
-    let touches = e.changedTouches;
-    pos1 = pos3 - touches[0].pageX;
-    pos2 = pos4 - touches[0].pageY;
-    pos4 = touches[0].pageY;
-    pos3 = touches[0].pageX; 
-    obj.style.top = (obj.offsetTop - pos2) + 'px';
-    obj.style.left = (obj.offsetLeft - pos1) + 'px';
-  }
-  function mouseMove(e) {
-    e.preventDefault();
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    obj.style.top = (obj.offsetTop - pos2) + 'px';
-    obj.style.left = (obj.offsetLeft - pos1) + 'px';
-  }
-  
-  ///// ENDING /////
-  function touchEnd() {
-    document.removeEventListener('touchmove', touchMove, false);
-    document.removeEventListener('touchend', touchEnd, false); 
-    controls.enabled = true;
-  }  
-  function mouseEnd() {
-    document.removeEventListener('mouseup',mouseEnd,false);
-    document.removeEventListener('mousemove',mouseMove,false);
-    controls.enabled = true;
-  }
-  
-}
-
-
-
 //////////////////////////
 // QUESTION FUNCTIONS //
 /////////////////////////
@@ -1036,6 +961,9 @@ function loadQuestion(q) {
 
   /* indicator text */
   document.getElementById('disabled').style.display = starmovable ? 'none' : 'block';
+  
+  /* response box */
+  document.getElementById('box_response').style.visibility = 'hidden';
   
 }
 
@@ -1155,12 +1083,12 @@ function initializeQuestionOptions(param) {
  
 }
 
-function submitQuestion(param,mode) {
+function submitQuestion(param,mode,obj) {
   if ( param == undefined ) { param = {}; }
   let dx = param.dx == undefined ? 5 : param.dx;
   let ddx = param.ddx == undefined ? 15 : param.ddx;
   if( param.mode != undefined ) { mode = param.mode; } 
-
+    
   let ans = {};
   let response = {};
   let delta;
@@ -1170,21 +1098,21 @@ function submitQuestion(param,mode) {
       ans.azi = param.azi == "coord1" ? document.getElementById('coord1').innerHTML*1 : param.azi;
       ans.alt = param.alt == "coord2" ? document.getElementById('coord2').innerHTML*1 : param.alt;
       delta = Math.sqrt( Math.pow(star.azi-ans.azi,2) + Math.pow(star.alt-ans.alt,2) );
-      if( delta < dx ) { alert('correct (or close enough at least)'); }
-      else if ( delta < ddx ) { alert('close … try to refine the position'); }
-      else { alert('incorrect'); }
+      if( delta < dx ) { alertBox('correct (or close enough at least)',obj); }
+      else if ( delta < ddx ) { alertBox('close … try to refine the position',obj); }
+      else { alertBox('incorrect',obj); }
   } else if ( mode == 2 ) {
-      if( param.ans == true ) { alert('correct'); }
-      else { alert('incorrect'); }    
+      if( param.ans == true ) { alertBox('correct',obj); }
+      else { alertBox('incorrect',obj); }    
   } else if ( mode == 3 ) {
     ans.azi = param.azi;
     ans.alt = param.alt;
     response.azi = document.getElementById(param.id1).value;
     response.alt = document.getElementById(param.id2).value;
     
-    if( response.azi == ans.azi && response.alt == ans.alt ) { alert('correct'); }
-    else if( (response.azi != ans.azi && response.alt == ans.alt) || (response.azi == ans.azi && response.alt != ans.alt) ) { alert('one correct, one incorrect'); }
-    else if( response.azi != ans.azi && response.alt != ans.alt) { alert('both incorrect'); }    
+    if( response.azi == ans.azi && response.alt == ans.alt ) { alertBox('correct',obj); }
+    else if( (response.azi != ans.azi && response.alt == ans.alt) || (response.azi == ans.azi && response.alt != ans.alt) ) { alertBox('one correct, one incorrect',obj); }
+    else if( response.azi != ans.azi && response.alt != ans.alt) { alertBox('both incorrect',obj); }    
   } else if ( mode == 'Lee1' ) { // football post question
     let Dx = 8.764,azi0,azi1,azi2,delta2;
     // Dx = half angle of goal post width (18.5ft)
@@ -1220,16 +1148,16 @@ function submitQuestion(param,mode) {
         (azi0 == 180 && star.azi < 180 && delta2 < dx ) ||
         (azi0 == 270 && star.azi < 270 && delta2 < dx ) ||
         (azi0 == 0 && star.azi > 300 && delta2 < dx )
-      ) ) { alert(hint_txt); } 
+      ) ) { alertBox(hint_txt,obj); } 
     else if ( answer[1] == 'left' && ( 
         (azi0 == 90 && star.azi > 90 && delta2 < dx ) ||
         (azi0 == 180 && star.azi > 180 && delta2 < dx ) ||
         (azi0 == 270 && star.azi > 270 && delta2 < dx ) ||
         (azi0 == 0 && star.azi > 0 && delta2 < dx )
-      ) ) { alert(hint_txt); }          
-    else if( delta < dx ) { alert('correct (or close enough to azimuth '+((ans.azi).toFixed(1))+'\xB0 and altitude '+((ans.alt).toFixed(1))+'\xB0)'); }
-    else if ( delta < ddx ) { alert('close … try to refine the position'); }
-    else { alert('incorrect'); }
+      ) ) { alertBox(hint_txt,obj); }          
+    else if( delta < dx ) { alertBox('correct (or close enough to azimuth '+((ans.azi).toFixed(1))+'\xB0 and altitude '+((ans.alt).toFixed(1))+'\xB0)',obj); }
+    else if ( delta < ddx ) { alertBox('close … try to refine the position',obj); }
+    else { alertBox('incorrect',obj); }
 
   } // end Lee1
 }
@@ -1261,3 +1189,110 @@ function getRandomCoord(param) {
   
   return([azi,alt]);
 }
+
+function toggleDisplay(id,submit_id) {
+  let obj = document.getElementById(id);
+  if( obj == undefined ) { obj.style.display = (obj.style.display == 'block') ? 'none' : 'block'; }  
+  else {
+    if( submit_id == '' || submit_id == submit_id_old || submit_id == undefined ) { obj.style.visibility = (obj.style.visibility == 'visible') ? 'hidden' : 'visible'; }
+    else { obj.style.visibility = 'visible'; submit_id_old = submit_id; }
+  }  
+}
+
+function alertBox(txt,submit_obj) {
+  if( submit_obj != undefined ) {
+    if (submit_obj.id == "" || submit_obj.id == undefined) { 
+      submit_id = 'id'+Math.round(Math.random()*1E6); 
+      submit_obj.id = submit_id;
+    } else { submit_id = submit_obj.id; }
+  } else { submit_id == ''; }
+  
+  let obj = document.getElementById('box_response');
+  obj.children.item(1).innerHTML = txt;  
+  toggleDisplay('box_response',submit_id);
+}
+
+// Make the DIV element draggable:
+function dragElement(id,opt) {
+  let obj,obj2, pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; 
+  obj = document.getElementById(id);
+  obj2 = document.getElementById(id+'_header');
+  
+  if( opt == undefined ) {
+    obj2.addEventListener("touchstart", touchStart,{capture:true,once:false});
+    obj2.addEventListener("mousedown", mouseDown,{capture:true,once:false});
+  } else {
+    obj2.removeEventListener("touchstart", touchStart,{capture:true,once:false});
+    obj2.removeEventListener("mousedown", mouseDown,{capture:true,once:false}); 
+  }
+ 
+  var rect = obj.getBoundingClientRect();
+  obj.style.top = rect.top+'px';
+  obj.style.bottom = '';  // get rid of the bottom element
+  
+  ///// START /////
+  function touchStart(e) { 
+    e = e || window.event;
+    e.preventDefault();    
+    // get the touch cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    
+    document.addEventListener('touchend',touchEnd,false);
+    document.addEventListener('touchmove',touchMove,false);
+    
+    // disable the sphere
+    controls.enabled = false;
+  }
+  function mouseDown(e) { 
+    e = e || window.event;
+    e.preventDefault();    
+    // get the touch cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    
+    document.addEventListener('mouseup',mouseEnd,false);
+    document.addEventListener('mousemove',mouseMove,false);
+    
+    // disable the sphere
+    controls.enabled = false;
+  }
+  
+  ///// MOVIING //////
+  function touchMove(e) {
+    e.preventDefault();    
+    let touches = e.changedTouches;
+    pos1 = pos3 - touches[0].pageX;
+    pos2 = pos4 - touches[0].pageY;
+    pos4 = touches[0].pageY;
+    pos3 = touches[0].pageX; 
+    obj.style.top = (obj.offsetTop - pos2) + 'px';
+    obj.style.left = (obj.offsetLeft - pos1) + 'px';
+  }
+  function mouseMove(e) {
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    obj.style.top = (obj.offsetTop - pos2) + 'px';
+    obj.style.left = (obj.offsetLeft - pos1) + 'px';
+  }
+  
+  ///// ENDING /////
+  function touchEnd() {
+    document.removeEventListener('touchmove', touchMove, false);
+    document.removeEventListener('touchend', touchEnd, false); 
+    obj2.addEventListener("touchstart", touchStart,{capture:true,once:false});
+    
+    controls.enabled = true;
+  }  
+  function mouseEnd() {
+    document.removeEventListener('mouseup',mouseEnd,false);
+    document.removeEventListener('mousemove',mouseMove,false);
+    obj2.addEventListener("mousedown", mouseDown,{capture:true,once:false});
+    controls.enabled = true;
+  }
+  
+}
+
