@@ -38,11 +38,13 @@
 }
 
 @media (orientation: portrait) {
-  #box_question {   left: 10vw; top: 60vh; min-width: 80vw; }
+  #box_question {   left: 10vw; top: 60vh; max-width: 80vw; }
+  #alertBox { min-width: 80vw; left: 10vw; top: 10vh; }
 }
 
 @media (orientation: landscape;) {
-  #box_question {   left: 60vw; top: 80vh; min-width: 15rem; }
+  #box_question {   left: 60vw; top: 80vh; max-width: 15rem; }
+  #alertBox { min-width: 60vw; left: 20vw; top: 20vh; }
 }
 
 #box_question { z-index: 10; }
@@ -71,10 +73,11 @@
 #qprev { cursor: pointer; position: absolute; width: 4rem; height: 4rem; left: -1.5rem; top: -1.5rem; border-radius: 1rem; z-index: 100; background-color: rgba(0,255,0,0); }
 #qnext0 { position: relative; }
 #qnext { cursor: pointer; position: absolute; width: 4rem; height: 4rem; left: -1.5rem; top: -1.5rem; border-radius: 1rem; z-index: 100; background-color: rgba(255,0,0,0); }
-#qarr0 { position: relative; }
+#qarr0 { position: relative; display: none; }
 #qArr { display: inline-block; cursor: pointer !important; width: 2rem; text-align: center; }
 #qarr {  position: absolute; width: 3rem; height: 3rem; left: -0.5rem; top: -1rem; border-radius: 1rem; z-index: 100; background-color: rgba(0,0,255,0); }
-#box_question_header > span:nth-child(1) { display: inline-block; width: 0rem; }
+#box_question_header > span:nth-child(1) { display: none; width: 4rem; }
+
 
 #q_list button { padding: auto 0.5rem; }
 #q_list ol { list-style-type: upper-alpha; columns: 2; cursor: pointer; }
@@ -86,5 +89,30 @@
 #disabled { display: none; position: absolute; bottom: 2rem; padding-left: 1rem; color: red; font-size: 1.25rem; z-index: 5; }
 
 input[type='number'] { width: 3rem; text-align: center; }
+
+#alertBox { position: absolute; left: 20vw; width: auto; top: 20vh; display: none; z-index: 500;
+            margin: 0; padding: 0; background-color: white; 
+            border: 1px solid rgba(0,0,0,0.75); border-radius: 10px 10px 5px 5px; }
+#alertBox p {
+  padding: 0.5rem 1rem;
+  margin: 0;
+}
+#alertBox_header { 
+  cursor: move;
+  background-color: var(--menu);
+  border-radius: 10px 10px 0 0;
+  padding: 0.25rem;
+  font-weight: bold;
+  text-align: right;
+  padding-right: 0.5rem;
+  border-bottom: 1px solid rgba(0,0,0,0.75);
+  position: relative;
+}
+
+#alertBox_header > span { position: relative; }
+#alertBoxClose { cursor: pointer; 
+position: absolute; left: 0; width: 2.5rem; height: 2.5rem; left: -1rem; top: -0.75rem; border-radius: 0.5rem; z-index: 100; background-color: rgba(0,0,255,0);
+
+}
 
 
