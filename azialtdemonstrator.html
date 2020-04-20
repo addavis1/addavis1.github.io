@@ -23,8 +23,16 @@
 <input type='hidden' id='question_number' value='1'/>
 <input type='hidden' id='question_answer' value=''/>
 
+
+<div id='box_response'><div>
+<span id='box_response_header'></span>
+<span><span id='box_responseClose' onclick='toggleDisplay("box_response");'></span>&times;</span>
+</div>
+<p>---</p>
+</div>
+
 <section>
-<div id='container_title'><span onclick='toggleMenu("menu_content");'><span id='menu'>&#9776;</span>
+<div id='container_title'><span><span id='menu'  onclick='toggleMenu("menu_content");'>&#9776;</span>
 <div id='menu_content'>
 
 <div id='box_options'>
@@ -59,8 +67,7 @@
     <span id='box_question_header'>
     <span></span>
     Question <span id='qnum'>1</span>
-    <span id='qarr0'>
-    <span onclick='toggleQuestionText();'  ontouchstart='toggleQuestionText();' id='qarr'></span><span id='qArr'>&utrif;</span></span>
+    <!--<span id='qarr0'><span onclick='toggleQuestionText();'  ontouchstart='toggleQuestionText();' id='qarr'></span><span id='qArr'>&utrif;</span></span>-->
   </span> 
   <span id='qnext0'><span onclick='loadQuestion("next");' ontouchstart='loadQuestion("next");' id='qnext'></span>&rtrif;</span>
 </div>
@@ -72,6 +79,8 @@
 
 <div id='flex1'></div>
 <div id='flex2'></div>
+
+
 
 <!-- NAAP Srcipt -->
 <script src='js_astro/azialtdemonstrator.js'></script>
