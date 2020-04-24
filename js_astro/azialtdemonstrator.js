@@ -215,7 +215,7 @@ function addAziAltLines() {
   // ALTITUDE AND AZIMUTH LINES
   const q_azi = star.azi == 0 ? 1E-9 : star.azi*Math.PI/180;
   const geometry_azi = new THREE.TorusBufferGeometry( options.r, 0.05, 8, 100, q_azi );
-  const material_azi = new THREE.MeshBasicMaterial( { color: 0x0000ff,transparent:true,opacity:0.75 } );
+  const material_azi = new THREE.MeshBasicMaterial( { color: 0x000088,transparent:true,opacity:0.75 } );
   const torus_azi = new THREE.Mesh( geometry_azi, material_azi );   
   // torus is drawn the xy plane -- need to rotate it (order matters!)
   torus_azi.rotateX(Math.PI/2);
@@ -233,7 +233,7 @@ function addAziAltLines() {
   // ALTITUDE AND AZIMUTH LINES    
   const q_alt = star.alt == 0 ? 1E-9 : star.alt*Math.PI/180;
   const geometry_alt = new THREE.TorusBufferGeometry( options.r, 0.05, 8, 100, q_alt );
-  const material_alt = new THREE.MeshBasicMaterial( { color: 0xff0000} );
+  const material_alt = new THREE.MeshBasicMaterial( { color: 0x880000} );
   const torus_alt = new THREE.Mesh( geometry_alt, material_alt );   
   // torus is drawn the xy plane -- need to rotate it (order matters!)
   torus_alt.rotateY(Math.PI/2-q_azi);
@@ -640,17 +640,20 @@ function createHorizonText(txt) {
 
 
 function createCoordsText(opt) {
+  let color_alt = '#880000';
+  let color_azi = '#000088';
+  
   if( opt == undefined ) { let opt = 'alt'; }
     
   if( opt == 'azi' ) {
-    var color = 'blue';
+    var color = color_azi;
     var txt = (star.azi).toFixed(1)+'\u00b0';
     var q_azi = star.azi*Math.PI/180-Math.PI/2;
     var q2_azi = q_azi-0*Math.PI/180;
     var textAxis = new THREE.Vector3(-Math.cos(q2_azi),-2.0*Math.PI/180,-Math.sin(q2_azi));
     textAxis.normalize();   
   } else if( opt == 'alt' ) {
-    var color = 'red';
+    var color = color_alt;
     var txt = (star.alt).toFixed(1)+'\u00b0';
     var q_alt = star.alt*Math.PI/180;
     var q2_alt = q_alt/2;                   
