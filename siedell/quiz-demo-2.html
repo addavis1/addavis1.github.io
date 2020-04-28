@@ -1,0 +1,56 @@
+<!doctype html>
+<!-- margin test -->
+
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz: Demo-2</title>
+<script src="lib/RankingTask-2020-02-25.js"></script>
+
+<style>
+body { font-size: 10pt; font-family: "Times New Arial"; }
+
+.questions-container { 
+  display: grid;
+  grid-template-areas: "y b z" "y c z" "y d z" "y e z";
+  grid-template-columns: 1fr 3fr 1fr; 
+}
+
+.questions-container > div:nth-child(1) { grid-area: y; }
+.questions-container > div:nth-child(2) { grid-area: z; }
+.questions-container > div:nth-child(3) { grid-area: b; min-width: 40rem; }
+.questions-container > div:nth-child(4) { grid-area: c; }
+.questions-container > div:nth-child(5) { grid-area: d; }
+.questions-container > div:nth-child(6) { grid-area: e; text-align: justify; }
+
+</style>
+
+</head>
+<body style="background-color: gray">
+<div class="questions-container">
+
+<div class='sidebar'></div>
+<div class='sidebar'></div>
+<div id="q0" class="question"></div>
+<div id="q1" class="question" style='min-height: 10rem;'></div>
+<div id="q2" class="question"></div>
+<div id="q3" class="question"></div>
+
+
+</div>
+<script src="data/definitions.js"></script>
+<script>
+
+var q0 = new RankingTask(document.getElementById("q0"), "q0");
+q0.initialize(questionDefinitions["24b2815a-3b72-4826-a986-bcf1f4f85492"]);
+var q1 = new RankingTask(document.getElementById("q1"), "q1");
+q1.initialize(questionDefinitions["905734b7-0104-49ed-8a8b-4572aebf4c76"]);
+var q2 = new RankingTask(document.getElementById("q2"), "q2");
+q2.initialize(questionDefinitions["d4d20970-8f85-4df8-86b6-bbb84a6e6528"]);
+var q3 = new RankingTask(document.getElementById("q3"), "q3");
+q3.initialize(questionDefinitions["102b845b-6f29-42d6-94ac-a073fad99014"]);
+
+</script>
+</body>
+</html>
+
