@@ -18,7 +18,7 @@ html, body { margin: 0; padding: 0; height: 100%; }
               grid-template-areas: "a b c";
               grid-template-columns: 1fr auto 1fr;              
               height: 100%;
-              background-color: green;
+              background-color: lightgreen;
             }
 #container > div:nth-child(1) { grid-area: a; background-color: violet; }
 #container > div:nth-child(2) { grid-area: b; align-self: center; background-color: pink; }
@@ -49,6 +49,7 @@ svg { display: block; margin: 0 auto; padding: 0; }
 }});MathJax.OutputJax.NativeMML.ffTableWidthBug = false;MathJax.OutputJax.NativeMML.forceReflow = false;MathJax.OutputJax.NativeMML.widthBug = false;MathJax.OutputJax.NativeMML.spaceWidthBug = false;MathJax.OutputJax.NativeMML.mtdWidthBug = false;});MathJax.Hub.Register.StartupHook("End Extensions", function () {if (MathJax.Extension.mml2jax) {  for (var i=0,m=MathJax.Hub.preProcessors.hooks.length; i < m; i++) {    if (MathJax.Hub.preProcessors.hooks[i].hook ===        MathJax.Extension.mml2jax.PreProcess)      { MathJax.Hub.preProcessors.hooks.splice(i,1); i--; m--; }  }}});</script>
 
 <script type='text/javascript'>
+//window.onresize = location.reload();
 
 function svgResize(svgObj) {
   let w = window.innerWidth;
@@ -143,7 +144,7 @@ function svgResize(svgObj) {
 </g></svg></div>
 <div></div>
 </div> <!-- end grid container -->
-	
+
 <script type="text/javascript">
   var pointx, pointy; 
 	var day = 93;
