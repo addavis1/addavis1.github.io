@@ -43,6 +43,11 @@ svg { display: block; margin: 0 auto; padding: 0; }
 #questionBoxTitleBar > span:nth-child(3) { flex: 1; text-align: right; padding-right: 0.5rem; min-width: 2rem; padding-left: 0; cursor: pointer; }
 
 #questionBoxContent { padding: 0.5rem; }
+
+#questionBar > div {  background-color: none; opacity: 0.6; display: inline-block; padding: 1px 1px 2px 1px; }
+#questionBar span { display: none; padding: 0 0.4rem; background-color: yellow; height: 100%; border-radius: 0.5rem; cursor: pointer; text-align: center; }
+#questionBar span:last-child { display: inline-block; font-weight: bold; }
+
 </style>
 
 
@@ -79,6 +84,7 @@ function svgResize(svgObj) {
 function loadQuestion(q) {
 	let questionBox = document.getElementById('questionBox');
 	let questionBoxContent = document.getElementById('questionBoxContent');
+	let questionBoxTitle = document.getElementById('questionBoxTitle');
 
 
 	if ( typeof(q) == 'object' ) { // load the question popup
@@ -89,6 +95,7 @@ function loadQuestion(q) {
 		questionBox.height.baseVal.value = q.height ? q.height : 160;
 
 		questionBoxContent.innerHTML = q.qText;
+		if(q.qTitle) { questionBoxTitle.innerHTML = q.qTitle; }
 		
 		currentQuestionId = q.id; 
 	}
@@ -96,16 +103,14 @@ function loadQuestion(q) {
 }
 
 function dragElement(id,id2,opt) {
-  let svg,obj,obj2, pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0,aspectx,aspecty; 
+  let svg,obj,obj2, pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0,aspectx,aspecty;
+let limitLeft, limitRight, limitTop, limitBottom, pad1 = 50, pad2 = 25;  
   obj = document.getElementById(id);
   obj2 = document.getElementById(id2);
   svg = document.getElementById('svgObject');
   
   aspectx = svg.width.baseVal.value/window.innerWidth;
   aspecty = svg.height.baseVal.value/window.innerHeight;
-  
-
-  
   
   if( opt == undefined ) {
     obj2.addEventListener("touchstart", touchStart,{capture:true,once:false});
@@ -114,9 +119,6 @@ function dragElement(id,id2,opt) {
     obj2.removeEventListener("touchstart", touchStart,{capture:true,once:false});
     obj2.removeEventListener("mousedown", mouseDown,{capture:true,once:false}); 
   }
-  //alert([window.innerHeight,obj.width.baseVal.value]);
-  
-
   
   ///// START /////
   function touchStart(e) { 
@@ -128,7 +130,14 @@ function dragElement(id,id2,opt) {
   }
   function mouseDown(e) { 
     e = e || window.event;
-    e.preventDefault();    
+    e.preventDefault();   
+
+	 // SET UP CONSTRAINTS TO NOT LET THE OBJECT BE DRAGGED OFF SCREEN
+	limitLeft = pad1 - obj.width.baseVal.value;
+	limitRight = svg.viewBox.baseVal.width - pad1;
+	limitTop = 0;
+	limitBottom = svg.viewBox.baseVal.height - pad2;
+	
     // get the touch cursor position at startup;
 	pos1 = e.clientX;
 	pos2 = e.clientY;
@@ -149,6 +158,12 @@ function dragElement(id,id2,opt) {
 	pos4 = e.clientY;
 	obj.x.baseVal.value += (pos3-pos1)*aspectx;
 	obj.y.baseVal.value += (pos4-pos2)*aspecty;
+	
+	obj.x.baseVal.value = obj.x.baseVal.value < limitLeft ? limitLeft : obj.x.baseVal.value;
+	obj.x.baseVal.value = obj.x.baseVal.value > limitRight ? limitRight : obj.x.baseVal.value;
+	obj.y.baseVal.value = obj.y.baseVal.value < limitTop ? limitTop : obj.y.baseVal.value;
+	obj.y.baseVal.value = obj.y.baseVal.value > limitBottom ? limitBottom : obj.y.baseVal.value;
+	
 	pos1 = pos3;
 	pos2 = pos4;	
   }
@@ -165,6 +180,18 @@ function dragElement(id,id2,opt) {
     obj2.addEventListener("mousedown", mouseDown,{capture:true,once:false});
   }
   
+}
+
+function toggleQuestionBar() {
+	let questionBar = document.getElementById('questionBar');
+	let questionNumbers = questionBar.children.item(0).children;
+	let n = questionNumbers.length;
+	let display = questionNumbers.item(0).style.display=='inline-block' ? 'none' : 'inline-block';
+	
+	
+	for( let i = 0; i < n-1; i++ ) { questionNumbers.item(i).style.display=display;	}
+	questionNumbers.item(n-1).innerHTML = questionNumbers.item(0).style.display=='none' ? '&rarr;' : '&larr;';
+
 }
 
 
@@ -185,6 +212,7 @@ let questionTemplate = {
 let question1 = { 
 	id:'question1',
 	width: 200,	height: 100,
+	qTitle:"A Title",
 	qText:"This is some question text.",
 	qAnswer:"This is the answer."
 }
@@ -192,7 +220,16 @@ let question1 = {
 let question2 = {
 	id:'question2',
 	width: 400,	height: 100,
+	qTitle:"Another Title",
 	qText:"This is some <b>different</b> question text.",
+	qAnswer:"This is the answer to question 2."
+}
+
+let question3 = {
+	id:'question3',
+	width: 400,	height: 200,
+	qTitle:"Pfffft",
+	qText:"This is some <b>different</b> question text. <br/> It is more involed and has a list. <ol><li>item 1</li><li>item 2</li><li>item 3</li></ol>",
 	qAnswer:"This is the answer to question 2."
 }
 </script>
@@ -270,9 +307,15 @@ let question2 = {
 	<span id='questionBoxTitle'>TITLE STUFF</span>
 	<span>>></span>
 	</div>
-    <div id='questionBoxContent'>Question Text</div>
+    <div id='questionBoxContent'>Question Text</div>	
+	</div></foreignObject>
 	
-	
+	<foreignObject x='0' y='2' width='500' height='30' id='questionBar' fill'none'><div>
+	<span onclick='loadQuestion(question1);'>1</span>
+	<span onclick='loadQuestion(question2);'>2</span>
+	<span onclick='loadQuestion(question3);'>3</span>
+	<span onclick='loadQuestion(question2);'>ABC</span>
+	<span onclick='toggleQuestionBar();'>&gt;</span>
 	</div></foreignObject>
 
 
