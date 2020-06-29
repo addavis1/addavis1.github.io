@@ -44,10 +44,9 @@ svg { display: block; margin: 0 auto; padding: 0; }
 
 #questionBoxContent { padding: 0.5rem; }
 
-#questionBar > div {  background-color: none; opacity: 0.6; display: inline-block; padding: 1px 1px 2px 1px; }
+#questionBar > div {  background-color: none; opacity: 0.6; display: inline-block; padding: 1px 1px 2px 1px; font-family: sans-serif; }
 #questionBar span { display: none; padding: 0 0.4rem; background-color: yellow; height: 100%; border-radius: 0.5rem; cursor: pointer; text-align: center; }
 #questionBar span:last-child { display: inline-block; font-weight: bold; }
-
 </style>
 
 
@@ -190,7 +189,7 @@ function toggleQuestionBar() {
 	
 	
 	for( let i = 0; i < n-1; i++ ) { questionNumbers.item(i).style.display=display;	}
-	questionNumbers.item(n-1).innerHTML = questionNumbers.item(0).style.display=='none' ? '&rarr;' : '&larr;';
+	questionNumbers.item(n-1).innerHTML = questionNumbers.item(0).style.display=='none' ? '&gt;' : '&lt;';
 
 }
 
