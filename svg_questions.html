@@ -113,10 +113,10 @@ let limitLeft, limitRight, limitTop, limitBottom, pad1 = 50, pad2 = 25;
   
   if( opt == undefined ) {
     obj2.addEventListener("touchstart", touchStart,{capture:true,once:false});
-    obj2.addEventListener("mousedown", mouseDown,{capture:true,once:false});
+    obj2.addEventListener("pointerdown", pointerDown,{capture:true,once:false});
   } else {
     obj2.removeEventListener("touchstart", touchStart,{capture:true,once:false});
-    obj2.removeEventListener("mousedown", mouseDown,{capture:true,once:false}); 
+    obj2.removeEventListener("pointerdown", pointerDown,{capture:true,once:false}); 
   }
   
   ///// START /////
@@ -127,7 +127,7 @@ let limitLeft, limitRight, limitTop, limitBottom, pad1 = 50, pad2 = 25;
     document.addEventListener('touchend',touchEnd,false);
     document.addEventListener('touchmove',touchMove,false);
   }
-  function mouseDown(e) { 
+  function pointerDown(e) { 
     e = e || window.event;
     e.preventDefault();   
 
@@ -141,8 +141,8 @@ let limitLeft, limitRight, limitTop, limitBottom, pad1 = 50, pad2 = 25;
 	pos1 = e.clientX;
 	pos2 = e.clientY;
     
-    document.addEventListener('mouseup',mouseEnd,false);
-    document.addEventListener('mousemove',mouseMove,false);
+    document.addEventListener('pointerup',pointerEnd,false);
+    document.addEventListener('pointermove',pointerMove,false);
   }
   
   ///// MOVIING //////
@@ -152,7 +152,7 @@ let limitLeft, limitRight, limitTop, limitBottom, pad1 = 50, pad2 = 25;
     //pos1 = pos3 - touches[0].pageX;
   }
 
-  function mouseMove(e) {
+  function pointerMove(e) {
     e.preventDefault();
 	pos3 = e.clientX;
 	pos4 = e.clientY;
@@ -174,10 +174,10 @@ let limitLeft, limitRight, limitTop, limitBottom, pad1 = 50, pad2 = 25;
     document.removeEventListener('touchend', touchEnd, false); 
     obj2.addEventListener("touchstart", touchStart,{capture:true,once:false});
   }  
-  function mouseEnd() {
-    document.removeEventListener('mouseup',mouseEnd,false);
-    document.removeEventListener('mousemove',mouseMove,false);
-    obj2.addEventListener("mousedown", mouseDown,{capture:true,once:false});
+  function pointerEnd() {
+    document.removeEventListener('pointerup',pointerEnd,false);
+    document.removeEventListener('pointermove',pointerMove,false);
+    obj2.addEventListener("pointerdown", pointerDown,{capture:true,once:false});
   }
   
 }
@@ -229,7 +229,7 @@ let question3 = {
 	id:'question3',
 	width: 400,	height: 200,
 	qTitle:"Pfffft",
-	qText:"This is some <b>different</b> question text. <br/> It is more involed and has a list. <ol><li>item 1</li><li>item 2</li><li>item 3</li></ol>",
+	qText:"This is some <b>different</b> question text. <br/> It is more involved and has a list. <ol><li>item 1</li><li>item 2</li><li>item 3</li></ol>",
 	qAnswer:"This is the answer to question 2."
 }
 </script>
