@@ -7,11 +7,11 @@
 
 <style type='text/css'>
 /*** CSS FOR SIMULATOR ***/
-.bigtext {font:bold 20px serif; fill:white;}
-.smalltext {font:bold 16px serif; fill:black;}
-.smalltextred {font:normal 14px serif; fill:red;}
-.button {background-color: #0000FF; border:2px solid yellow; border-radius: 8px; color:yellow; padding:4px; text-align:center; font-size:20px;}
-.fixedWidth {display:inline-block; width:130px;}
+.button {background-color: #0000FF; border:2px solid yellow; border-radius: 8px; color:yellow; padding:4px; text-align:center; font-size:20px; user-select: none;}
+.fixedWidth {display:inline-block; width:130px; user-select: none;}
+.header {font:bold 20px serif; user-select: none;} 
+.largeprint {font:bold 20px serif; user-select: none;}
+.smallprint {font:bold 16px serif; user-select: none;} 
 
 
 /*** CSS FOR RESIZE ENGINE ***/
@@ -151,6 +151,7 @@ let limitLeft, limitRight, limitTop, limitBottom, pad1 = 50, pad2 = 25;
     let touches = e.changedTouches;
     //pos1 = pos3 - touches[0].pageX;
   }
+
   function mouseMove(e) {
     e.preventDefault();
 	pos3 = e.clientX;
@@ -239,86 +240,102 @@ let question3 = {
 <div id='container'>
 <div></div>
 <div id='svgContainer'>
-<svg id='svgObject' style="position:relative; left:0px; top:0px; background-color:rgb(0,0,0)" onload='svgResize(this,this.width,this.height);' width="800" height="400" viewBox="0 0 800 400">
-
-  <g id="rep1" x="0" y="0" width="400" height="400">
-  <svg>
-  <line x1="25" y1="25" x2="25" y2="375" stroke="white" stroke-width="2"></line>
-  <line x1="25" y1="200" x2="375" y2="200" stroke="white" stroke-width="2"></line>
-  <text class="bigtext" x="10" y="250" fill="white" transform="rotate(-90,0,0) translate(-275,-233)">Radial Velocity (m/s)</text>
-  <text class="bigtext" x="150" y="385">Time (years)</text>
-  <path id="rvcurve" stroke="yellow" opacity=0.75 stroke-width="2" fill="none" d=""></path>
-  
-  <circle id="point" cx="115.41666666666667" cy="70.05898351064354" r="10" fill="url('#limbDarkening')" stroke="none"></circle>
-  <circle id="point2" cx="115.41666666666667" cy="70.05898351064354" r="15" fill="yellow" opacity="0.2" stroke="none"></circle>   
-  
+<svg id='svgObject' style="position:relative; left:0px; top:0px; background-color:rgb(0,0,0)" onload='svgResize(this,this.width,this.height);' width="800" height="450" viewBox="0 0 800 450">
+ 
+ <g id="group1">
+    <g id="header" transform='translate(50,10)'>
+	   <text class="header" x="40" y="30" fill="yellow">ExtraSolarPlanet Radial Velocity Simulator</text>
+	   <line x1="40" y1="38" x2="415" y2="38" stroke="yellow" stroke-width="2">
+    </g>
+  <line x1="25" y1="25" x2="25" y2="375" stroke="white" stroke-width="2"/>
+  <line x1="25" y1="200" x2="375" y2="200" stroke="white" stroke-width="2"/>
+  <text class="largeprint" x="10" y="250" fill="white" transform="rotate(-90,0,0) translate(-275,-233)">Radial Velocity</text>
+  <text class="largeprint" x="170" y="385" fill="white">Time</text>
+  <polyline id="rvcurve" stroke="gray" stroke-width="2" fill="none" points="0,0"  />
+  <circle id="point" cx="200" cy="200" r="10" fill="url('#limbDarkening')" stroke="none" />  
   <!-- Draw Arrow  -->
-  <path id="arrow" stoke="none" fill="lime" d="M 250,150 l 21 -28 v 14 h 70 v 28 h -70 v 14 l -21 -28 z"></path>
-  <text class="smalltext" x="260" y="155">to observer</text>
-  </svg>
-  </g>
+  <path id="arrow" stoke="none" fill="lime" d="M 250,150 l 21 -28 v 14 h 70 v 28 h -70 v 14 l -21 -28 z" />
+  <text class="smallprint" x="260" y="155" fill="black">to observer</text>
+ </g>
 
-<g id="rep2" transform="translate(400,0)"> 
-<svg>
+<g id="group2" transform="translate(400,0)"> 
     <!--  Draw Center of Mass Cross  -->
-    <g stroke="green" stroke-width="2">
-		 <line x1="195" y1="200" x2="205" y2="200"></line>
-		 <line x1="200" y1="195" x2="200" y2="205"></line>
+    <g id="CM" stroke="green" stroke-width="2">
+		 <line x1="195" y1="200" x2="205" y2="200" />
+		 <line x1="200" y1="195" x2="200" y2="205" />
 	</g>
 	<!-- Draw Orbits    -->
-	<circle id="StarOrbit" cx="200" cy="200" r="30" fill="none" stroke-width="1" stroke="lightgray"></circle>  
-	<circle id="PlanOrbit" cx="200" cy="200" r="180" fill="none" stroke-width="1" stroke="lightgray"></circle> 
+	<circle id="StarOrbit" cx="200" cy="200" r="30" fill="none" stroke-width="1" stroke="lightgray" />  
+	<circle id="PlanetOrbit" cx="200" cy="200" r="180" fill="none" stroke-width="1" stroke="lightgray" /> 
+	<text class="largeprint" x="80" y="418" fill="yellow">Assumed Inclination = 90°</text>
     <!-- Draw Star-->
-	<g>
-	   <svg id="Star" x="1.570078687288319" y="29.958886042637214" onclick='loadQuestion(question2);'>
-	        <circle id="StarGlow" cx="200" cy="200" r="15" fill="yellow" opacity="0.3" stroke="none"></circle>   
-            <circle id="StarDisc" cx="200" cy="200" r="10" fill="url('#limbDarkening')" stroke="none"></circle>   
+	<g id="Star" transform="translate(0,-30)">
+	        <circle id="StarGlow" cx="200" cy="200" r="15" fill="yellow" opacity="0.1" stroke="none" />   
+            <circle id="StarDisc" cx="200" cy="200" r="10" fill="url('#limbDarkening')" stroke="none" />   
           <defs>
               <radialGradient id="limbDarkening">
-                  <stop offset="10%" stop-color="yellow"></stop>
-                  <stop offset="95%" stop-color="goldenrod"></stop>
+                  <stop offset="10%" stop-color="yellow" />
+                  <stop offset="95%" stop-color="goldenrod" />
               </radialGradient>
           </defs>
-	    </svg>
 	 </g>
 	 <!-- Draw Planet-->
-	 <g>
-	    <svg id="Planet" x="-9.420472123729851" y="-179.75331625582328" onclick='loadQuestion(question1);'>
-	      <circle cx="200" cy="200" r="10" fill="olivedrab" stroke="none"></circle>   
-		  <circle cx="200" cy="200" r="8" fill="yellowgreen" stroke="none"></circle>  
-		  <circle cx="200" cy="200" r="6" fill="olivedrab" stroke="none"></circle>   
-		  <circle cx="200" cy="200" r="2" fill="moccasin" stroke="none"></circle> 
-        </svg>		  
-	 </g>
-	 <!-- Button for Animate/Stop Toggle  -->
-	 <g id="button">
-	      <rect x="330" y="360" width="60" height="30" rx="10" ry="10" fill="rgb(0,0,255)" stroke="red" stroke-width="2"></rect>
-	      <text id="blabel" class="bigprint" x="330" y="380" fill="white" xml:space="preserve">Animate</text>
-     </g>
+	 <g id="Planet" transform="translate(0,180)">
+	      <circle cx="200" cy="200" r="10" fill="url('#jovianRings')" stroke="none" />  
+		  <circle cx="200" cy="200" r="5" fill="url('#jovianRings')" stroke="none" />  
+		  <defs>
+              <radialGradient id="jovianRings">
+                  <stop offset="10%" stop-color="saddlebrown" />
+                  <stop offset="80%" stop-color="moccasin" />
+              </radialGradient>
+          </defs>
+		  <path id="Phase" opacity="0.8" stroke="none" fill="black" d="M 190 200 A 10 10 0 0 0 210 200 Z" transform="rotate(0,200,200)" />
+ 	 </g>
+	 <!-- Text for Acronym    -->
+	 <text id="Redacronym" class="largeprint" x="165" y="120" fill="rgb(255,0,0)" xml:space="preserve">R, RVP</text>
+	 <text id="Redtext" class="smallprint" x="100" y="140" fill="rgb(255,0,0)" xml:space="preserve">Redshift, Radial Velocity Positive</text>
+	 <text id="Blueacronym" class="largeprint" x="165" y="270" fill="rgb(100,100,255)" xml:space="preserve">B, RVN</text>
+	 <text id="Bluetext" class="smallprint" x="100" y="290" fill="rgb(100,100,255)" xml:space="preserve">Blueshift, Radial Velocity Negative</text> 
+</g>
+
+ <!-- Button for Animate/Stop Toggle  -->
+ <g id="button">
+	  <rect x="250" y="410" width="60" height="30" rx="10" ry="10" fill="rgb(255,0,0)" stroke="blue" stroke-width="2" />
+	  <text id="blabel" class="smallprint" x="250" y="430" fill="white" xml:space="preserve">Animate</text>
+ </g>
+ <!-- Checkboxes for Controlling Planet and Acronym  -->
+<g id="control">
+   <path id="Check1" x="70" y="405" opacity="1.0" fill="none" stroke="white" stroke-width="2" d="M 71 406 l 13 13 v -13 l -13 13 Z" />
+   <rect id="Checkbox1" x="70" y="405" width="15" height="15" opacity="1.0" fill="transparent" stroke="white" stroke-width="2" />	   
+   <text id="Clabel1" class="largeprint" x="90" y="418" opacity="1.0" fill="white" xml:space="preserve">Infer Planet</text> 
+   <path id="Check2" x="70" y="430" opacity="1.0" fill="none" stroke="white" stroke-width="2" d="M 71 431 l 13 13 v -13 l -13 13 Z" />
+   <rect id="Checkbox2" x="70" y="430" width="15" height="15"  fill="transparent" stroke="white" stroke-width="2" />	   
+   <text id="Clabel2" class="largeprint" x="90" y="443" fill="white" xml:space="preserve">Show Acronym</text> 
+ </g>
 	 
-</svg></g>
+<!-- THIS IS THE QUESTION ENGINE SVG MARKUP -->
+<foreignObject x='100' y='50' width='400' height='160' id='questionBox'><div>
+<!-- In the context of SVG embedded in an HTML document, the XHTML namespace could be omitted, but it is mandatory in the context of an SVG document -->
+<div id='questionBoxTitleBar'>
+<span><<</span>
+<span id='questionBoxTitle'>TITLE STUFF</span>
+<span>>></span>
+</div>
+<div id='questionBoxContent'>Question Text</div>	
+</div></foreignObject>
 
-	<!-- THIS IS THE QUESTION ENGINE SVG MARKUP -->
-	<foreignObject x='100' y='50' width='400' height='160' id='questionBox'><div>
-    <!-- In the context of SVG embedded in an HTML document, the XHTML namespace could be omitted, but it is mandatory in the context of an SVG document -->
-	<div id='questionBoxTitleBar'>
-	<span><<</span>
-	<span id='questionBoxTitle'>TITLE STUFF</span>
-	<span>>></span>
-	</div>
-    <div id='questionBoxContent'>Question Text</div>	
-	</div></foreignObject>
-	
-	<foreignObject x='0' y='2' width='500' height='30' id='questionBar' fill'none'><div>
-	<span onclick='loadQuestion(question1);'>1</span>
-	<span onclick='loadQuestion(question2);'>2</span>
-	<span onclick='loadQuestion(question3);'>3</span>
-	<span onclick='loadQuestion(question2);'>ABC</span>
-	<span onclick='toggleQuestionBar();'>&gt;</span>
-	</div></foreignObject>
+<foreignObject x='0' y='2' width='500' height='30' id='questionBar' fill'none'><div>
+<span onclick='loadQuestion(question1);'>1</span>
+<span onclick='loadQuestion(question2);'>2</span>
+<span onclick='loadQuestion(question3);'>3</span>
+<span onclick='loadQuestion(question2);'>ABC</span>
+<span onclick='toggleQuestionBar();'>&gt;</span>
+</div></foreignObject>
+<!-- END QUESTION ENG SVG MARKUP -->
 
+</svg>
 
-</svg></div>
+</div>
 <div></div>
 </div> <!-- end grid container -->
 
@@ -326,19 +343,54 @@ let question3 = {
 
 <!-- JAVASCRIPT FOR SIMULATOR -->
 <script type="text/javascript">
-  var pointx, pointy; 
-	var day = 93;
+    var pointx, pointy; 
+	var day = 90;
 	var RVamp=130;
-	var rate = 360/15000;   // a complete cycle in 15 seconds, in a fake year
-	var prevTime = null;
-  var requestID = null;
+	var xrange=350;
+	var xstart=25;
+	var ystart=200;
+	var rate = 360/20000;   // a complete cycle in 20 seconds, in a fake year
+	var angle=90;
+	var planetx=200;
+	var planety=380;
+	var starx=200;
+	var stary=170;
+	var opac1,opac2;
 	var point = document.getElementById("point");
-  var point2 = document.getElementById("point2");
-    var button = document.getElementById("button");
-	button.addEventListener("mousedown", toggleAnimation);
-    drawStuff(day);
-    
-  addPath();
+    var rvcurve = document.getElementById("rvcurve");
+	var button = document.getElementById("button");
+	var group1 = document.getElementById("group1");
+	var group2 = document.getElementById("group2");
+	var Star = document.getElementById("Star");
+	var Planet = document.getElementById("Planet");
+	var Phase = document.getElementById("Phase");
+	var Check1 = document.getElementById("Check1");
+	var Check2 = document.getElementById("Check2");
+	var PlanetOrbit = document.getElementById("PlanetOrbit");
+	var control  = document.getElementById("control");
+	var Checkbox1 = document.getElementById("Checkbox1");
+	var Checkbox2 = document.getElementById("Checkbox2");
+	var CM = document.getElementById("CM");
+	var Redacronym = document.getElementById("Redacronym");
+	var Redtext = document.getElementById("Redtext");
+	var Blueacronym = document.getElementById("Blueacronym");
+	var Bluetext = document.getElementById("Bluetext");
+	var blabel = document.getElementById("blabel");
+	Checkbox1.addEventListener("pointerdown", togglePlanet);
+	Checkbox2.addEventListener("pointerdown", toggleAcronym);
+	button.addEventListener("pointerdown", toggleAnimation);
+	    
+	var prevTime = null;
+    var requestID = null;
+	
+	var seePlanet = false;
+	var seeAcronym = false;
+	togglePlanet();	
+	toggleAcronym();	
+	
+	drawCurve();
+	drawStuff(day);
+   
 
 function animationCallback(time) {
 
@@ -352,22 +404,64 @@ function animationCallback(time) {
 }
 
 function drawStuff(day) {
-  let pointx,pointy,starx,stary;
-	pointx=25+350*(day/365.0);
-	pointy=200-RVamp*Math.sin(2*Math.PI*day/365.0);
-	point.setAttribute("cx",pointx);
-	point.setAttribute("cy",pointy);
-  point2.setAttribute("cx",pointx);
-	point2.setAttribute("cy",pointy);
+	var str1,str2,str3,str4,str5,transform,angle2;
 
-	starx=30*Math.cos((-day+180.0)*Math.PI/180.0); // Make planet orbit ccw
-  stary=30*Math.sin((-day+180)*Math.PI/180.0);
-  planetx=180*Math.cos(-day*Math.PI/180.0);
-  planety=180*Math.sin(-day*Math.PI/180.0);
-	Star.setAttribute("x",starx);
-	Star.setAttribute("y",stary);
-	Planet.setAttribute("x",planetx);
-	Planet.setAttribute("y",planety);
+	pointx=xstart+xrange*(day/360.0);
+	pointy=ystart-RVamp*Math.sin(2*Math.PI*day/360.0);  // use a 360 day year for trig reasons
+	point.setAttribute("cx",pointx);
+	point.setAttribute("cy",pointy)
+	
+	starx=30*Math.cos((-day+180.0)*Math.PI/180.0); // negative sign makes planet orbit ccw
+    stary=30*Math.sin((-day+180)*Math.PI/180.0);
+    planetx=180*Math.cos(-day*Math.PI/180.0);
+    planety=180*Math.sin(-day*Math.PI/180.0);
+	str1="translate(";
+	str2=starx.toString();
+	str3=",";
+	str4=stary.toString();
+	str5=")";
+	transform=str1.concat(str2).concat(str3).concat(str4).concat(str5);
+	Star.setAttribute("transform",transform);
+	angle2=-day-90;
+	str1="rotate(";
+	str2=angle2.toString();
+	str3=",200,200)";
+	transform=str1.concat(str2).concat(str3);
+	Phase.setAttribute("transform",transform);
+	str1="translate(";
+	str2=planetx.toString();
+	str3=",";
+	str4=planety.toString();
+	str5=")";
+	transform=str1.concat(str2).concat(str3).concat(str4).concat(str5);
+	Planet.setAttribute("transform",transform);
+		
+	if(requestID!==null) {
+	    if (day>0 && day < 180) {
+		    opac1=1.0-0.01*Math.abs(90-day);
+		    opac2=0.0;
+        }
+		else {
+	        opac1=0.0;
+		    opac2=1.0-0.01*Math.abs(270-day);
+		}
+	}
+	Redacronym.setAttribute("opacity", opac1);
+	Redtext.setAttribute("opacity", opac1);
+	Blueacronym.setAttribute("opacity", opac2);
+	Bluetext.setAttribute("opacity", opac2);
+}
+
+function drawCurve() {
+    var pts = [xstart,ystart];
+	var numpt=100;
+	for (var i = 1; i < numpt+1; i++) {
+	     x=xstart+i*xrange/numpt;
+		 y=ystart-RVamp*Math.sin(2*Math.PI*i/numpt);
+	     pts.push(x,y);
+	}
+	pts.join;
+	rvcurve.setAttribute("points", pts);
 }
 
 function toggleAnimation() {
@@ -376,27 +470,55 @@ function toggleAnimation() {
     window.cancelAnimationFrame(requestID);
     requestID = null;
     blabel.textContent="Animate";
-	} else {
-    requestID = window.requestAnimationFrame(animationCallback);
-    prevTime = null;
-    blabel.textContent = "   Pause";
-  }
+	opac1=1.0;
+	opac2=1.0;
+	Redacronym.setAttribute("opacity", opac1);
+	Redtext.setAttribute("opacity", opac1);
+	Blueacronym.setAttribute("opacity", opac2);
+	Bluetext.setAttribute("opacity", opac2);	
+	} else 
+	{
+       requestID = window.requestAnimationFrame(animationCallback);
+       prevTime = null;
+       blabel.textContent = "   Pause";
+    }
 }
 
-function addPath() {
-  let rvcurve = document.getElementById('rvcurve');
-  let i,n,A,x0,y0,x,y,x1,path;
-  A = RVamp; x0 = 25, y0 = 200; x1 = 375; n = 200;
-  path = 'M '+x0+' '+y0;
-  
-  for( i = 1; i <= n; i++ ) {
-    x = x0+i/n*(x1-x0);
-    y = y0-A*Math.sin(i/n*2*Math.PI);
-    path += ' L '+x+' '+y;  
-  }
-  rvcurve.setAttribute('d',path);
+function togglePlanet() {
+    if (seePlanet) {
+       seePlanet=false;
+	   Check1.setAttribute("visibility","visible");
+	   Planet.setAttribute("visibility","visible");
+	   PlanetOrbit.setAttribute("visibility","visible");
+	   CM.setAttribute("visibility","visible");
+	}
+	else {
+	   seePlanet=true;
+	   Check1.setAttribute("visibility","hidden");
+	   Planet.setAttribute("visibility","hidden");
+	   PlanetOrbit.setAttribute("visibility","hidden");
+	   CM.setAttribute("visibility","hidden");
+	}
 }
-
+	
+function toggleAcronym() {
+    if (seeAcronym) {
+       seeAcronym=false;
+	   Check2.setAttribute("visibility", "visible");
+	   Redacronym.setAttribute("visibility", "visible");
+	   Redtext.setAttribute("visibility", "visible");
+	   Blueacronym.setAttribute("visibility", "visible");
+	   Bluetext.setAttribute("visibility", "visible");
+	}
+	else {
+	   seeAcronym=true;
+	   Check2.setAttribute("visibility", "hidden");
+	   Redacronym.setAttribute("visibility", "hidden");
+	   Redtext.setAttribute("visibility", "hidden");
+	   Blueacronym.setAttribute("visibility", "hidden");
+	   Bluetext.setAttribute("visibility", "hidden");
+	}
+}
 
 // ADD THE DRAG
 dragElement('questionBox','questionBoxTitle');
