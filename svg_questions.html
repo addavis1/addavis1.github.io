@@ -314,22 +314,21 @@ let question3 = {
  </g>
 	 
 <!-- THIS IS THE QUESTION ENGINE SVG MARKUP -->
-<foreignObject x='100' y='50' width='400' height='160' id='questionBox'><div>
-<!-- In the context of SVG embedded in an HTML document, the XHTML namespace could be omitted, but it is mandatory in the context of an SVG document -->
-<div id='questionBoxTitleBar'>
-<span><<</span>
-<span id='questionBoxTitle'>TITLE STUFF</span>
-<span>>></span>
-</div>
-<div id='questionBoxContent'>Question Text</div>	
-</div></foreignObject>
-
 <foreignObject x='0' y='2' width='500' height='30' id='questionBar' fill'none'><div>
 <span onclick='loadQuestion(question1);'>1</span>
 <span onclick='loadQuestion(question2);'>2</span>
 <span onclick='loadQuestion(question3);'>3</span>
 <span onclick='loadQuestion(question2);'>ABC</span>
 <span onclick='toggleQuestionBar();'>&gt;</span>
+</div></foreignObject>
+
+<foreignObject x='100' y='50' width='400' height='160' id='questionBox'><div>
+<div id='questionBoxTitleBar'>
+<span><<</span>
+<span id='questionBoxTitle'>TITLE STUFF</span>
+<span>>></span>
+</div>
+<div id='questionBoxContent'>Question Text</div>	
 </div></foreignObject>
 <!-- END QUESTION ENG SVG MARKUP -->
 
