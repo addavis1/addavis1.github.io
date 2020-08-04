@@ -36,15 +36,16 @@ svg { display: block; margin: 0 auto; padding: 0; }
 	background-color: white;
 }
 
-#questionBoxTitleBar { display: flex; }
+#questionBoxTitleBar { display: flex; font-weight: bold; }
 #questionBoxTitleBar > span { border-bottom: 1px solid black; padding: 0.125rem 0.5rem 0.125rem; background-color: #AAAAAA; }
 #questionBoxTitleBar > span:nth-child(1) { flex: 1; text-align: left; padding-left: 0.5rem; min-width: 2rem; padding-right: 0; cursor: pointer; }
-#questionBoxTitleBar > span:nth-child(2) { flex: 10; text-align: center; min-width: 6rem; cursor: move; }
-#questionBoxTitleBar > span:nth-child(3) { flex: 1; text-align: right; padding-right: 0.5rem; min-width: 2rem; padding-left: 0; cursor: pointer; }
+#questionBoxTitleBar > span:nth-child(2) { flex: 20; text-align: center; min-width: 6rem; cursor: move; }
+#questionBoxTitleBar > span:nth-child(3) { flex: 1; text-align: center; padding-right: 0; min-width: 2rem; padding-left: 0; cursor: pointer; }
+#questionBoxTitleBar > span:nth-child(4) { flex: 1; text-align: right; padding-right: 0.5rem; min-width: 0.5rem; padding-left: 0; cursor: pointer; }
 
 #questionBoxContent { padding: 0.5rem; }
 
-#questionBar > div {  background-color: none; opacity: 0.6; display: inline-block; padding: 1px 1px 2px 1px; font-family: sans-serif; }
+#questionBar > div {  background-color: none; opacity: 1; display: inline-block; padding: 1px 1px 2px 1px; font-family: sans-serif; }
 #questionBar span { display: none; padding: 0 0.4rem; background-color: yellow; height: 100%; border-radius: 0.5rem; cursor: pointer; text-align: center; }
 #questionBar span:last-child { display: inline-block; font-weight: bold; }
 </style>
@@ -84,9 +85,10 @@ function loadQuestion(q) {
 	let questionBox = document.getElementById('questionBox');
 	let questionBoxContent = document.getElementById('questionBoxContent');
 	let questionBoxTitle = document.getElementById('questionBoxTitle');
-
-
-	if ( typeof(q) == 'object' ) { // load the question popup
+	if( typeof(q) == 'undefined' ) { questionBox.style.display = 'none'; }
+	else if ( q == 'nextQ' ) { }
+	else if ( q == 'prevQ' ) { alert('hey'); }	
+	else if ( typeof(q) == 'object' ) { // load the question popup
 		if( (questionBox.style.display == '' || questionBox.style.display == 'none') ||	 q.id != currentQuestionId ) { questionBox.style.display = 'block'; }
 		else { questionBox.style.display = 'none'; }
 		
@@ -202,6 +204,7 @@ function toggleQuestionBar() {
 <!-- QUESTIONS for the ENGINE -->
 <script type='text/javascript'>
 let currentQuestionId = '';
+let questionSelections = [question1,question2,question3,
 
 let questionTemplate = {
 	id: 'unique' /* required */,
@@ -324,9 +327,10 @@ let question3 = {
 
 <foreignObject x='100' y='50' width='400' height='160' id='questionBox'><div>
 <div id='questionBoxTitleBar'>
-<span><<</span>
+<span onclick='loadQuestion("prevQ");'><<</span>
 <span id='questionBoxTitle'>TITLE STUFF</span>
-<span>>></span>
+<span onclick='loadQuestion("nextQ");'>>></span>
+<span onclick='loadQuestion();'>&times;</span>
 </div>
 <div id='questionBoxContent'>Question Text</div>	
 </div></foreignObject>
