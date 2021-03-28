@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<title>jsvgplot</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta charset='UTF-8' />
+<script src='js/jsvgplot.js'></script>
+<style type='text/css'>
+svg { font-size: 16px; }
+
+.bob { 
+	fill: blue;
+	stroke: black;
+	stroke-width: 2;
+}
+
+</style>   
+</head>
+<body>
+<!--<div style='position: absolute; width: 40vw; height: 40vw; background-color: rgba(0,255,0,0.2);'></div>-->
+<svg id='testplot' style='border: 1px solid black; width: 80vw; height: 40vw; display: block; margin: 0px auto; padding: 0px;'>
+<script type='text/javascript'>
+(function(id) {
+	let coords = new createCoords(id,{'coordsRange':[0,0,8.5,8.5],'clip':true,'margin':['1rem','1.5rem','5rem','5rem']});
+	coords.plotAxis('xy',{'minorNx':3,'minorNy':1,'xaxisV':0.5},{'stroke-width':2.5},{},{'font-size':'1.75rem'});
+	coords.plotAxisText('xy',{'xaxis':'this is the x axis','rotatey':-90,'rotatex':0,'dv':0},{});
+	
+	coords.plotText('AbXdA\u03bb',{'x':5,'y':5},{'dominant-baseline':'hanging'}	);	 
+	
+	coords.plotObject('clip',{'x1':coords.xMin,'x2':coords.xMax,'y1':coords.yMin,'y2':coords.yMax});
+	coords.plotObject('rect',{'x1':0,'y1':0,'x2':10,'y2':10},{'fill':'blue','fill-opacity':0.125});
+	//coords.plotObject('path',{'d':'M 0 0 L 4 2 l 2 2 l 4 1 l 2 0'},{'stroke':'green','stroke-width':4,'fill':'none'});
+	coords.plotObject('circle',{'cx':5,'cy':5},{'fill':'green','r':15,'opacity':0.5});		
+	coords.plotFunction(testFunc,{'a':3E3,'b':6},{'n':400,'points':true,'z':false,'x1':0,'x2':8.5},{'stroke':'blue','stroke-width':2,'fill':'red','fill-opacity':0.2},{'i0':0,'dn':10},{'stroke':'black','stroke-width':2,'stroke-opacity':1});	
+	
+})('testplot');
+
+function testFunc(x,param) {
+	let a = param['a']; let b = param['b'];
+	if(x==0) { x = 1E-15; }
+	let y = a*Math.pow(x,-5)/(Math.exp(b/x)-1);
+	return y;
+}
+</script>
+</svg>
+
+
+
+</body>
+</html>
