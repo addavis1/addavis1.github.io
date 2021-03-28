@@ -15,7 +15,7 @@ svg { font-size: 16px; }
 <svg id='testplot' style='border: 1px solid black; width: 80vw; height: 40vw; display: block; margin: 0px auto; padding: 0px;'>
 <script type='text/javascript'>
 (function(id) {
-	let coords = new createCoords(id,{'coordsRange':[0,0,8.5,8.5],'clip':true,'margin':['1rem','1.5rem','5rem','5rem']});
+	let coords = new createCoords(id,{'coordsRange':[0,0,7.33,8.5],'clip':true,'margin':['1rem','1.5rem','5rem','5rem']});
 	coords.plotAxis('xy',{'minorNx':3,'minorNy':1,'xaxisV':0.5},{'stroke-width':2.5},{},{'font-size':'1.75rem'});
 	coords.plotAxisText('xy',{'xaxis':'this is the x axis','rotatey':-90,'rotatex':0,'dv':0},{});
 	
@@ -27,7 +27,10 @@ svg { font-size: 16px; }
 	coords.plotObject('rect',{'x1':0,'y1':0,'x2':10,'y2':10},{'fill':'blue','fill-opacity':0.125});
 	//coords.plotObject('path',{'d':'M 0 0 L 4 2 l 2 2 l 4 1 l 2 0'},{'stroke':'green','stroke-width':4,'fill':'none'});
 			
-	coords.plotFunction(testFunc,{'a':3E3,'b':6},{'n':400,'points':true,'z':false,'x1':0,'x2':8.5},{'stroke':'blue','stroke-width':2,'fill':'red','fill-opacity':0.2},{'i0':0,'dn':10},{'stroke':'black','stroke-width':2,'stroke-opacity':1});	
+	coords.plotFunction(testFunc,{'a':3E3,'b':6},{'n':400,'points':true,'z':false,'x1':0,'x2':8.5},{'stroke':'blue','stroke-width':2,'fill':'red','fill-opacity':0.2},{'i0':0,'dn':10},{'stroke':'black','stroke-width':2,'stroke-opacity':1});
+
+	coords.plotFunction(testFunc2,{'A':2,'y0':3.5,'T':3,'phi':30},{'n':400,'points':false},{'stroke-width':4,'stroke-dasharray':'10 10'});
+	
 	
 })('testplot');
 
@@ -37,6 +40,13 @@ function testFunc(x,param) {
 	let y = a*Math.pow(x,-5)/(Math.exp(b/x)-1);
 	return y;
 }
+
+function testFunc2(t,param) {
+	let A = param['A']; let y0 = param['y0']; let phi = param['phi']; let T = param['T'];
+	let y = y0+A*Math.sin( 2*Math.PI/T*t+phi*2*Math.PI/180);
+	return y;
+}
+
 </script>
 </svg>
 
