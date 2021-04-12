@@ -12,21 +12,20 @@ svg { font-size: 16px; }
 </head>
 <body>
 <!--<div style='position: absolute; width: 40vw; height: 40vw; background-color: rgba(0,255,0,0.2);'></div>-->
-<svg id='testplot' style='border: 1px solid black; width: 80vw; height: 40vw; display: block; margin: 0px auto; padding: 0px;'>
+<svg id='testplot' style='border: 1px solid black; width: 80vw; height: 80vh; display: block; margin: 5vh auto; padding: 0px;'>
 <script type='text/javascript'>
 (function(id) {
-	let coords = new createCoords(id,{'coordsRange':[0,0,7.33,8.5],'clip':true,'margin':['1rem','1.5rem','5rem','5rem']});
-	coords.plotAxis('xy',{'minorNx':3,'minorNy':1,'xaxisV':0.5,'xaxisLabels':['A','B','C','D','E','F','G','H','I']},{'stroke-width':2.5},{},{'font-size':'1.75rem'});
-	coords.plotAxisText('xy',{'xaxis':'this is the x axis','rotatey':-90,'rotatex':0,'dv':0},{});
+	let coords = new createCoords(id,{'coordsRange':[0,0,10.5,10],'log':'z','clip':true,'margin':['1rem','1.5rem','5rem','8rem']});
+	coords.plotAxis('xy',{'minorNx':3,'minorNy':4,'tickY':1,'xaxisLabelsShow':true,'xaxisLabels2':['A','B','C','D','E','F','G','H','I','J','K','L','M'],'showY0':true},{},{'stroke':'black','stroke-width':5},{});
+	coords.plotAxisText('xy',{'xposition':'bottom','xaxisH':0.5,'yaxisV':0.4,'ydu':-30});
+	//coords.plotObject('rect',{'x1':coords.uMin,'y1':coords.vMin,'x2':coords.uMax,'y2':coords.vMax,'coords':'svg','append':coords.svg.g1,'rx':50,'ry':50},{'fill':'gray','fill-opacity':0.2});
+	coords.plotObject('rect',{'x1':4,'x2':8,'y1':5,'y2':8,'rx':.5,'ry':.5},{'fill':'green','opacity':0.25});
+	coords.plotObject('circle',{'cx':4,'cy':3,'append':coords.svg.g2},{'fill':'red','opacity':0.5,'r':10});
 	
-	coords.plotText('\u03bbgbXdg\u03bb',{'x':5,'y':5,'rotate':-30},{'font-size':'4rem','dominant-baseline':'central','font-family':'Cambria'});	 
-	coords.plotObject('circle',{'cx':5,'cy':5},{'fill':'green','r':15,'opacity':0.5});
+	coords.plotFunction(testFunc,{'a':3E3,'b':6},{'n':800,'points':true,'z':true,'y1':1,'x1':0.1,'x2':8.5,'close':true},{'stroke':'blue','stroke-width':2,'fill':'red','fill-opacity':0.2},{'i0':0,'dn':40},{'stroke':'black','stroke-width':2,'stroke-opacity':1});
+	//coords.plotFunction(testFunc2,{'A':2,'y0':3.5,'T':3,'phi':30},{'n':400,'points':false},{'stroke-width':4,'stroke-dasharray':'10 10'});
 	
-	coords.plotObject('rect',{'x1':0,'y1':0,'x2':10,'y2':10},{'fill':'blue','fill-opacity':0.125});
-	coords.plotObject('path',{'d':'M 0 0 L 4 2 l 2 2 l 4 1 l 2 0'},{'stroke':'green','stroke-width':4,'fill':'none'});
-			
-	coords.plotFunction(testFunc,{'a':3E3,'b':6},{'n':800,'points':true,'z':false,'x1':0,'x2':6.5,'close':true},{'stroke':'blue','stroke-width':2,'fill':'red','fill-opacity':0.2},{'i0':0,'dn':30},{'stroke':'black','stroke-width':2,'stroke-opacity':1});
-	coords.plotFunction(testFunc2,{'A':2,'y0':3.5,'T':3,'phi':30},{'n':400,'points':false},{'stroke-width':4,'stroke-dasharray':'10 10'});
+	coords.plotText('\u03bbgbXdg\u03bb',{'x':5,'y':5,'rotate':-30},{'font-size':'4rem','dominant-baseline':'central','font-family':'Cambria'});
 	
 })('testplot');
 
@@ -34,7 +33,7 @@ function testFunc(x,param) {
 	let a = param['a']; let b = param['b'];
 	if(x==0) { x = 1E-15; }
 	let y;
-	if( x > 2.73 && x < 2.85 ) { y = 0; }
+	if( x > 2.73 && x < 2.85 && false) { y = 0; }
 	else { y = a*Math.pow(x,-5)/(Math.exp(b/x)-1); }
 	return y;
 }
