@@ -28,14 +28,29 @@ function createCoords(svgid,parameters) {
 	
 		// svg area [min-u,max-v,width,height] of the plotBox		
 	this.plotBox = [marginLeft,marginTop,this.svg.clientWidth-(marginRight+marginLeft),this.svg.clientHeight-(marginTop+marginBottom)];
-	
 		// svg coordinate Range
 	this.uMin = this.plotBox[0];
 	this.uMax = this.plotBox[0]+this.plotBox[2];
 	this.vMin = this.plotBox[1];
 	this.vMax = this.plotBox[1]+this.plotBox[3];
+	
+	this.defineCoords(parameters);
+	
+	  // define two special groups for this coordinate system
+  var g1 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  var g2 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+	
+  /* this.g1.id = this.id+'_g1'; this.g2.id = this.id+'_g2';  */
+  this.svg.g1 = g1; // default for plots
+  this.svg.g2 = g2;  // default for axes
+  this.svg.appendChild(g2);
+  this.svg.appendChild(g1);
+	
+	if( parameters['clip'] == true ) { this.plotObject('clip',{'x1':this.xMin,'x2':this.xMax,'y1':this.yMin,'y2':this.yMax}); }
+} // END function createCoords()
 
-	// plot coordinates Range
+createCoords.prototype.defineCoords = function(parameters) {
+			// plot coordinates Range
 	if( parameters == undefined ) { var parameters = {}; }
 	if( parameters['coordsRange'] == undefined ) { parameters['coordsRange'] = {}; }
 	this.xMin = parameters['coordsRange'][0] != undefined ? parameters['coordsRange'][0] : 0;
@@ -47,7 +62,7 @@ function createCoords(svgid,parameters) {
 	this.coordsRange = [this.xMin,this.yMin,this.xMax,this.yMax,this.width,this.height];
 	this.y0 = ( this.yMin <= 0 && this.yMax >= 0 ) ? 0 : this.yMin;
 	this.x0 = ( this.xMin <= 0 && this.xMax >= 0 ) ? 0 : this.xMin;
-
+	
 	// define simple linear coordinate transformation    
 	let a,b,c,d,e,f;
 	b = c = 0;
@@ -81,19 +96,8 @@ function createCoords(svgid,parameters) {
   let rxy = Math.sqrt( (this.xMax-this.xMin)*(this.xMax-this.xMin)+(this.yMax-this.yMin)*(this.yMax-this.yMin) );
 	this.r = function(r) { return( r*ruv/rxy ); }
 	this.uv = function( uv ) { return( uv*rxy/ruv ); }
-	
-	  // define two special groups for this coordinate system
-  var g1 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  var g2 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-	
-  /* this.g1.id = this.id+'_g1'; this.g2.id = this.id+'_g2';  */
-  this.svg.g1 = g1; // default for plots
-  this.svg.g2 = g2;  // default for axes
-  this.svg.appendChild(g2);
-  this.svg.appendChild(g1);
-	
-	if( parameters['clip'] == true ) { this.plotObject('clip',{'x1':this.xMin,'x2':this.xMax,'y1':this.yMin,'y2':this.yMax}); }
-} // END function createCoords()
+}
+
 
 function setAttributes(obj,attributes) { for( attribute in attributes ) { obj.setAttributeNS(null,attribute,attributes[attribute]); } }
 
@@ -122,7 +126,7 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 	this.xaxisLabelsShow = attributes['xaxisLabelsShow'] != undefined ? attributes['xaxisLabelsShow'] : attributes['axisLabelsShow'] != undefined ? attributes['axisLabelsShow'] : true;
 	this.yaxisLabelsShow = attributes['yaxisLabelsShow'] != undefined ? attributes['yaxisLabelsShow'] : attributes['axisLabelsShow'] != undefined ? attributes['axisLabelsShow'] : true;
 	
-		
+	
 	let i,d,x1,x2,y1,y2,x,y,dx,dy,t0,xt,yt;
 	x0 = attributes['x0']; y0 = attributes['y0'];
 	x1 = attributes['x1']; y1 = attributes['y1'];
@@ -194,7 +198,7 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 	} // END plot x Axis	
 	
 	// PLOT Y AXIS
-	if( axis == 'xy' || axis == 'y' ) {
+	if( axis == 'xy' || axis == 'y' ) { 
 		let ytxt = new Array();
 		let ypts = new Array();
 		// ytickL and tickNy defined earlier
@@ -228,10 +232,12 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 			}			
 		}
 		n = ypts.length;
-		
+				
 		// get Y axis labels
 		if( attributes['yaxisLabels'] != undefined && attributes['yaxisLabels'].length >= n ) { ytxt = attributes['yaxisLabels']; }
-		else { for( i = 0; i < n; i++ ) { ytxt[i] = ypts[i]; } }		
+		else { for( i = 0; i < n; i++ ) { ytxt[i] = ypts[i]; } }
+		ytxt = fixNumbers(ytxt);
+		
 		// plot y-axis
 		d='';
 		xt = attributes['xt'] != undefined ? attributes['xt'] : this.u(x0)-ytickL-2;
@@ -240,8 +246,8 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 			y = ypts[i];
 			if( y != y0 || showY0 == true ) {	
 				d += 'M '+this.u(x0)+' '+' '+this.v(y)+' h '+(-ytickL)+' ';
-				if( this.yaxisLabelsShow !== false ) {
-					this.plotText(ytxt[i],{'x':xt,'y':this.v(y),'append':xAxis,'du':du,'coords':'svg'},Object.assign({'text-anchor':'end'},labelSVG)	);
+				if( this.yaxisLabelsShow != false ) {					
+					this.plotText(ytxt[i],{'x':xt,'y':this.v(y),'append':yAxis,'du':du,'coords':'svg'},Object.assign({'text-anchor':'end'},labelSVG)	);
 				}
 			}
 			// add minor axis points
@@ -262,6 +268,7 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 		}		
 		this.plotObject('path',{'d':d,'append':yAxis,'coords':'svg'},axisSVG);
 		this.plotObject('path',{'d':'M '+x0+' '+y1+' V '+y2,'append':yAxis},axisSVG);
+		yAxis.id = 'yAxisPlot';
 		axisGroup.appendChild(yAxis);
 		axisGroup.appendChild(yLabels);
 	} // END plot y Axis
@@ -335,8 +342,52 @@ createCoords.prototype.plotText = function(text,attributes,textSVG) {
 	let dv = attributes['dv'] != undefined ? attributes['dv'] : 0;
 	let dx = attributes['dx'] != undefined ? attributes['dx'] : 0;
 	let dy = attributes['dy'] != undefined ? attributes['dy'] : 0;
+	let subx = attributes['subx'] != undefined ? attributes['subx'] : 0; 
+	let suby = attributes['suby'] != undefined ? attributes['suby'] : 4; 
+	
+	
 	if( textSVG == undefined ) { var textSVG = {}; }	
 	textSVG = Object.assign({'font-size':'2rem','dominant-baseline':'central','text-anchor':'middle','font-family':'Calibri'},textSVG == undefined ? {} : textSVG );
+	
+	let objText;
+	let re1 = new RegExp("[_]");
+	let re2 = new RegExp("[\\^]");
+	if(re1.test(text)) { // subscript
+			let str = text.split(/_/g);
+			objText = document.createTextNode(str[0]);				
+			obj.appendChild(objText);
+			let tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
+			setAttributes(tspan,{'font-size':'65%','dominant-baseline':'central','dy':suby});
+			tspan.appendChild(document.createTextNode(str[1]));
+			obj.appendChild(tspan);
+			if( str[2] ) {
+				let tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
+				setAttributes(tspan2,{'dy':-suby});
+				tspan2.appendChild(document.createTextNode(str[2]));
+				obj.appendChild(tspan2);
+			}			
+	}
+	else if(re2.test(text)) { // superscript
+			let str = text.split(/\^/g);
+			objText = document.createTextNode(str[0]);				
+			obj.appendChild(objText);
+			let tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
+			setAttributes(tspan,{'font-size':'65%','dominant-baseline':'central','dy':-2*suby});
+			tspan.appendChild(document.createTextNode(str[1]));
+			obj.appendChild(tspan);
+			if( str[2] ) {
+				let tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
+				setAttributes(tspan2,{'dy':-suby});
+				tspan2.appendChild(document.createTextNode(str[2]));
+				obj.appendChild(tspan2);
+			}	
+	}
+  else {
+			objText = document.createTextNode(text); 
+			obj.appendChild(objText);  
+	}
+	
+	
 	
 	let u,v,r;
 	if( attributes['coords'] == 'svg' ) { u = v = r = function(x) { return x; } }
@@ -346,12 +397,9 @@ createCoords.prototype.plotText = function(text,attributes,textSVG) {
 		let rotate = 'rotate('+attributes['rotate']+' '+(u(x)+du)+' '+(v(y)+dv)+')';
 		textSVG = Object.assign({'transform':rotate},textSVG == undefined ? {} : textSVG );
 	}
-	// let str = text.split(/_/g) // creates array split by _
-	let objText = document.createTextNode(text);
+	
 	setAttributes(obj,{'x':u(x+dx,y)+du,'y':v(y+dy,x)+dv});
 	setAttributes(obj,textSVG);
-	obj.appendChild(objText);  
-
 	let append = attributes['append'] != undefined ? attributes['append'] : this.svg.g1;
 	append.appendChild(obj);  
 }
@@ -663,5 +711,12 @@ function toHTML(val,prec,deg) {
   if( val < 0 ) { val = '−'+Math.abs(val); }
   if( deg != undefined ) { val += '°'; }
   return val; 
+}
+
+function fixNumbers(val) {
+	for ( let i = 0; i < val.length; i++ ) {
+			val[i] = Math.round(val[i]*1E12)/1E12;	
+	}	
+	return val;
 }
 
