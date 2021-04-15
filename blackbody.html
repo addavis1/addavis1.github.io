@@ -52,7 +52,11 @@ function drawbbCurve(T) {
 	let peaky = blackbody(peakx,{'T':T});
 	let dy = peaky/50;	
 	let ticky;	
-	ticky = Math.pow(10,Math.floor(Math.log10(peaky)));
+	let temp;
+	if( Math.log10(peaky) > 1 ) { temp = Math.log10(peaky)%1 > 0.5 ? 1 : 2; }	
+	else if ( Math.log10(peaky) > 0.1 ) { temp = Math.log10(10*peaky)%1 > 0.5 ? 1 : 2; }
+	else{ temp = Math.log10(100*peaky)%1 > 0.5 ? 1 : 2; }
+	ticky = Math.pow(10,Math.floor(Math.log10(peaky)))/temp;
 	
 
 	
