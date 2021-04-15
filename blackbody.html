@@ -15,14 +15,13 @@ svg { font-size: 16px; }
 <svg id='bbsvg' style='border: 1px solid black; width: 80vw; height: 80vh; display: block; margin: 5vh auto; padding: 0px;' onload='bbinit(this.id);'>
 <!--<image id='visible_spectrum' x='271.53' y='693' height='30' width='190' href='Linear_visible_spectrum.svg'/> <!-- 380nm to 750nm -->
 <script type='text/javascript'>
-var coords;
+var coords; // global scope
 function bbinit(id) {
-	coords = new createCoords(id,{'coordsRange':[100,0,2800,14],'clip':true,'margin':['1rem','1.5rem','5rem','8rem']});	
+	coords = new createCoords(id,{'coordsRange':[100,0,2800,14],'clip':true,'margin':['1rem','1.5rem','5rem','8rem']});		
+	coords.plotAxis('x',{'minorNx':4,'minorNy':1,'tickY':1,'tickX':500,'x0':100,'xpts':[100,500,1000,1500,2000,2500],'xaxisLabelsShow':true,'showX0':true},{},{'stroke':'black','stroke-width':5},{});
+	coords.plotAxisText('xy',{'xaxis':'wavelength (nm)','yaxis':'spectral radiance^\u2020','xposition':'bottom','xaxisH':0.5,'yaxisV':0.45,'ydu':-50});
 	coords.plotObject('image',{'x1':380,'y1':0,'x2':750,'y2':-0.4,'href':'https://addavis1.github.io/images/Linear_visible_spectrum.svg','append':coords.svg.g2,});
-	coords.plotAxis('xy',{'minorNx':4,'minorNy':1,'tickY':1,'tickX':500,'x0':100,'xpts':[100,500,1000,1500,2000,2500],'xaxisLabelsShow':true,'showX0':true},{},{'stroke':'black','stroke-width':5},{});
-	coords.plotAxisText('xy',{'xaxis':'wavelength (nm)','yaxis':'intensity / wavelength / steradian (kW/sr/m/m/nm)','xposition':'bottom','xaxisH':0.5,'yaxisV':0.45,'ydu':-30});
-	
-		drawbbCurve(4000);
+	drawbbCurve(5000);
 }
 
 function blackbody(lambda,param) {
@@ -39,21 +38,39 @@ function blackbody(lambda,param) {
 }
 
 function drawbbCurve(T) {
-	id = 'bbsvg';
-	let curve = document.getElementById('bbc1');	
-	if( curve ) { curve.remove(); }
-	
+	id = 'bbsvg';		
+	if( document.getElementById('bbc1') != null ) { curve = document.getElementById('bbc1').remove(); }		
+	if( document.getElementById('yAxisPlot') != null ) { curve = document.getElementById('yAxisPlot').remove(); }		
+	coords.plotObject('g',{'append':coords.svg.g1},{'id':'bbc1'});
+	curve = document.getElementById('bbc1');	
+
 	let index = Math.round((T-1000)/100);
 	let color = bbcolors[index][1];
 	
-	coords.plotFunction(blackbody,{'T':T},{'n':800,'points':false,'x1':1,'z':false,'close':true,'id':'bbc1'},{'stroke':'black','stroke-width':2,'fill':color},{'i0':0,'dn':40},{'stroke':'black','stroke-width':2,'stroke-opacity':1});
-
+	// 2.897771955E3 m*K
+	let peakx = 2.897771955*1E6/T;
+	let peaky = blackbody(peakx,{'T':T});
+	let dy = peaky/50;	
+	let ticky;
+	if( peaky >= 100 ) { ticky = 50; }
+	else if ( peaky > 20 ) { ticky = 5; }
+	else if ( peaky > 2 ) { ticky = 1; }
+	else if ( peaky > 0.5 ) { ticky = 0.1; }	
+	else if ( peaky > 0.05 ) { ticky = 0.01; }
+	else { ticky = 0.0005; }
+	
+	coords.defineCoords({'coordsRange':[100,0,2800,peaky*1.2]});	
+	coords.plotAxis('y',{'minorNy':3,'tickY':ticky},{},{'stroke':'black','stroke-width':5},{});	
+	coords.plotFunction(blackbody,{'T':T},{'n':800,'points':false,'x1':99,'x2':2850,'z':false,'close':true,'append':curve},{'stroke':'black','stroke-width':2,'fill':color},{'i0':0,'dn':40},{'stroke':'black','stroke-width':2,'stroke-opacity':1});
+	coords.plotObject('path',{'d':'M '+peakx+' '+(peaky+dy)+' v '+(-2*dy),'append':curve},{'stroke':'black','stroke-width':3});
+	coords.plotText('\u03bb='+toHTML(peakx,5)+'nm',{'x':peakx,'y':peaky,'du':10,'dv':-20,'append':curve},{'text-anchor':'start','font-size':'1.75rem','font-family':'Cambria'});
+	
 }
 
 </script>
 </svg>
 
-<input type='range' min='100' max='10000' onchange='drawbbCurve(this.value);'/>
+<input type='range' min='1000' max='10000' onchange='drawbbCurve(this.value);'/>
 
 
 </body>
