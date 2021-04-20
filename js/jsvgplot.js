@@ -352,49 +352,57 @@ createCoords.prototype.plotText = function(text,attributes,textSVG) {
 	let dx = attributes['dx'] != undefined ? attributes['dx'] : 0;
 	let dy = attributes['dy'] != undefined ? attributes['dy'] : 0;
 	let subx = attributes['subx'] != undefined ? attributes['subx'] : 0; 
-	let suby = attributes['suby'] != undefined ? attributes['suby'] : 4; 
+	let suby = attributes['suby'] != undefined ? attributes['suby'] : 8;
+	let supx = attributes['supx'] != undefined ? attributes['supx'] : 0; 
+	let supy = attributes['supy'] != undefined ? attributes['supy'] : 12; 	
 	
 	
 	if( textSVG == undefined ) { var textSVG = {}; }	
 	textSVG = Object.assign({'font-size':'2rem','dominant-baseline':'central','text-anchor':'middle','font-family':'Calibri'},textSVG == undefined ? {} : textSVG );
 	
-	let objText;
 	let re1 = new RegExp("[_]");
 	let re2 = new RegExp("[\\^]");
-	if(re1.test(text)) { // subscript
-			let str = text.split(/_/g);
-			objText = document.createTextNode(str[0]);				
-			obj.appendChild(objText);
-			let tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
-			setAttributes(tspan,{'font-size':'65%','dominant-baseline':'central','dy':suby});
-			tspan.appendChild(document.createTextNode(str[1]));
-			obj.appendChild(tspan);
-			if( str[2] ) {
-				let tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
-				setAttributes(tspan2,{'dy':-2*suby});
-				tspan2.appendChild(document.createTextNode(str[2]));
-				obj.appendChild(tspan2);
-			}			
+	if(re1.test(text) == true ) { // subscript
+		let str = text.split(/_/g);
+		// before the subscript
+		let tspan0 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
+		setAttributes(tspan0,{'dy':0});
+		tspan0.appendChild(document.createTextNode(str[0]));
+		obj.appendChild(tspan0);
+		// subscript
+		let tspan1 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
+		setAttributes(tspan1,{'font-size':'65%','dominant-baseline':'central','dy':1*suby});
+		tspan1.appendChild(document.createTextNode(str[1]));
+		obj.appendChild(tspan1);
+		// after the subscript
+		if( str[2] != undefined ) { 
+			let tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
+			setAttributes(tspan2,{'dy':-1*suby});
+			tspan2.appendChild(document.createTextNode(str[2]));
+			obj.appendChild(tspan2);
+		}			
 	}
 	else if(re2.test(text)) { // superscript
-			let str = text.split(/\^/g);
-			objText = document.createTextNode(str[0]);				
-			obj.appendChild(objText);
-			let tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
-			setAttributes(tspan,{'font-size':'65%','dominant-baseline':'central','dy':-2*suby});
-			tspan.appendChild(document.createTextNode(str[1]));
-			obj.appendChild(tspan);
-			if( str[2] ) {
-				let tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
-				setAttributes(tspan2,{'dy':-suby});
-				tspan2.appendChild(document.createTextNode(str[2]));
-				obj.appendChild(tspan2);
-			}	
+		let str = text.split(/\^/g);
+		// before the superscript
+		let tspan0 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
+		setAttributes(tspan0,{'dy':0});
+		tspan0.appendChild(document.createTextNode(str[0]));
+		obj.appendChild(tspan0);
+		// superscript
+		let tspan1 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
+		setAttributes(tspan1,{'font-size':'65%','dominant-baseline':'central','dy':-1*supy});
+		tspan1.appendChild(document.createTextNode(str[1]));
+		obj.appendChild(tspan1);
+		// after the superscript
+		if( str[2] != undefined ) {
+			let tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
+			setAttributes(tspan2,{'dy':1*supy});
+			tspan2.appendChild(document.createTextNode(str[2]));
+			obj.appendChild(tspan2);
+		}			
 	}
-  else {
-			objText = document.createTextNode(text); 
-			obj.appendChild(objText);  
-	}
+  else { obj.appendChild(document.createTextNode(text)); }
 
 	let u,v,r;
 	if( attributes['coords'] == 'svg' ) { u = v = r = function(x) { return x; } }
