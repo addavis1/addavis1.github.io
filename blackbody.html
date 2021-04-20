@@ -99,8 +99,10 @@ function drawbbCurve(T,id) {
 		coords.plotObject('g',{'append':coords.svg.g1},{'id':curveid});
 		let curve = document.getElementById(curveid);		
 		coords.plotFunction(blackbody,{'T':T},{'n':800,'points':false,'x1':99,'x2':2850,'z':false,'close':true,'append':curve},{'stroke':'black','stroke-width':2,'fill':color},{'i0':0,'dn':40},{'stroke':'black','stroke-width':2,'stroke-opacity':1});
-		coords.plotObject('path',{'d':'M '+peakx+' '+(peaky+dy)+' v '+(-2*dy),'append':curve},{'stroke':'black','stroke-width':3});
-		coords.plotText('\u03bb_'+num+'_='+toHTML(peakx,5)+'nm',{'x':peakx,'y':peaky,'du':10,'dv':-20,'append':curve},{'text-anchor':'start','font-size':'1.75rem','font-family':'Cambria'});
+		if( document.getElementById('showpeak').checked == true ) {
+			coords.plotObject('path',{'d':'M '+peakx+' '+(peaky+dy)+' v '+(-2*dy),'append':curve},{'stroke':'black','stroke-width':3});
+			coords.plotText('\u03bb_'+num+'_='+toHTML(peakx,5)+'nm',{'x':peakx,'y':peaky,'du':10,'dv':-20,'append':curve},{'text-anchor':'start','font-size':'1.75rem','font-family':'Cambria'});
+		}
 	}	
 }
 
@@ -113,6 +115,7 @@ function drawbbCurve(T,id) {
 <input type='checkbox' id='bbinput3' value='8000' onchange='drawbbCurve(this.value,this.id);' /> Blackbody curve 3
 <input type='button' value='no active' onclick='document.getElementById("bbinputA").value="";'/>
 <input type='hidden' id='bbinputA' value='bbinput1'/>
+<input type='checkbox' id='showpeak' onchange='drawbbCurve();' checked /'> Show peak value
 <p><b>&dagger;:</b> spectral radiance units here are kilowatts per steradian per square meter per wavelength in nanometers (kW/(st&sdot;m<sup>2</sup>&sdot;nm))</p>
 
 </body>
