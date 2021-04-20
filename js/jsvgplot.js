@@ -113,13 +113,16 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 	if( axisSVG == undefined ) { var axisSVG = {}; }
 	if( minorSVG == undefined ) { var minorSVG = {}; }
 	if( labelSVG == undefined ) { var labelSVG = {}; }
+	if( gridSVG == undefined ) { var gridSVG = {}; }
 	
 	let x0 = this.xMin <= 0 && this.xMax >= 0 || this.xMin == 0 ? 0 : this.xMin;
 	let y0 = this.yMin <= 0 && this.yMax >= 0 || this.yMin == 0 ? 0 : this.yMin;	
 	attributes = Object.assign({'x0':x0,'y0':y0,'x1':this.xMin,'x2':this.xMax,'y1':this.yMin,'y2':this.yMax,'tick':1,'tickL':this.fontSize,},attributes); // coordinate stuff
-	attributes = Object.assign({'minorL':attributes['tickL']*2/3,'minorN':0,'append':this.svg.g2},attributes);
+	attributes = Object.assign({'minorL':attributes['tickL']*2/3,'minorN':0,'append':this.svg.g2,'grid':false},attributes);
 	axisSVG = Object.assign({'stroke':'black','stroke-width':3,'stroke-linecap':'square'},axisSVG );
 	labelSVG = Object.assign({'font-size':'2rem'},labelSVG);
+	gridSVG = Object.assign({'stroke':'grey','stroke-dasharray':'10 10'},gridSVG);
+	
 	this.x0 = attributes['x0'];
 	this.axisfontSize = labelSVG['font-size'];
 	this.tickL = attributes['tickL'];
@@ -127,7 +130,7 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 	this.yaxisLabelsShow = attributes['yaxisLabelsShow'] != undefined ? attributes['yaxisLabelsShow'] : attributes['axisLabelsShow'] != undefined ? attributes['axisLabelsShow'] : true;
 	
 	
-	let i,d,x1,x2,y1,y2,x,y,dx,dy,t0,xt,yt;
+	let i,d,x1,x2,y1,y2,x,y,dx,dy,t0,xt,yt,dg;
 	x0 = attributes['x0']; y0 = attributes['y0'];
 	x1 = attributes['x1']; y1 = attributes['y1'];
 	x2 = attributes['x2']; y2 = attributes['y2'];
@@ -135,7 +138,9 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 	let xtickL = attributes['xtickL'] != undefined ? attributes['xtickL'] : attributes['tickL']; this.xtickL = xtickL;
 	let tickNx = attributes['tickNx'] != undefined ? attributes['tickNx'] : attributes['tickN'];
 	let ytickL = attributes['ytickL'] != undefined ? attributes['ytickL'] : attributes['tickL']; this.ytickL = ytickL;
-	let tickNy = attributes['tickNy'] != undefined ? attributes['tickNy'] : attributes['tickN'];
+	let tickNy = attributes['tickNy'] != undefined ? attributes['tickNy'] : attributes['tickN'];	
+	let gridx = attributes['gridx'] != undefined ? attributes['gridx'] : attributes['grid'];	
+	let gridy = attributes['gridy'] != undefined ? attributes['gridy'] : attributes['grid'];	
 	
 	// PLOT X AXIS
 	if( (axis == 'xy' || axis == 'x') && !(this.log == 'x' || this.log == 'xy') ) {
@@ -165,13 +170,14 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 		if( attributes['xaxisLabels'] != undefined && attributes['xaxisLabels'].length >= n ) { xtxt = attributes['xaxisLabels']; }
 		else { for( i = 0; i < n; i++ ) { xtxt[i] = toHTML(xpts[i],2); } }		
 		// plot x-axis
-		d='';
+		d=''; dg = '';
 		yt = attributes['yt'] != undefined ? attributes['yt'] : this.v(y0)+xtickL+1	;
 		let dv = attributes['dv'] != undefined ? attributes['dv'] : 0;
 		for( i = 0; i < n; i++ ) { // plot major ticks and labels
 			x = xpts[i];
 			if( x != x0 || attributes['showX0'] == true ) {	
-				d += 'M '+this.u(x)+' '+' '+this.v(y0)+' v '+(xtickL)+' '; 
+				d += 'M '+this.u(x)+' '+this.v(y0)+' v '+(xtickL)+' ';
+				dg += 'M '+x+' '+this.yMin+' V '+this.yMax+' ';
 				if( this.xaxisLabelsShow !== false ) {
 					this.plotText(xtxt[i],{'x':this.u(x),'y':yt,'append':xAxis,'dv':dv,'coords':'svg'},Object.assign({'dominant-baseline':'hanging'},labelSVG)	);
 				}
@@ -190,7 +196,8 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 			if( x+j*dm <= x2 ) {
 				d += 'M '+this.u(x+j*dm)+' '+this.v(y0)+' v '+(minorLx)+' ';			
 			}
-		}		
+		}
+		if( gridx != false ) { this.plotObject('path',{'d':dg,'append':xAxis},gridSVG); }
 		this.plotObject('path',{'d':d,'append':xAxis,'coords':'svg'},axisSVG);
 		this.plotObject('path',{'d':'M '+x1+' '+y0+' H '+x2,'append':xAxis},axisSVG);
 		axisGroup.appendChild(xAxis);
@@ -239,13 +246,14 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 		ytxt = fixNumbers(ytxt);
 		
 		// plot y-axis
-		d='';
+		d=''; dg = '';
 		xt = attributes['xt'] != undefined ? attributes['xt'] : this.u(x0)-ytickL-2;
 		let du = attributes['du'] != undefined ? attributes['du'] : 0;
 		for( i = 0; i < n; i++ ) { // plot major ticks and labels
 			y = ypts[i];
 			if( y != y0 || showY0 == true ) {	
 				d += 'M '+this.u(x0)+' '+' '+this.v(y)+' h '+(-ytickL)+' ';
+				dg += 'M '+this.xMin+' '+y+' H '+this.xMax+' ';
 				if( this.yaxisLabelsShow != false ) {					
 					this.plotText(ytxt[i],{'x':xt,'y':this.v(y),'append':yAxis,'du':du,'coords':'svg'},Object.assign({'text-anchor':'end'},labelSVG)	);
 				}
@@ -265,7 +273,8 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 			if( y+j*dm <= y2 ) { 
 				d += 'M '+this.u(x0)+' '+' '+this.v(y+j*dm)+' h '+(-minorLy)+' ';			
 			}
-		}		
+		}
+		if( gridy != false ) { this.plotObject('path',{'d':dg,'append':yAxis},gridSVG); }
 		this.plotObject('path',{'d':d,'append':yAxis,'coords':'svg'},axisSVG);
 		this.plotObject('path',{'d':'M '+x0+' '+y1+' V '+y2,'append':yAxis},axisSVG);
 		yAxis.id = 'yAxisPlot';
@@ -362,7 +371,7 @@ createCoords.prototype.plotText = function(text,attributes,textSVG) {
 			obj.appendChild(tspan);
 			if( str[2] ) {
 				let tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
-				setAttributes(tspan2,{'dy':-suby});
+				setAttributes(tspan2,{'dy':-2*suby});
 				tspan2.appendChild(document.createTextNode(str[2]));
 				obj.appendChild(tspan2);
 			}			
@@ -386,9 +395,7 @@ createCoords.prototype.plotText = function(text,attributes,textSVG) {
 			objText = document.createTextNode(text); 
 			obj.appendChild(objText);  
 	}
-	
-	
-	
+
 	let u,v,r;
 	if( attributes['coords'] == 'svg' ) { u = v = r = function(x) { return x; } }
 	else { u = this.u; v = this.v; r = this.r; }
