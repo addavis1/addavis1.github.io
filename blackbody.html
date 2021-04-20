@@ -60,6 +60,7 @@ function drawbbCurve(T,id) {
 	// plot y axis from the active curve		
 	let peakx = 2.897771955*1E6/T; // 2.897771955E3 m*K
 	let peaky = blackbody(peakx,{'T':T});
+	alert(peaky);
 	let dy = peaky/50;	
 	let ticky;	
 	let temp;
@@ -115,7 +116,7 @@ function drawbbCurve(T,id) {
 <input type='checkbox' id='bbinput3' value='8000' onchange='drawbbCurve(this.value,this.id);' /> Blackbody curve 3
 <input type='button' value='no active' onclick='document.getElementById("bbinputA").value="";'/>
 <input type='hidden' id='bbinputA' value='bbinput1'/>
-<input type='checkbox' id='showpeak' onchange='drawbbCurve();' checked /'> Show peak value
+<input type='checkbox' id='showpeak' onchange='drawbbCurve();' checked /'> Show peak value(s)
 <p><b>&dagger;:</b> spectral radiance units here are kilowatts per steradian per square meter per wavelength in nanometers (kW/(st&sdot;m<sup>2</sup>&sdot;nm))</p>
 
 </body>
