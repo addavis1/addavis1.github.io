@@ -18,6 +18,7 @@ svg { font-size: 16px; }
 var coords; // global scope
 function bbinit(id) {
 	coords = new createCoords(id,{'coordsRange':[100,0,2800,14],'clip':true,'margin':['1rem','1.5rem','5rem','8rem']});		
+	
 	coords.plotAxis('x',{'minorNx':4,'grid':true,'tickX':500,'x0':100,'xpts':[100,500,1000,1500,2000,2500],'xaxisLabelsShow':true,'showX0':true},{},{'stroke':'black','stroke-width':5},{});
 	coords.plotAxisText('xy',{'xaxis':'wavelength (nm)','yaxis':'spectral radiance^\u2020','xposition':'bottom','xaxisH':0.5,'yaxisV':0.45,'ydu':-50});
 	coords.plotObject('image',{'x1':380,'y1':0,'x2':750,'y2':-0.3,'href':'https://addavis1.github.io/images/Linear_visible_spectrum.svg','append':coords.svg.g2,});
@@ -101,7 +102,8 @@ function drawbbCurve(T,id) {
 		coords.plotFunction(blackbody,{'T':T},{'n':800,'points':false,'x1':99,'x2':2850,'z':false,'close':true,'append':curve},{'stroke':'black','stroke-width':2,'fill':color},{'i0':0,'dn':40},{'stroke':'black','stroke-width':2,'stroke-opacity':1});
 		if( document.getElementById('showpeak').checked == true ) {
 			coords.plotObject('path',{'d':'M '+peakx+' '+(peaky+dy)+' v '+(-2*dy),'append':curve},{'stroke':'black','stroke-width':3});
-			coords.plotText('\u03bb_'+num+'_='+toHTML(peakx,5)+'nm',{'x':peakx,'y':peaky,'du':10,'dv':-20,'append':curve},{'text-anchor':'start','font-size':'1.75rem','font-family':'Cambria'});
+			let temp = ( num == '' ) ? '\u03bb='+toHTML(peakx,5)+'nm' : '\u03bb_'+num+'_='+toHTML(peakx,5)+'nm';
+			coords.plotText(temp,{'x':peakx,'y':peaky,'du':10,'dv':-20,'append':curve},{'text-anchor':'start','font-size':'1.75rem','font-family':'Cambria'});
 		}
 	}	
 }
