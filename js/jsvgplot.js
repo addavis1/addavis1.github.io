@@ -32,8 +32,8 @@ function createCoords(svgid,parameters) {
 	this.uMin = this.plotBox[0];
 	this.uMax = this.plotBox[0]+this.plotBox[2];
 	this.vMin = this.plotBox[1];
-	this.vMax = this.plotBox[1]+this.plotBox[3];
-	
+	this.vMax = this.plotBox[1]+this.plotBox[3];	
+  
 	this.defineCoords(parameters);
 	
 	  // define two special groups for this coordinate system
@@ -56,12 +56,12 @@ createCoords.prototype.defineCoords = function(parameters) {
 	this.xMin = parameters['coordsRange'][0] != undefined ? parameters['coordsRange'][0] : 0;
 	this.yMin = parameters['coordsRange'][1] != undefined ? parameters['coordsRange'][1] : 0;
 	this.xMax = parameters['coordsRange'][2] != undefined ? parameters['coordsRange'][2] : this.plotBox.width-this.xMin;
-	this.yMax = parameters['coordsRange'][3] != undefined ? parameters['coordsRange'][3] : this.plotBox.height-this.yMin;
+	this.yMax = parameters['coordsRange'][3] != undefined ? parameters['coordsRange'][3] : this.plotBox.height-this.yMin;  
 	this.width = this.xMax - this.xMin;
 	this.height = this.yMax - this.yMin;
 	this.coordsRange = [this.xMin,this.yMin,this.xMax,this.yMax,this.width,this.height];
 	this.y0 = ( this.yMin <= 0 && this.yMax >= 0 ) ? 0 : this.yMin;
-	this.x0 = ( this.xMin <= 0 && this.xMax >= 0 ) ? 0 : this.xMin;
+	this.x0 = ( this.xMin <= 0 && this.xMax >= 0 ) ? 0 : this.xMin;  
 	
 	// define simple linear coordinate transformation    
 	let a,b,c,d,e,f;
@@ -95,6 +95,7 @@ createCoords.prototype.defineCoords = function(parameters) {
 	let ruv = Math.sqrt( (this.uMax-this.uMin)*(this.uMax-this.uMin)+(this.vMax-this.vMin)*(this.vMax-this.vMin) );
   let rxy = Math.sqrt( (this.xMax-this.xMin)*(this.xMax-this.xMin)+(this.yMax-this.yMin)*(this.yMax-this.yMin) );
 	this.r = function(r) { return( r*ruv/rxy ); }
+	this.rv = function(r) { return( r*(this.yMax-this.yMin)/(this.vMax-this.vMin) ); }
 	this.uv = function( uv ) { return( uv*rxy/ruv ); }
 }
 
@@ -120,7 +121,7 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 	attributes = Object.assign({'x0':x0,'y0':y0,'x1':this.xMin,'x2':this.xMax,'y1':this.yMin,'y2':this.yMax,'tick':1,'tickL':this.fontSize,},attributes); // coordinate stuff
 	attributes = Object.assign({'minorL':attributes['tickL']*2/3,'minorN':0,'append':this.svg.g2,'grid':false},attributes);
 	axisSVG = Object.assign({'stroke':'black','stroke-width':3,'stroke-linecap':'square'},axisSVG );
-	labelSVG = Object.assign({'font-size':'2rem'},labelSVG);
+	labelSVG = Object.assign({'font-size':'1.5rem'},labelSVG);
 	gridSVG = Object.assign({'stroke':'grey','stroke-dasharray':'10 10'},gridSVG);
 	
 	this.x0 = attributes['x0'];
@@ -254,7 +255,14 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 			if( y != y0 || showY0 == true ) {	
 				d += 'M '+this.u(x0)+' '+' '+this.v(y)+' h '+(-ytickL)+' ';
 				dg += 'M '+this.xMin+' '+y+' H '+this.xMax+' ';
-				if( this.yaxisLabelsShow != false ) {					
+				if( this.yaxisLabelsShow != false ) {	
+					if( attributes['scientific'] == true && ytxt[i] != 0 ) {
+						let pow = Math.floor(Math.log10(ytxt[i]));
+						let base = (ytxt[i]/Math.pow(10,pow)).toFixed(1);
+						if( base == 10 ) { base = (base/10).toFixed(1); pow+=1; }
+						ytxt[i] = base+'\u00d7'+'10^'+pow;
+					}
+					labelSVG = Object.assign(labelSVG,{'font-size':'1.25rem'});
 					this.plotText(ytxt[i],{'x':xt,'y':this.v(y),'append':yAxis,'du':du,'coords':'svg'},Object.assign({'text-anchor':'end'},labelSVG)	);
 				}
 			}
@@ -391,7 +399,7 @@ createCoords.prototype.plotText = function(text,attributes,textSVG) {
 		obj.appendChild(tspan0);
 		// superscript
 		let tspan1 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');				
-		setAttributes(tspan1,{'font-size':'65%','dominant-baseline':'central','dy':-1*supy});
+		setAttributes(tspan1,{'font-size':'65%','dominant-baseline':'central','dy':-0.75*supy});
 		tspan1.appendChild(document.createTextNode(str[1]));
 		obj.appendChild(tspan1);
 		// after the superscript
