@@ -146,11 +146,11 @@ function drawbbCurves(T,scaleY) {
 		let id = curves[i].plotid;
 		coords.plotObject('g',{'append':coords.svg.g1},{'id':id});
 		let curve = document.getElementById(id);
-		coords.plotFunction(blackbody,{'T':T},{'n':800,'points':false,'x1':99,'x2':coords.xMax*1+50,'z':false,'close':true,'append':curve},{'stroke':'black','stroke-width':2,'fill':color},{'i0':0,'dn':40},{'stroke':'black','stroke-width':2,'stroke-opacity':1});
+		coords.plotFunction(blackbody,{'T':T},{'n':800,'points':false,'x1':99,'x2':coords.xMax*1+50,'z':false,'close':true,'append':curve},{'stroke':'black','stroke-opacity':0.5,'stroke-width':2,'fill':color},{'i0':0,'dn':40},{'stroke':'black','stroke-width':2,'stroke-opacity':1});
 		
 		// peak values
 		if( document.getElementById('showpeak').checked == true ) {
-			coords.plotObject('path',{'d':'M '+peakx+' '+(peaky+dy)+' v '+(-2*dy),'append':curve},{'stroke':'black','stroke-width':3});
+			coords.plotObject('path',{'d':'M '+peakx+' '+(peaky+dy)+' v '+(-2*dy),'append':curve},{'stroke':'black','stroke-width':3,'stroke-opacity':0.5});
 			let curveid = id.substring(id.length-1);
 			let peaktext = '\u03bb_'+curveid+'_='+toHTML(peakx,5)+'nm';
 			coords.plotText(peaktext,{'x':peakx,'y':peaky,'du':4,'dv':-20,'append':curve},{'text-anchor':'start','font-size':'1.75rem','font-family':'Calibri'});
@@ -219,10 +219,12 @@ svg { font-size: 16px; width: 100%; height: 70vh; position: relative; }
 .controls input[type='range'] { max-width: 75%; }	
 
 
+
 .controls > span:last-child { flex: 2; min-width: 150px; max-width: 100%; }
 .controls > span:nth-child(1) { margin-left: 15px; }
 .controls > span > span { flex: 1; display: block; min-width: 100px; max-width: 200px; font-family: sans-serif; padding: 0 10px; }
 .area { font-size: 0.8rem; }
+.spanText, .area { text-align: center; }
 
 .deltalambda { position: absolute; right: 2rem; top: 66.3vh; width: auto; text-align: center; }
 .deltalambda input[type='button'] {  padding: 0.125rem; width: 3rem; padding-right: 0.25rem; }
