@@ -50,11 +50,11 @@ function plotEnergy(E1,ET) {
 		document.getElementById('KEsvg').remove();
 		document.getElementById('PEsvg').remove();
 	}
-	let textStyle = {'dominant-baseline':'bottom','font-size':'3rem'};
+	let textStyle = {'dominant-baseline':'bottom','font-size':'3rem','opacity':0.75};
 	KE = KE.toFixed(2);
 	PE = PE.toFixed(2);
-	coords.plotObject('rect',{'x':1,'y':0,'width':2,'height':KE},{'fill':'blue','opacity':0.5,'id':'KEsvg'});
-	coords.plotObject('rect',{'x':4,'y':0,'width':2,'height':PE},{'fill':'red','opacity':0.5,'id':'PEsvg'});
+	coords.plotObject('rect',{'x':1,'y':0,'width':2,'height':KE},{'fill':'blue','opacity':0.65,'id':'KEsvg'});
+	coords.plotObject('rect',{'x':4,'y':0,'width':2,'height':PE},{'fill':'red','opacity':0.65,'id':'PEsvg'});
 	
 	coords.plotText(KE,{'x':2,'y':KE*1,'dy':0.2},Object.assign({'stroke':'blue','id':'KEtext'},textStyle));
 	coords.plotText(PE,{'x':5,'y':PE*1,'dy':0.2},Object.assign({'stroke':'red','id':'PEtext'},textStyle));
