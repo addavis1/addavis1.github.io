@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<title>jsvgplot</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta charset='UTF-8' />
+<script src='js/jsvgplot.js'></script>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,400;0,900;1,400;1,900&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+<script type='text/javascript'>
+var coords;
+function energyInit(id) {
+	//if ( param == undefined ) { var param = {}; }
+	let svg = document.getElementById(id);
+	let param = {'coordsRange':[0,0,7,10.5]};	
+	coords = new createCoords(id,{'coordsRange':param['coordsRange'],'clip':false,'margin':['2rem','2rem','6rem','2rem']});
+	coords.fontSize = 16;	
+	let y2 = coords.y0 - coords.rv(coords.fontSize);
+	let xpts = [1,3,4,6];
+	coords.plotAxis('x',{'minorNx':0,'grid':false,'xpts':xpts,'xaxisLabelsShow':false,'showX0':true},{},{'stroke':'black','stroke-width':5});
+	let textStyle = {'font-size':'4rem','dominant-baseline':'hanging','text-align':'center'};
+	
+	coords.plotText('KE',{'x':2,'y':-0.25,'append':coords.svg.g2},textStyle);
+	coords.plotText('PE',{'x':5,'y':-0.25,'append':coords.svg.g2},textStyle);
+	
+	plotEnergy();
+}
+
+function plotEnergy(E1,ET) {
+	let E = ET != undefined ? ET : (document.getElementById('Eval') != undefined ? document.getElementById('Eval').value : 10 );
+	let KE,PE;
+	if(E1 == 'KE') {
+		KE = document.getElementById('KEinput').value*1;
+		PE = E - KE;
+		document.getElementById('PEinput').value = PE;
+	}
+	else if (E1 == 'PE') {
+		PE = document.getElementById('PEinput').value*1;
+		KE = E - PE;
+		document.getElementById('KEinput').value = KE;
+	} else {
+		KE = document.getElementById('KEinput').value*1;
+		PE = document.getElementById('PEinput').value*1;
+	}
+	
+	if( document.getElementById('KEsvg') || document.getElementById('PEsvg') ) {
+		document.getElementById('KEtext').remove();
+		document.getElementById('PEtext').remove();
+		document.getElementById('KEsvg').remove();
+		document.getElementById('PEsvg').remove();
+	}
+	let textStyle = {'dominant-baseline':'bottom','font-size':'3rem'};
+	KE = KE.toFixed(2);
+	PE = PE.toFixed(2);
+	coords.plotObject('rect',{'x':1,'y':0,'width':2,'height':KE},{'fill':'blue','opacity':0.5,'id':'KEsvg'});
+	coords.plotObject('rect',{'x':4,'y':0,'width':2,'height':PE},{'fill':'red','opacity':0.5,'id':'PEsvg'});
+	
+	coords.plotText(KE,{'x':2,'y':KE*1,'dy':0.2},Object.assign({'stroke':'blue','id':'KEtext'},textStyle));
+	coords.plotText(PE,{'x':5,'y':PE*1,'dy':0.2},Object.assign({'stroke':'red','id':'PEtext'},textStyle));
+	coords.plotObject('line',{'x1':coords.xMin,'x2':coords.xMax,'y1':coords.y0,'y2':coords.y0,'append':coords.svg.g1,'id':'bar-line'},{'stroke':'black','stroke-width':3});
+}
+
+</script>
+
+<style type='text/css'>
+body { font-family: Chiva; }
+svg { font-size: 16px; width: 100%; height: 100vh; position: relative; }
+#svgcontainer { position: relative; width: 40vw; margin: 0 auto; }
+
+svg { border: 1px solid black; }
+
+#container { display: grid; grid-template-columns: 1fr 40vw 1fr 20vw 1fr; }
+.gridcol { background-color: rgba(0,0,0,0.5); }
+#energycontainer { }
+#controlscontainer { display: grid; place-content: center; }
+#controlscontainer input { display:block; width: 15vw; margin-bottom: 2rem; }
+
+</style>   
+</head>
+<body>
+<div id='container'>
+
+<div class='gridcol'></div>
+<div id='svgcontainer'>
+<svg id='energysvg' onload='energyInit(this.id);' viewport='0 0 1000 1000'></svg>
+</div>
+<div class='gridcol'></div>
+<div id='controlscontainer'>
+<input type='range' min=0, max=10 id='KEinput' value='5' step='0.05' oninput='plotEnergy("KE");'/>
+<input  type='range' min=0, max=10 id='PEinput' value='5' step='0.05' oninput='plotEnergy("PE");'/>
+<input type='hidden' id='Eval' value='10'/>
+
+
+</div>
+<div class='gridcol'></div>
+
+</div>
+
+</body>
+</html>
