@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+<title>jsvgplot</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta charset='UTF-8' />
+<script src='js/jsvgplot.js'></script>
+<script src='js/blackbody.js'></script>
+<script src='js/blackbodycolors.js'></script>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,400;0,900;1,400;1,900&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+<script type='text/javascript'></script>
+
+<style type='text/css'>
+svg { font-size: 16px; width: 100%; height: 70vh; position: relative; }
+
+ .main { }
+ .main > div:first-child { height: 70vh; }
+ 
+.controls { display: flex; flex-wrap: wrap; }
+.controls > span { flex: 1; display: inline-block; height: 100px; border: 1px solid black; margin: 15px 7.5px;
+	background-color: white; min-width: 140px;  align-content: center; justify-content: center; 
+	display: flex; flex-wrap: wrap; position: relative;
+}
+
+.controls > span:last-child { flex: 3; min-width: 200px; padding-left: 1rem; }
+
+.symbol { position: absolute; bottom: 0; right: 0.25rem; font-size: 1.5rem; font-weight: bold;  }
+
+.controls > span > div[class='range'] { display: flex; flex: 2; justify-content: center; max-width: 100%; }	
+.controls > span > div[class='range'] > span { padding-top: 0.4rem;  font-size: 0.75rem; }
+.controls > span > div[class='range'] > input { max-width: 80%; }
+.controls input[type='range'] { }	
+
+
+
+.controls > span:last-child { flex: 2; min-width: 150px; max-width: 100%; }
+.controls > span:nth-child(1) {  }
+.controls > span > span { flex: 1; display: block; min-width: 100px; max-width: 200px; font-family: Chivo, sans-serif; padding: 0 10px; }
+.area { font-size: 0.8rem; visibility: hidden; }
+.spanText, .area { text-align: center; }
+
+.deltalambda { position: absolute; right: 1.5rem; top: 66.3vh; width: auto; text-align: center; }
+.deltalambda input[type='button'] {  padding: 0.125rem; width: 3rem; padding-right: 0.25rem; }
+
+.deltaT { position: absolute; top: 2rem; left: 0.5rem; display: block; text-align: center; }
+.deltaT input[type='button'] { display: block; padding: 0.125rem; width: 2rem; margin-bottom: .25rem; }
+
+#bbcurveA, #bbcurveB { flex: 4 !important; padding-left: .5rem; padding-right: 0.5rem; }
+#bbcurveA input[type='text'] { display: block; text-align: center;  font-family: Chivo,sans-serif; }
+
+.bbcurve > input { display: block; border: none; }
+.bbcurve > input[type='text'] { width: 90px; display: block; background: none; font-size: 1rem; color: black; }
+
+.break { flex-basis: 100%; width: 100%; height: 0px; }
+.leftRange { padding-right: .25rem; }
+.rightRange { padding-left: .25rem; }
+
+#bboptions { padding-bottom: .5rem; }
+#bboptions p { margin-bottom: 0; }
+
+.area { margin-bottom: 1rem; }
+#area1, #area2 { margin-bottom: 0rem; }
+
+body > p { text-indent: 2rem; }
+
+</style>   
+</head>
+<body>
+<div class='main'>
+<div><svg id='bbsvg' onload='bbinit(this.id);'></svg>
+<div class='deltalambda'>
+	<input type='button' id='minuslambda' value='-200' onmouseup='scalebbCurve("x","-200");'/>
+	<input type='button' id='pluslambda' value='+200' onmouseup='scalebbCurve("x","200");'/>
+</div>
+<div class='deltaT'>
+	<input type='button' id='plusT' value='&times;2' onmouseup='scalebbCurve("y","2");'/>
+	<input type='button' id='minusT' value='&divide;2' onmouseup='scalebbCurve("y","-2");'/>	
+</div>
+</div>
+<div class='controls'>
+
+<span class='bbcurve' id='bbcurveA'>
+<div class='range'>
+<span class='leftRange'>1000</span>
+<input type='range' class='form-range' min='1000' max='30000' step='10' value='1500' id='bbrangeA' oninput='slideCurves(this.id);'/>
+<span class='rightRange'>30000</span>
+</div>
+<div class='break'></div>
+<span class='spanText'>T=1500 K</span>
+<div class='break'></div>
+<span class='area' id='area1'>A=</span>
+<input type='hidden' class='temp' value='1500'/>
+<input type='hidden' class='active' value='true'/>
+<input type='hidden' class='plotid' value='bbcA'/>
+</span>
+
+<!--
+<span class='bbcurve' id='bbcurveB' onmousedown='toggleCurves2(this.id);' onmouseup='toggleCurves3(this.id);'>
+<div class='range'>
+<span class='leftRange'>5000</span>
+<input type='range' class='form-range' min='5000' max='30000' step='100' value='8000' id='bbrangeB' oninput='slideCurves(this.id);'/>
+<span class='rightRange'>30000</span>
+</div>
+<div class='break'></div>
+<span class='spanText'>T<sub>B</sub>=8000 K</span>
+<div class='break'></div>
+<span class='area' id='area2'>A=</span>
+<input type='hidden' class='temp' value='8000'/>
+<input type='hidden' class='active' value='false'/>
+<input type='hidden' class='plotid' value='bbcB'/>
+</span>
+-->
+
+
+<span id='bboptions'>
+<div>
+<p><input type='checkbox' id='showpeak' checked onchange='drawbbCurves();'/> <span onclick='document.getElementById("showpeak").checked = document.getElementById("showpeak").checked == true ? false : true; drawbbCurves();'>Show peak</span></p>
+<p><input type='checkbox' value='0' id='scaleoption' checked /> <span onclick='document.getElementById("scaleoption").checked = document.getElementById("scaleoption").checked == true ? false : true;'>Scale to curve</span></p>
+</div>
+</span>
+
+</div>
+</div>
+<p><b>&dagger;:</b> spectral radiance units here are kilowatts per steradian per square meter per wavelength in nanometers (kW/(st&sdot;m<sup>2</sup>&sdot;nm))</p>
+
+
+
+
+
+
+</body>
+</html>
