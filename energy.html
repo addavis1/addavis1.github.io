@@ -13,16 +13,17 @@ var coords;
 function energyInit(id) {
 	//if ( param == undefined ) { var param = {}; }
 	let svg = document.getElementById(id);
-	let param = {'coordsRange':[0,0,7,10.5]};	
-	coords = new createCoords(id,{'coordsRange':param['coordsRange'],'clip':false,'margin':['2rem','2rem','6rem','2rem']});
+	let param = {'coordsRange':[0,0,10,10.5]};	
+	coords = new createCoords(id,{'coordsRange':param['coordsRange'],'clip':false,'margin':['3rem','2rem','6rem','2rem']});
 	coords.fontSize = 16;	
 	let y2 = coords.y0 - coords.rv(coords.fontSize);
-	let xpts = [1,3,4,6];
+	let xpts = [1,3,4,6,7,9];
 	coords.plotAxis('x',{'minorNx':0,'grid':false,'xpts':xpts,'xaxisLabelsShow':false,'showX0':true},{},{'stroke':'black','stroke-width':5});
 	let textStyle = {'font-size':'4rem','dominant-baseline':'hanging','text-align':'center'};
 	
 	coords.plotText('KE',{'x':2,'y':-0.25,'append':coords.svg.g2},textStyle);
 	coords.plotText('PE',{'x':5,'y':-0.25,'append':coords.svg.g2},textStyle);
+	coords.plotText('E',{'x':8,'y':-0.25,'append':coords.svg.g2},textStyle);
 	
 	plotEnergy();
 }
@@ -44,21 +45,39 @@ function plotEnergy(E1,ET) {
 		PE = document.getElementById('PEinput').value*1;
 	}
 	
-	if( document.getElementById('KEsvg') || document.getElementById('PEsvg') ) {
-		document.getElementById('KEsvg').remove();
-		document.getElementById('PEsvg').remove();
-		if( document.getElementById('KEtext') != undefined ) { document.getElementById('KEtext').remove(); }
-		if( document.getElementById('PEtext') != undefined ) { document.getElementById('PEtext').remove(); }
-	}
+	/* remove elements if they exist */	
+	if( document.getElementById('KEsvg') != undefined ) { document.getElementById('KEsvg').remove(); }
+	if( document.getElementById('PEsvg') != undefined ) { document.getElementById('PEsvg').remove(); }
+	if( document.getElementById('E1svg') != undefined ) { document.getElementById('E1svg').remove(); }
+	if( document.getElementById('E2svg') != undefined ) { document.getElementById('E2svg').remove(); }
+	if( document.getElementById('E3svg') != undefined ) { document.getElementById('E3svg').remove(); }
+	if( document.getElementById('KEtext') != undefined ) { document.getElementById('KEtext').remove(); }
+	if( document.getElementById('PEtext') != undefined ) { document.getElementById('PEtext').remove(); }
+	if( document.getElementById('Etext') != undefined ) { document.getElementById('Etext').remove(); }
+	
+	/* add elements */
 	let textStyle = {'dominant-baseline':'bottom','font-size':'3rem','opacity':0.75};
-	KE = KE.toFixed(2);
-	PE = PE.toFixed(2);
+	KE = (KE*=1).toFixed(2);
+	PE = (PE*=1).toFixed(2); 
+	E = (E*=1).toFixed(2);
 	coords.plotObject('rect',{'x':1,'y':0,'width':2,'height':KE},{'fill':'blue','opacity':0.65,'id':'KEsvg'});
 	coords.plotObject('rect',{'x':4,'y':0,'width':2,'height':PE},{'fill':'red','opacity':0.65,'id':'PEsvg'});
-	if( document.getElementById('Etext').checked == true ) {
+
+	if( document.getElementById('Einput2').checked == true ) {
+		coords.plotObject('rect',{'x':7,'y':0,'width':2,'height':KE},{'fill':'blue','opacity':0.65,'id':'E1svg'});
+		coords.plotObject('rect',{'x':7,'y':KE*1,'width':2,'height':PE*1},{'fill':'red','opacity':0.65,'id':'E2svg'});
+		coords.plotObject('path',{'d':'M 7 '+KE+' h 2'},{'stroke':'black','opacity':0.5,'id':'E3svg'});
+	} else {
+		coords.plotObject('rect',{'x':7,'y':0,'width':2,'height':E},{'fill':'green','opacity':0.65,'id':'E1svg'});
+	}
+	
+	if( document.getElementById('Einput1').checked == true ) {
 		coords.plotText(KE,{'x':2,'y':KE*1,'dy':0.2},Object.assign({'stroke':'blue','id':'KEtext'},textStyle));
 		coords.plotText(PE,{'x':5,'y':PE*1,'dy':0.2},Object.assign({'stroke':'red','id':'PEtext'},textStyle));
+		coords.plotText(E,{'x':8,'y':E*1,'dy':0.2},Object.assign({'stroke':'black','id':'Etext'},textStyle));
 	}
+
+	
 	coords.plotObject('line',{'x1':coords.xMin,'x2':coords.xMax,'y1':coords.y0,'y2':coords.y0,'append':coords.svg.g1,'id':'bar-line'},{'stroke':'black','stroke-width':3});
 }
 
@@ -91,7 +110,8 @@ svg { border: 1px solid black; }
 <div id='controlscontainer'>
 <input type='range' min=0, max=10 id='KEinput' value='5' step='0.01' oninput='plotEnergy("KE");'/>
 <input  type='range' min=0, max=10 id='PEinput' value='5' step='0.01' oninput='plotEnergy("PE");'/>
-<p><input type='checkbox' id='Etext' checked onchange='plotEnergy();'/> Show Values</p>
+<p><input type='checkbox' id='Einput1' checked onchange='plotEnergy();'/> Show Values</p>
+<p><input type='checkbox' id='Einput2' checked='false' onchange='plotEnergy();'/> Split E Column</p>
 <input type='hidden' id='Eval' value='10'/>
 
 
