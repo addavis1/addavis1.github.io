@@ -112,11 +112,11 @@ function physicsInit(id) {
 	let param = {'coordsRange':[-5,-50,5,1010]};	
 	coords2 = new createCoords(id,{'coordsRange':param['coordsRange'],'clip':false,'margin':[0,0,0,0]});
 	coords2.plotObject('rect',{'x1':-5,'y1':coords2.yMin,'x2':5,'y2':0},{'fill':'green'});
-	coords2.plotObject('circle',{'cx':0,'cy':25,'r':25},{'fill':'red','id':'projectile'});
+	coords2.plotObject('circle',{'cx':0,'cy':25,'r':25},{'fill':'red','stroke':'black','id':'projectile'});
 }
 
 function animateProjectile() {
-	let p,t,t1,t2,n,y,h,i,j,E,PE,KE,OE,v0,param;
+	let p,t,t1,t2,n,y,h,i,j,E,PE,KE,OE,v0,param,dt;
 	
 	p = document.getElementById('projectile');
 	h = 900;
@@ -130,7 +130,10 @@ function animateProjectile() {
 	OE = 0;
 	
 	y = projectile(t1);
+	dt = 5;
 	for( i = 0; i <= n; i++ ) {
+		if( i == 0 ) { impact(); }
+	
 		window.setTimeout( function (){
 			t = t1+j*(t2-t1)/n;
 			y = projectile(t,param);
@@ -142,16 +145,20 @@ function animateProjectile() {
 			document.getElementById('OEinput').value = OE.toFixed(2);
 			plotEnergy();
 			j++
-		},i*5,y);
+		},i*dt,y);
+		
+		
 		if( document.getElementById('Eopt3').checked != true ) {
 			window.setTimeout( function () {
 				document.getElementById('KEinput').value = 0;
 				document.getElementById('PEinput').value = 0;
 				document.getElementById('OEinput').value = E.toFixed(2);
 				plotEnergy();
-			},(n+1)*5);
+			},(n+1)*dt);
 		}
 	}
+	if( document.getElementById('Eopt3').checked != true ) { window.setTimeout( function () { impact(); },(n-1)*dt); }
+	
 }
 
 function projectile(t,param) {
@@ -163,6 +170,18 @@ function projectile(t,param) {
 	g = param['g'];
 	y = y0+v0*t-0.5*g*t*t;
 	return y;
+}
+
+function impact() {
+	let d = 'M 0 0 ',r,r1 = 1, r2 = 0.6*r1, x,y, q = 45/4*Math.PI/180, dy;
+	dy = coords2.height/coords2.width;
+	for( let i = 0; i < 17; i++ ) {
+		r = (i%2 == 0) ? r1 : r2; 
+		x = -r*Math.cos(i*q); y = r*dy/2*Math.sin(i*q);
+		d += 'L '+x+' '+y+' ';
+	}
+	d+='Z';
+	coords2.plotObject('path',{'d':d},{'class':'fadeout'});
 }
 
 
@@ -181,7 +200,24 @@ svg { display: block; height: 100vh; width: 100%; }
 #svgcontainer { width: clamp(400px,60vw,1000px); }
 #controlscontainer { width: clamp(200px,20vw,400px); }
 
-#physicsscene { width: 100%; height: 70vh; }
+#physicsscene { width: 100%; height: 80vh; margin-bottom: 2rem; }
+
+#controlscontainer > p { width: clamp(4rem,50%,100%); margin: 0 auto;  }
+#controlscontainer > p > button { display: block; margin-top: 1rem; }
+
+
+.fadeout {
+	stroke: red; fill: gold;
+	opacity: 0;
+  animation-duration: 0.25s;
+  animation-name: fadeOut;
+}
+
+@keyframes fadeOut {
+  from { opacity: 100%; }
+  to { opacity: 0%; }
+}
+
 </style>   
 </head>
 
@@ -205,7 +241,7 @@ svg { display: block; height: 100vh; width: 100%; }
 <p><input type='checkbox' id='Eopt1' checked onchange='plotEnergy();'/> Show values</p>
 <p><input type='checkbox' id='Eopt2' onchange='plotEnergy();'/> Split E column</p>
 <p><input type='checkbox' id='Eopt3' onchange='plotEnergy();'/> Pause before impact</p>
-<button onclick='animateProjectile();'>launch</button>
+<p><button onclick='animateProjectile();'>launch</button></p>
 </div>
 
 <div class='gridcol'></div>
