@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<title>index.html</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta charset='UTF-8' />
+<style type='text/css'>
+body {
+  display: grid;
+  place-content: center;
+  font-family: system-ui, serif;
+  font-size: 24px;
+} 	
+</style>
+</head>
+<body>
+<p>The potential energy of the system is <math><mi>PE</mi> <mo>=</mo> <mn>&minus;</mn><mfrac><mrow><mi>G</mi><mi>M</mi><mi>m</mi></mrow><mi>r</mi></mfrac></math> and the kinetic energy is <math><mi>KE</mi> <mo>=</mo> <mfrac><mn>1</mn><mn>2</mn></mfrac> <mi>m</mi><msup><mi>v</mi><mn>2</mn></msup></math>. The total energy is</p>
+<math display='block'><mi>E</mi> <mo>=</mo> <mfrac><mn>1</mn><mn>2</mn></mfrac> <mi>m</mi><msubsup><mi>v</mi><mn>0</mn><mn>2</mn></msubsup> <mo>&minus;</mo> 
+<mfrac><mrow><mi>G</mi><mi>M</mi><mi>m</mi></mrow><msub><mi>R</mi><mn>0</mn></msub></mfrac> <mo>=</mo> <mn>&minus;</mn><mfrac><mrow><mi>G</mi><mi>M</mi><mi>m</mi></mrow><mi>R</mi></mfrac></math>
+<p>where <math><mi>R</mi></math> is the maximum height and <math><msub><mi>R</mi><mn>0</mn></msub></math> is the start radius (e.g. surface of planet). This allows for the velocity to be solve as a function of PE.</p>
+
+<math display='block'><mi>v</mi> <mo>=</mo> <mn>&pm;</mn><msup><mrow><mo>(</mo> <mfrac><mn>2</mn><mi>m</mi></mfrac> <mrow><mo>(</mo> <mi>E</mi> <mo>&minus;</mo> <mi>PE</mi> <mo>)</mo></mrow><mo>)</mo></mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></msup></math>
+
+
+<p>Solving this for <math><mi>t</mi></math> using <math><mi>v</mi> <mo>=</mo> <mfrac><mi>dr</mi><mi>dt</mi></mfrac></math> and using the positive of the &pm; (and rearranging for the purposes of sign) gives</p>
+
+
+<math display='block'><mi>t</mi> <mo>=</mo> <msubsup><mo>&int;</mo><msub><mi>R</mi><mn>0</mn></msub><mi>R</mi></msubsup> <mfrac><mi>dr</mi><mi>v</mi></mfrac>
+<mo>=</mo> <msup><mrow><mo>(</mo> <mfrac><mi>m</mi><mrow><mn>&minus;2</mn><mi>E</mi></mrow></mfrac> <mo>)</mo></mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></msup>
+<msubsup><mo>&int;</mo><msub><mi>R</mi><mn>0</mn></msub><mi>R</mi></msubsup>
+<mfrac><mi>dr</mi>
+<msup><mrow><mo>(</mo>  <mfrac><mi>PE</mi><mi>E</mi></mfrac> <mo>&minus;</mo> <mn>1</mn> <mo>)</mo></mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></msup>
+</mfrac>
+
+<mo>=</mo> <msup><mrow><mo>(</mo> <mfrac><mi>m</mi><mrow><mn>&minus;2</mn><mi>E</mi></mrow></mfrac> <mo>)</mo></mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></msup>
+<msubsup><mo>&int;</mo><msub><mi>R</mi><mn>0</mn></msub><mi>r</mi></msubsup>
+<mfrac><mi>dr</mi>
+<msup><mrow><mo>(</mo> <mfrac><mi>R</mi><mi>r</mi></mfrac> <mo>&minus;</mo> <mn>1</mn> <mo>)</mo></mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></msup>
+</mfrac>
+</math>
+
+<p>where the last terms uses <math><mfrac><mi>PE</mi><mi>E</mi></mfrac><mo>=</mo> <mfrac><mi>R</mi><mi>r</mi></mfrac></math>. This integrates to the lovely expression:</p>
+
+<math display='block'><mi>t</mi> <mo>=</mo> <msup><mrow><mo>(</mo> <mfrac><mi>m</mi><mrow><mn>&minus;2</mn><mi>E</mi></mrow></mfrac> <mo>)</mo></mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></msup>
+<mrow><mo>(</mo> <mn>&minus;</mn><mi>r</mi><msqrt><mrow><mfrac><mi>R</mi><mi>r</mi></mfrac> <mo>&minus;</mo> <mn>1</mn></mrow></msqrt> <mo>&minus;</mo>
+<mi>R</mi><msup><mo>tanh</mo><mn>&minus;1</mn></msup> <mrow><mo></mo> <mrow><mo>(</mo> <msqrt><mrow><mfrac><mi>R</mi><mi>r</mi></mfrac> <mo>&minus;</mo> <mn>1</mn></mrow></msqrt> <mo>)</mo></mrow> 
+ <msubsup> <mo>|</mo><msub><mi>R</mi><mn>0</mn></msub><mi>R</mi></msubsup></mrow> <mo>)</mo></mrow></math>
+ <p>giving the final time of rise to height <math><mi>R</mi></math> to be</p>
+ 
+ <math display='block'>
+<msub><mi>t</mi><mi>R</mi></msub> <mo>=</mo> <msup><mrow><mo>(</mo> <mfrac><mi>m</mi><mrow><mn>&minus;2</mn><mi>E</mi></mrow></mfrac> <mo>)</mo></mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></msup> <mrow><mo>(</mo> <msub><mi>R</mi><mn>0</mn></msub><msqrt><mrow><mfrac><mi>R</mi><msub><mi>R</mi><mn>0</mn></msub></mfrac> <mo>&minus;</mo> <mn>1</mn> </mrow></msqrt> <mo>+</mo>
+<mi>R</mi><msup><mo>tanh</mo><mn>&minus;1</mn></msup> <mrow><mo></mo> <mrow><mo>(</mo> <msqrt><mrow><mfrac><mi>R</mi><msub><mi>R</mi><mn>0</mn></msub></mfrac> <mo>&minus;</mo> <mn>1</mn> </mrow></msqrt> <mo>)</mo></mrow> <mo>)</mo></mrow></math>
+
+<p>The equation, however, does not invert analytically.</p>
+
+
+</body>
+</html>
