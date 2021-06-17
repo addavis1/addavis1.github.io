@@ -22,19 +22,18 @@ function energyInit(id) {
 	let param = {'coordsRange':[0,-30,13,30]};	
 	coords = new createCoords(id,{'coordsRange':param['coordsRange'],'clip':false,'margin':['3rem','2rem','6rem','2rem']});
 	let xpts = [1,3,4,6,7,9,10,12];
-	coords.plotAxis('x',{'minorNx':0,'grid':false,'xpts':xpts,'xaxisLabelsShow':false,'showX0':true},{},{'stroke':'black','stroke-width':5});
-	
+	coords.plotAxis('x',{'minorNx':0,'grid':false,'xpts':xpts,'y0':-30,'xaxisLabelsShow':false,'showX0':true},{},{'stroke':'black','stroke-width':5});
+	coords.plotObject('path',{'d':'M 0 0 h 13'},{'stroke':'black','stroke-width':2.5});
 	let dU = (coords.u(3)-coords.u(2))/144+0.5
-	let dy = -0.25;	
+	let dy = -30.25;	
 	let textStyle = {'font-size':(4*dU)+'rem','dominant-baseline':'hanging','text-align':'center'};
+	
 
 	coords.plotText('KE',{'x':2,'y':dy,'append':coords.svg.g2},textStyle);
 	coords.plotText('PE',{'x':5,'y':dy,'append':coords.svg.g2},textStyle);
 	coords.plotText('OE',{'x':8,'y':dy,'append':coords.svg.g2},textStyle);
 	coords.plotText('E',{'x':11,'y':dy,'append':coords.svg.g2},textStyle);
-	
-	
-	//plotEnergy(true);
+	plotEnergy(true);
 }
 
 function plotEnergy(init) {
@@ -47,7 +46,7 @@ function plotEnergy(init) {
 	
 	if( init != undefined ? init : false ) {
 		coords.plotObject('rect',{'x':1,'y':0,'width':2,'height':KE},{'fill':'blue','opacity':0.65,'id':'KEbar'});
-		coords.plotObject('rect',{'x':4,'y':0,'width':2,'height':PE},{'fill':'red','opacity':0.65,'id':'PEbar'});
+		coords.plotObject('rect',{'x':4,'y':PE,'width':2,'height':PE},{'fill':'red','opacity':0.65,'id':'PEbar'});
 		coords.plotObject('rect',{'x':7,'y':0,'width':2,'height':OE},{'fill':'green','opacity':0.65,'id':'OEbar'});
 	}
 	else {
@@ -65,7 +64,7 @@ function plotEnergy(init) {
 			document.getElementById('E3bar').remove(); 
 		} 
 		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':KE},{'fill':'blue','opacity':0.65,'id':'E1bar'});
-		coords.plotObject('rect',{'x':10,'y':KE,'width':2,'height':PE},{'fill':'red','opacity':0.65,'id':'E2bar'});
+		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':PE},{'fill':'red','opacity':0.65,'id':'E2bar'});
 		coords.plotObject('rect',{'x':10,'y':KE+PE,'width':2,'height':OE},{'fill':'green','opacity':0.65,'id':'E3bar'});
 		
 	} else {
@@ -85,16 +84,16 @@ function plotEnergy(init) {
 		let textStyle,KEtxt,PEtxt,OEtxt,Etxt;	
 		let dU = (coords.u(3)-coords.u(1))/144;
 		let dy = 0.2*dU;		
-		textStyle = {'dominant-baseline':'bottom','font-size':(3*dU)+'rem','opacity':0.75};
+		textStyle = {'font-size':(3*dU)+'rem','opacity':0.75};
 		KEtxt = (KE/10).toFixed(2)+'E';
 		PEtxt = (PE/10).toFixed(2)+'E';
 		OEtxt = (OE/10).toFixed(2)+'E';
 		Etxt = 'E';
 
-		coords.plotText( KEtxt ,{'x':2,'y':KE*1,'dy':dy},Object.assign({'stroke':'blue','id':'KEtext'},textStyle));
-		coords.plotText( PEtxt ,{'x':5,'y':PE*1,'dy':dy},Object.assign({'stroke':'red','id':'PEtext'},textStyle));
+		coords.plotText( KEtxt ,{'x':2,'y':KE*1,'dy':dy},Object.assign({'dominant-baseline':'bottom','stroke':'blue','id':'KEtext'},textStyle));
+		coords.plotText( PEtxt ,{'x':5,'y':PE*1,'dy':dy},Object.assign({'dominant-baseline':'hanging','stroke':'red','id':'PEtext'},textStyle));
 		coords.plotText( OEtxt ,{'x':8,'y':OE*1,'dy':dy},Object.assign({'stroke':'green','id':'OEtext'},textStyle));
-		coords.plotText('E',{'x':11,'y':E*1,'dy':dy},Object.assign({'stroke':'black','id':'Etext'},textStyle));
+		coords.plotText('E',{'x':11,'y':E*1,'dy':dy},Object.assign({'dominant-baseline':'hanging','stroke':'black','id':'Etext'},textStyle));
 	}
 }
 
@@ -102,12 +101,18 @@ function setBar(id,val,y0) {
 	if( y0 == undefined ) { var y0 = 0; }
 	if( val == undefined ) { val = document.getElementById(id+'input').value*1; }
 	let	bar = document.getElementById(id+'bar');
-	
-	bar.setAttribute('y',coords.v(val));
-	bar.setAttribute('height',Math.abs(coords.v(y0)-coords.v(val)));
-	
+	let textStyle;
+	if( val >= 0 ) {	
+		bar.setAttribute('y',coords.v(val));
+		bar.setAttribute('height',coords.v(y0)-coords.v(val));
+		textStyle = {'dominant-baseline':'bottom','font-size':'3rem','opacity':0.75};
+	}
+	else {
+		bar.setAttribute('y',coords.v(y0));
+		bar.setAttribute('height',coords.v(val)-coords.v(y0));
+		textStyle = {'dominant-baseline':'hanging','font-size':'3rem','opacity':0.75};
+	}
 	let txt,x;
-	let textStyle = {'dominant-baseline':'bottom','font-size':'3rem','opacity':0.75};
 	if( document.getElementById(id+'txt') != undefined ) { document.getElementById(id+'txt').remove(); }
 	if( id == 'KE' ) { x = 2; textStyle['stroke'] = 'blue'; }
 	else if ( id == 'PE' ) { x = 5; textStyle['stroke'] = 'red'; }
@@ -136,6 +141,10 @@ function animateProjectile() {
 	v0Input = document.getElementById('v0Input');
 	yInput = document.getElementById('yInput');
 	vInput = document.getElementById('vInput');
+	
+		// energy bar connection
+	let E,KE,PE,OE;
+	E = document.getElementById('Einput').value*1;
 	
 	let GM,v0,R0,R,ve,r,t,tr,param;
 	GM = 1E4;
@@ -182,14 +191,13 @@ function animateProjectile() {
 			v = Math.sqrt(GM/R*(R/r-1));
 			yInput.value=r;
 			vInput.value=v;		
-			/*
-			PE = E*y/h; 
+			PE = E*Math.pow(R/r,2); 
 			KE = E-PE;
 			OE = 0;	
 			document.getElementById('KEinput').value = KE.toFixed(2);
 			document.getElementById('PEinput').value = PE.toFixed(2);
 			document.getElementById('OEinput').value = OE.toFixed(2);
-			plotEnergy(); */
+			plotEnergy();
 			j++
 		},i*dt);
 	}
