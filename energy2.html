@@ -42,12 +42,12 @@ function plotEnergy() {
 	PE = document.getElementById('PEinput').value*1;
 	OE = document.getElementById('OEinput').value*1;
 	E = document.getElementById('Einput').value*1;
-	
+	let barStyle = {'stroke':'black','stroke-width':2,'opacity':0.65};
 	let dw = 0.025;
 	if( document.getElementById('KEbar') == undefined ) {
-		coords.plotObject('rect',{'x':1+dw,'y':0,'width':2-2*dw,'height':KE},{'fill':'blue','opacity':0.65,'id':'KEbar'});
-		coords.plotObject('rect',{'x':4+dw,'y':0,'width':2-2*dw,'height':PE},{'fill':'red','opacity':0.65,'id':'PEbar'});
-		coords.plotObject('rect',{'x':7+dw,'y':0,'width':2-2*dw,'height':OE},{'fill':'green','opacity':0.65,'id':'OEbar'});
+		coords.plotObject('rect',{'x':1+dw,'y':0,'width':2-2*dw,'height':KE},Object.assign({'fill':'blue','id':'KEbar'},barStyle));
+		coords.plotObject('rect',{'x':4+dw,'y':0,'width':2-2*dw,'height':PE},Object.assign({'fill':'red','id':'PEbar'},barStyle));
+		coords.plotObject('rect',{'x':7+dw,'y':0,'width':2-2*dw,'height':OE},Object.assign({'fill':'green','id':'OEbar'},barStyle));
 	}
 	else {
 		setBar('KE');
@@ -63,16 +63,16 @@ function plotEnergy() {
 			document.getElementById('E2bar').remove(); 
 			document.getElementById('E3bar').remove(); 
 		} 
-		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':KE},{'fill':'blue','opacity':0.65,'id':'E1bar'});
-		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':PE},{'fill':'red','opacity':0.65,'id':'E2bar'});
-		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':OE},{'fill':'green','opacity':0.65,'id':'E3bar'});
+		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':KE},Object.assign({'fill':'blue','id':'E1bar'},barStyle));
+		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':PE},Object.assign({'fill':'red','id':'E2bar'},barStyle));
+		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':OE},Object.assign({'fill':'green','id':'E3bar'},barStyle));
 		
 	} else {
 		if( document.getElementById('E1bar') != undefined ) { document.getElementById('E1bar').remove(); }
 		if( document.getElementById('E2bar') != undefined ) { document.getElementById('E2bar').remove(); }
 		if( document.getElementById('E3bar') != undefined ) { document.getElementById('E3bar').remove(); }
 		if( document.getElementById('E0bar') != undefined ) { /* setBar('E0'); */ }
-		else { coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':E},{'fill':'black','opacity':0.65,'id':'E0bar'}); }	
+		else { coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':E},{'fill':'black','stroke':'1px solid black','opacity':0.65,'id':'E0bar'}); }	
 	}
 	
 	if( document.getElementById('KEtext') != undefined ) { document.getElementById('KEtext').remove(); }
@@ -81,19 +81,22 @@ function plotEnergy() {
 	if( document.getElementById('Etext') != undefined ) { document.getElementById('Etext').remove(); }
 	
 	if( document.getElementById('Eopt1').checked == true ) {
-		let textStyle,KEtxt,PEtxt,OEtxt,Etxt;	
+		let textStyle,KEtxt,PEtxt,OEtxt,Etxt,Eloc;	
 		let dU = (coords.u(3)-coords.u(1))/144;
-		let dy = 0.2*dU;		
+		let dy = 0.4*dU;		
 		textStyle = {'font-size':(3*dU)+'rem','opacity':0.75};
 		KEtxt = (KE/E).toFixed(2)+'E';
 		PEtxt = (PE/E).toFixed(2)+'E';
 		OEtxt = (OE/E).toFixed(2)+'E';
 		Etxt = 'E';
+		if( document.getElementById('Eopt2').checked == true ) { 
+			Eloc = KE != 0 ? KE*1 : OE*1;
+		} else { Eloc = 0; }
 
 		coords.plotText( KEtxt ,{'x':2,'y':KE*1,'dy':dy},Object.assign({'dominant-baseline':'bottom','stroke':'blue','id':'KEtext'},textStyle));
-		coords.plotText( PEtxt ,{'x':5,'y':PE*1,'dy':dy},Object.assign({'dominant-baseline':'hanging','stroke':'red','id':'PEtext'},textStyle));
+		coords.plotText( PEtxt ,{'x':5,'y':PE*1,'dy':(-0.25*dy)},Object.assign({'dominant-baseline':'hanging','stroke':'red','id':'PEtext'},textStyle));
 		coords.plotText( OEtxt ,{'x':8,'y':OE*1,'dy':dy},Object.assign({'dominant-baseline':'bottom','stroke':'green','id':'OEtext'},textStyle));
-		coords.plotText('E',{'x':11,'y':E*1,'dy':dy},Object.assign({'dominant-baseline':'hanging','stroke':'black','id':'Etext'},textStyle));
+		coords.plotText('E',{'x':11,'y':Eloc,'dy':dy},Object.assign({'dominant-baseline':'bottom','stroke':'black','id':'Etext'},textStyle));
 	}
 }
 
