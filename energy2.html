@@ -19,24 +19,23 @@
 function energyInit(id) {
 	//if ( param == undefined ) { var param = {}; }
 	let svg = document.getElementById(id);
-	let param = {'coordsRange':[0,-30,13,30]};	
+	let param, dy;
+	param = {'coordsRange':[0,-25,13,25]};
+	dy = param['coordsRange'][1] - 0.25;
 	coords = new createCoords(id,{'coordsRange':param['coordsRange'],'clip':false,'margin':['3rem','2rem','6rem','2rem']});
 	let xpts = [1,3,4,6,7,9,10,12];
-	coords.plotAxis('x',{'minorNx':0,'grid':false,'xpts':xpts,'y0':-30,'xaxisLabelsShow':false,'showX0':true},{},{'stroke':'black','stroke-width':5});
+	coords.plotAxis('x',{'minorNx':0,'grid':false,'xpts':xpts,'y0':param['coordsRange'][1],'xaxisLabelsShow':false,'showX0':true},{},{'stroke':'black','stroke-width':5});
 	coords.plotObject('path',{'d':'M 0 0 h 13'},{'stroke':'black','stroke-width':2.5});
-	let dU = (coords.u(3)-coords.u(2))/144+0.5
-	let dy = -30.25;	
+	coords.offset = dy;
+	let dU = (coords.u(3)-coords.u(2))/144+0.5	
 	let textStyle = {'font-size':(4*dU)+'rem','dominant-baseline':'hanging','text-align':'center'};
-	
-
 	coords.plotText('KE',{'x':2,'y':dy,'append':coords.svg.g2},textStyle);
 	coords.plotText('PE',{'x':5,'y':dy,'append':coords.svg.g2},textStyle);
 	coords.plotText('OE',{'x':8,'y':dy,'append':coords.svg.g2},textStyle);
 	coords.plotText('E',{'x':11,'y':dy,'append':coords.svg.g2},textStyle);
-	plotEnergy(true);
 }
 
-function plotEnergy(init) {
+function plotEnergy() {
 	let KE,PE,OE,E,h,KEbar,PEbar,OEbar,Ebar;
 	
 	KE = document.getElementById('KEinput').value*1;
@@ -44,10 +43,11 @@ function plotEnergy(init) {
 	OE = document.getElementById('OEinput').value*1;
 	E = document.getElementById('Einput').value*1;
 	
-	if( init != undefined ? init : false ) {
-		coords.plotObject('rect',{'x':1,'y':0,'width':2,'height':KE},{'fill':'blue','opacity':0.65,'id':'KEbar'});
-		coords.plotObject('rect',{'x':4,'y':PE,'width':2,'height':PE},{'fill':'red','opacity':0.65,'id':'PEbar'});
-		coords.plotObject('rect',{'x':7,'y':0,'width':2,'height':OE},{'fill':'green','opacity':0.65,'id':'OEbar'});
+	let dw = 0.025;
+	if( document.getElementById('KEbar') == undefined ) {
+		coords.plotObject('rect',{'x':1+dw,'y':0,'width':2-2*dw,'height':KE},{'fill':'blue','opacity':0.65,'id':'KEbar'});
+		coords.plotObject('rect',{'x':4+dw,'y':0,'width':2-2*dw,'height':PE},{'fill':'red','opacity':0.65,'id':'PEbar'});
+		coords.plotObject('rect',{'x':7+dw,'y':0,'width':2-2*dw,'height':OE},{'fill':'green','opacity':0.65,'id':'OEbar'});
 	}
 	else {
 		setBar('KE');
@@ -65,7 +65,7 @@ function plotEnergy(init) {
 		} 
 		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':KE},{'fill':'blue','opacity':0.65,'id':'E1bar'});
 		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':PE},{'fill':'red','opacity':0.65,'id':'E2bar'});
-		coords.plotObject('rect',{'x':10,'y':KE+PE,'width':2,'height':OE},{'fill':'green','opacity':0.65,'id':'E3bar'});
+		coords.plotObject('rect',{'x':10,'y':0,'width':2,'height':OE},{'fill':'green','opacity':0.65,'id':'E3bar'});
 		
 	} else {
 		if( document.getElementById('E1bar') != undefined ) { document.getElementById('E1bar').remove(); }
@@ -85,14 +85,14 @@ function plotEnergy(init) {
 		let dU = (coords.u(3)-coords.u(1))/144;
 		let dy = 0.2*dU;		
 		textStyle = {'font-size':(3*dU)+'rem','opacity':0.75};
-		KEtxt = (KE/10).toFixed(2)+'E';
-		PEtxt = (PE/10).toFixed(2)+'E';
-		OEtxt = (OE/10).toFixed(2)+'E';
+		KEtxt = (KE/E).toFixed(2)+'E';
+		PEtxt = (PE/E).toFixed(2)+'E';
+		OEtxt = (OE/E).toFixed(2)+'E';
 		Etxt = 'E';
 
 		coords.plotText( KEtxt ,{'x':2,'y':KE*1,'dy':dy},Object.assign({'dominant-baseline':'bottom','stroke':'blue','id':'KEtext'},textStyle));
 		coords.plotText( PEtxt ,{'x':5,'y':PE*1,'dy':dy},Object.assign({'dominant-baseline':'hanging','stroke':'red','id':'PEtext'},textStyle));
-		coords.plotText( OEtxt ,{'x':8,'y':OE*1,'dy':dy},Object.assign({'stroke':'green','id':'OEtext'},textStyle));
+		coords.plotText( OEtxt ,{'x':8,'y':OE*1,'dy':dy},Object.assign({'dominant-baseline':'bottom','stroke':'green','id':'OEtext'},textStyle));
 		coords.plotText('E',{'x':11,'y':E*1,'dy':dy},Object.assign({'dominant-baseline':'hanging','stroke':'black','id':'Etext'},textStyle));
 	}
 }
@@ -123,45 +123,49 @@ function setBar(id,val,y0) {
 
 
 /* PROJECT PLOT FUNCTIONS */
-let coords2, ball_dr = 0.2;
+let coords2, ball_dr = 0.3;
+var rArr = new Array();
+var tArr = new Array();
+var vArr = new Array();
+var aArr = new Array();
+var physParam;
 function physicsInit(id) {
 	let svg = document.getElementById(id);
-	let param = {'coordsRange':[-10,0,10,30]};	
+	let param = {'coordsRange':[-10,3,10,22]};	
 	coords2 = new createCoords(id,{'coordsRange':param['coordsRange'],'clip':false,'margin':[0,0,0,0]});
-	coords2.plotObject('circle',{'cx':0,'cy':0,'r':5},{'fill':'green'});
+	coords2.plotObject('circle',{'cx':0,'cy':0,'r':6},{'fill':'green','stroke':'black'});
 	coords2.plotObject('circle',{'cx':0,'cy':5-ball_dr,'r':.2},{'fill':'red','stroke':'black','id':'projectile'});
-}
-
-var ticktock,ticktock2;
-function animateProjectile() {
-	// check state launch, pause, resume
-	let state = document.getElementById('launchbutton');
+	
 	let y0Input,v0Input,yInput,vInput;
 	y0Input = document.getElementById('y0Input');
 	v0Input = document.getElementById('v0Input');
 	yInput = document.getElementById('yInput');
 	vInput = document.getElementById('vInput');
 	
-		// energy bar connection
-	let E,KE,PE,OE;
-	E = document.getElementById('Einput').value*1;
-	
-	let GM,v0,R0,R,ve,r,t,tr,param;
+	// energy bar connection
+	let GM,v0,R0,R,ve,r,t,tr,m;
+	m = 0.01;
 	GM = 1E4;
 	R0 = 5;
 	ve = Math.sqrt(2*GM/R0);
-	v0 = 0.9*ve;
+	v0 = vInput.value*1 != 0 ? vInput.value*1 : v0Input.value*1;
 	R = R0/(1-v0*v0/(ve*ve));
 	tr = Math.sqrt(R/GM)*(R0*Math.sqrt(R/R0-1)+R*Math.atan(Math.sqrt(R/R0-1)));
-	param = {'GM':GM,'R0':R0,'v0':v0};
+	physParam = {'GM':GM,'R0':R0,'v0':v0,'R':R,'ve':ve,'tr':tr,'m':m};
 	
-	// GIVEN the parameters create arrays of r,t,v,a values
-	let i = 0; N = 10000;
-	let rArr = new Array();
-	let tArr = new Array();
-	let vArr = new Array();
-	let aArr = new Array();
+	let E,KE,PE,OE;
+	E = -GM*m/R; 
+	PE = -GM*m/R0; 
+	KE = 0;
+	OE = 0.5*m*v0*v0;	
+	document.getElementById('Einput').value = E.toFixed(2);
+	document.getElementById('KEinput').value = KE.toFixed(2);
+	document.getElementById('PEinput').value = PE.toFixed(2);
+	document.getElementById('OEinput').value = OE.toFixed(2);
+	plotEnergy();
 	
+		// GIVEN the parameters create arrays of r,t,v,a values
+	let N = 10000;
 	for( i = 0; i <= 2*N; i++ ) {
 		if( i < N ) {
 			r = R0+(R-R0)*i/N;
@@ -176,50 +180,81 @@ function animateProjectile() {
 		tArr[i] = t;
 		vArr[i] = v;
 	}	
-	aArr = spline(tArr,rArr,v0,0); // get the acceleration of the projectile via spline
+	aArr = spline(tArr,rArr,v0,-v0); // get the acceleration of the projectile via splint
+}
 
-	let ball = document.getElementById('projectile');
-	let t1 = 0,t2 = 2*tr, j = 0, dt = 5;
+var ticktock,ticktock2;
+function animateProjectile() {
+	// check state launch, pause, resume
+	let state = document.getElementById('launchbutton');
+
+	if( state.value == 0 ) { // animation is ready to start		
+		state.value = 1;
+		state.innerHTML = 'pause';
+	} else if ( state.value == 1 ) { // animation has been started
+		state.value = 0;
+		state.innerHTML = yInput.value == 0 ? 'launch' : 'resume';
+		while(ticktock > -1) { window.clearTimeout(ticktock); ticktock--; }
+		window.clearTimeout(ticktock2);
+		return;
+	}
+	let E,KE,PE,OE;
+	E = document.getElementById('Einput').value*1;
 	
-	let n = 1000;
-	if( r == 5 ) { impact(); }
-	for( i = 0; i <= n; i++ ) {
+	let ball = document.getElementById('projectile');
+	let t1 = 0,t2, j, dt = 5,i0,n;
+	let GM,R,v0,ve,tr,m;
+	m = physParam['m']*1;
+	GM = physParam['GM']*1;
+	R = physParam['R']*1;
+	v0 = physParam['v0']*1;
+	ve = physParam['ve']*1;
+	tr = physParam['tr']*1;
+	t2 = 2*tr;
+	
+	n = 1000;
+	i0 = document.getElementById('icount').value*1;
+	j = i0;
+	if( i0 == 0 ) { impact(ball_dr); }
+	for( i = i0; i <= n; i++ ) {
 		ticktock = window.setTimeout( function (){
 			t = t1+j*(t2-t1)/n;
-			r = splint(t,tArr,rArr,aArr)-ball_dr;
-			ball.setAttribute('cy',coords2.v(r));
-			v = Math.sqrt(GM/R*(R/r-1));
+			r = splint(t,tArr,rArr,aArr);
+			ball.setAttribute('cy',coords2.v(r-ball_dr));
+			v = Math.sqrt(2*GM/R*(R/r-1))*(j > n/2 ? -1 : 1);
 			yInput.value=r;
 			vInput.value=v;		
-			PE = E*Math.pow(R/r,2); 
-			KE = E-PE;
+			PE = -GM*m/r; 
+			KE = 0.5*m*v*v;
 			OE = 0;	
 			document.getElementById('KEinput').value = KE.toFixed(2);
 			document.getElementById('PEinput').value = PE.toFixed(2);
 			document.getElementById('OEinput').value = OE.toFixed(2);
+			document.getElementById('icount').value = j;
 			plotEnergy();
 			j++
-		},i*dt);
+		},(i-i0)*dt);
 	}
 	
 	ticktock2 = window.setTimeout( function (){
-		yInput.value = y0Input.value;
-		vInput.value = v0Input.value;
+		//yInput.value = y0Input.value;
+		vInput.value *= 1;
+		document.getElementById('icount').value = 0;
 		state.value = 0;
 		state.innerHTML = 'launch';
 		if( !document.getElementById('Eopt3').checked ) {
 			document.getElementById('KEinput').value = 0;
-			document.getElementById('PEinput').value = 0;
-			//document.getElementById('OEinput').value = E.toFixed(2);
-			//plotEnergy();
-			impact();
+			document.getElementById('PEinput').value = PE.toFixed(2);
+			document.getElementById('OEinput').value = KE.toFixed(2);
+			plotEnergy();
+			impact(ball_dr);
 		}
-	},n*dt);
+	},(n-i0)*dt);
 }
 
 
-function impact() {
-	let r0 = 4.6 	;
+function impact(ball_dr) {
+	let r0 = 5-1.5*ball_dr;
 	let d = 'M 0 '+r0+' ',r,r1 = 1, r2 = 0.6*r1, x,y, q = 45/4*Math.PI/180, dy;
 	dy = coords2.height/coords2.width;
 	for( let i = -1; i < 18; i++ ) {
@@ -231,43 +266,41 @@ function impact() {
 	coords2.plotObject('path',{'d':d},{'class':'fadeout'});
 }
 
-function spline(xN,yN,dy0,dyn) {
-    /*  takes a function with an array of xN values and an array of yN vales and returns [x,y,ddy]
-      dy0 and dyn are the first derivatives at the boundary, assumed 0 unless specified
-      uses modified numerical recipes code, solve a triadiagonal array */
-  var n = xN.length - 1;
-  var u = new Array();
-  var ddy = new Array();
+function spline(x,y,dy0,dyn) {
+	/*  takes a function with an array of x values and an array of y vales and returns array of second derivatives
+		dy0 and dyn are the first derivatives at the boundary, assumed 0 unless specified
+		uses modified numerical recipes code, solve a tridiagonal array */
+	let n = x.length-1, i, p, sig;
+	let dy = new Array();
+	let ddy = new Array();
+	
+	// assume "natural" boundary conditions if the point isn't specified
+	if( dy0 == undefined ) { dy[0] = 0; ddy[0] = 0; }
+	else { ddy[0] = -0.5; dy[0] = dy0; } 
+	if( dyn == undefined ) { dy[n] = 0; ddy[n] = 0; }
+	else { ddy[n] = 0.5; dy[n] = dyn; }
 
-  // assume "natural" boundary conditions if the point isn't specified
-  if( !dy0 ) { ddy[0] = u[0] = 0; }
-	else { u[0] = dy0; ddy[0] = 0; }
+	for( i = 1; i < n; i++ ) {
+		sig = (x[i]-x[i-1])/(x[i+1]-x[i-1]);
+		p = sig*ddy[i-1]+2;
+		ddy[i] = (sig-1)/p;
+		dy[i] = (y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
+    dy[i] = 6*dy[i]/(x[i+1]-x[i-1]) - sig*dy[i-1]/p;
+	}
+	// backsubstitution loop of the tridiagonal algorithm
+	for( i=n-1;i>=0;i-- ) {
+			ddy[i] = ddy[i]*ddy[i+1]+dy[i];
+	}
+	return ddy;
 
-  var i,p,sig;
-  for( i = 1; i<n; i++ ) {
-    sig = (xN[i]-xN[i-1])/(xN[i+1]-xN[i-1]);
-    p = sig*ddy[i-1]+2;
-    ddy[i] = (sig-1)/p;
-    u[i] = (yN[i+1]-yN[i])/(xN[i+1]-xN[i]) - (yN[i]-yN[i-1])/(xN[i]-xN[i-1]);
-    u[i] = 6*u[i]/(xN[i+1]-xN[i-1]) - sig*u[i-1]/p;
-  }
-
-  // assume "natural" boundary conditions if the point isn't specified  
-  if( !dyn ) { ddy[n] = u[n] = 0; }
-
-  // backsubstitution loop of the tridiagonal algorithm
-  for( i=n-1;i>=0;i-- ) {
-    ddy[i] = ddy[i]*ddy[i+1]+u[i];
-  }
-  return ddy;
 }
 
 function splint(x,xN,yN,ddy) {
   /*  takes an array of xN values, yN values, and the second derivatives (calculated via the spline function)
     returns the cubic spline interpolation of y(x) */
-  var i = 0; // min value
-  var j = xN.length; // max value
-  var k;
+  let i = 0; // min value
+  let j = xN.length; // max value
+  let k;
   
   while( j-i > 1 ) {
     k = Math.round( (i+j)/2 );
@@ -279,12 +312,12 @@ function splint(x,xN,yN,ddy) {
   if(x=xN[i]) { return yN[i]; }
   if(y=yN[j]) { return yN[j]; }
 
-  var A = (xN[i+1]-x)/(xN[i+1]-xN[i]);
-  var B = 1 - A;
-  var C = (A*A*A-A)*(xN[i+1]-xN[i])*(xN[i+1]-xN[i])/6;
-  var D = (B*B*B-B)*(xN[i+1]-xN[i])*(xN[i+1]-xN[i])/6;
+  let A = (xN[i+1]-x)/(xN[i+1]-xN[i]);
+  let B = 1 - A;
+  let C = (A*A*A-A)*(xN[i+1]-xN[i])*(xN[i+1]-xN[i])/6;
+  let D = (B*B*B-B)*(xN[i+1]-xN[i])*(xN[i+1]-xN[i])/6;
   
-  var y = A*yN[i]+B*yN[i+1]+C*ddy[i]+D*ddy[i+1];  
+  var y = A*yN[i]+B*yN[i+1]+C*ddy[i]+D*ddy[i+1]; 
   return y;
 }
 
@@ -343,16 +376,18 @@ button { width: 5rem; margin-left: 1rem; }
 <input type='hidden' id='KEinput' value='0'/>
 <input type='hidden' id='PEinput' value='0'/>
 <input type='hidden' id='OEinput' value='0'/>
-<input type='hidden' id='Einput' value='-0.9025'/>
+<input type='hidden' id='Einput' value='0'/>
 <input type='hidden' id='y0Input' value='5'/>
-<input type='hidden' id='yInput' value='5'/>
+<input type='hidden' id='yInput' value='0'/>
 <input type='hidden' id='v0Input' value='55'/>
 <input type='hidden' id='vInput' value='0'/>
+<input type='hidden' id='icount' value='0'/>
 
 
 <p><input type='checkbox' id='Eopt1' checked onchange='plotEnergy();'/> Show values</p>
 <p><input type='checkbox' id='Eopt2' onchange='plotEnergy();'/> Split E column</p>
-<p><input type='checkbox' id='Eopt3' onchange='plotEnergy();'/> Pause before impact</p>
+<p><input type='checkbox' id='Eopt3'/> Pause before impact</p>
+<!--<p><input type='checkbox' id='Eopt4' onchange='energyInit("energysvg");'/> Positive PE offset</p>-->
 <p><button id='launchbutton' value='0' onclick='animateProjectile();'>launch</button></p>
 </div>
 
