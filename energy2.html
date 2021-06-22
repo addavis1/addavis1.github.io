@@ -126,7 +126,7 @@ function setBar(id,val,y0) {
 
 
 /* PROJECT PLOT FUNCTIONS */
-let coords2, ball_dr = 0.3;
+let coords2, ball_dr = 0, coords_dr;
 var rArr = new Array();
 var tArr = new Array();
 var vArr = new Array();
@@ -134,11 +134,15 @@ var aArr = new Array();
 var physParam;
 function physicsInit(id) {
 	let svg = document.getElementById(id);
-	let param = {'coordsRange':[-10,3,10,22]};	
+	let param = {'coordsRange':[-10,0,10,25]};	
 	coords2 = new createCoords(id,{'coordsRange':param['coordsRange'],'clip':false,'margin':[0,0,0,0]});
-	coords2.plotObject('circle',{'cx':0,'cy':0,'r':6},{'fill':'green','stroke':'black'});
-	coords2.plotObject('circle',{'cx':0,'cy':5-ball_dr,'r':.2},{'fill':'red','stroke':'black','id':'projectile'});
+	//coords2.plotAxis('xy',{'grid':true,'y0':10,'axisShow':false,'axisLabelsShow':false,'showY0':true,'showX0':true});
 	
+	let r0 = coords2.y( coords2.v(0)-coords2.r(5) );
+	ball_dr = (5-r0);
+	coords2.plotObject('circle',{'cx':0,'cy':0,'r':5,'dr':0},{'fill':'green','stroke':'black'});
+	coords2.plotObject('circle',{'cx':0,'cy':r0+0.1,'r':.2},{'fill':'red','stroke':'black','id':'projectile'});
+
 	let y0Input,v0Input,yInput,vInput;
 	y0Input = document.getElementById('y0Input');
 	v0Input = document.getElementById('v0Input');
@@ -223,7 +227,7 @@ function animateProjectile() {
 		ticktock = window.setTimeout( function (){
 			t = t1+j*(t2-t1)/n;
 			r = splint(t,tArr,rArr,aArr);
-			ball.setAttribute('cy',coords2.v(r-ball_dr));
+			ball.setAttribute('cy',coords2.v(r-ball_dr+0.1));
 			v = Math.sqrt(2*GM/R*(R/r-1))*(j > n/2 ? -1 : 1);
 			yInput.value=r;
 			vInput.value=v;		
@@ -257,7 +261,7 @@ function animateProjectile() {
 
 
 function impact(ball_dr) {
-	let r0 = 5-1.5*ball_dr;
+	let r0 = 5-1*ball_dr;
 	let d = 'M 0 '+r0+' ',r,r1 = 1, r2 = 0.6*r1, x,y, q = 45/4*Math.PI/180, dy;
 	dy = coords2.height/coords2.width;
 	for( let i = -1; i < 18; i++ ) {
@@ -382,7 +386,7 @@ button { width: 5rem; margin-left: 1rem; }
 <input type='hidden' id='Einput' value='0'/>
 <input type='hidden' id='y0Input' value='5'/>
 <input type='hidden' id='yInput' value='0'/>
-<input type='hidden' id='v0Input' value='55'/>
+<input type='hidden' id='v0Input' value='56'/>
 <input type='hidden' id='vInput' value='0'/>
 <input type='hidden' id='icount' value='0'/>
 
