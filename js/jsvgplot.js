@@ -9,6 +9,7 @@ Math.log10=function(x){ return Math.log(x)/Math.LN10; }
 // has greater flexibility than the svg transform 
 function createCoords(svgid,parameters) {
 	this.svgid = svgid;
+	this.id = svgid+'_coords';
 	this.svg = document.getElementById(svgid);
 	this.fontSize = parseFloat(getComputedStyle(this.svg).fontSize);
 	let rem = this.fontSize;
@@ -94,8 +95,13 @@ createCoords.prototype.defineCoords = function(parameters) {
 	// define a ratio of lengths for a scalable coordinate radius
 	let ruv = Math.sqrt( (this.uMax-this.uMin)*(this.uMax-this.uMin)+(this.vMax-this.vMin)*(this.vMax-this.vMin) );
   let rxy = Math.sqrt( (this.xMax-this.xMin)*(this.xMax-this.xMin)+(this.yMax-this.yMin)*(this.yMax-this.yMin) );
+	this.ruv = ruv;
+	this.rxy = rxy;
 	this.r = function(r) { return( r*ruv/rxy ); }
+	this.ru = function(r) { return( r*(this.xMax-this.xMin)/(this.uMax-this.uMin) ); }
 	this.rv = function(r) { return( r*(this.yMax-this.yMin)/(this.vMax-this.vMin) ); }
+	this.rx = function(r) { return( r*(this.uMax-this.uMin)/(this.xMax-this.xMin) ); }
+	this.ry = function(r) { return( r*(this.vMax-this.vMin)/(this.yMax-this.yMin) ); }
 	this.uv = function( uv ) { return( uv*rxy/ruv ); }
 }
 
@@ -141,7 +147,10 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 	let ytickL = attributes['ytickL'] != undefined ? attributes['ytickL'] : attributes['tickL']; this.ytickL = ytickL;
 	let tickNy = attributes['tickNy'] != undefined ? attributes['tickNy'] : attributes['tickN'];	
 	let gridx = attributes['gridx'] != undefined ? attributes['gridx'] : attributes['grid'];	
-	let gridy = attributes['gridy'] != undefined ? attributes['gridy'] : attributes['grid'];	
+	let gridy = attributes['gridy'] != undefined ? attributes['gridy'] : attributes['grid'];
+	let axisShow = attributes['axisShow'] != undefined ? attributes['axisShow'] : true;
+	let axisxShow = attributes['axisxShow'] != undefined ? attributes['axisxShow'] : axisShow;
+	let axisyShow = attributes['axisyShow'] != undefined ? attributes['axisyShow'] : axisShow;
 	
 	// PLOT X AXIS
 	if( (axis == 'xy' || axis == 'x') && !(this.log == 'x' || this.log == 'xy') ) {
@@ -199,10 +208,12 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 			}
 		}
 		if( gridx != false ) { this.plotObject('path',{'d':dg,'append':xAxis},gridSVG); }
-		this.plotObject('path',{'d':d,'append':xAxis,'coords':'svg'},axisSVG);
-		this.plotObject('path',{'d':'M '+x1+' '+y0+' H '+x2,'append':xAxis},axisSVG);
-		axisGroup.appendChild(xAxis);
-		axisGroup.appendChild(xLabels);
+		if( axisxShow != false ) { 
+			this.plotObject('path',{'d':d,'append':xAxis,'coords':'svg'},axisSVG); 
+			this.plotObject('path',{'d':'M '+x1+' '+y0+' H '+x2,'append':xAxis},axisSVG); 
+		}
+				axisGroup.appendChild(xAxis);
+				axisGroup.appendChild(xLabels);
 	} // END plot x Axis	
 	
 	// PLOT Y AXIS
@@ -283,8 +294,10 @@ createCoords.prototype.plotAxis = function (axis,attributes,axisSVG,minorSVG,lab
 			}
 		}
 		if( gridy != false ) { this.plotObject('path',{'d':dg,'append':yAxis},gridSVG); }
-		this.plotObject('path',{'d':d,'append':yAxis,'coords':'svg'},axisSVG);
-		this.plotObject('path',{'d':'M '+x0+' '+y1+' V '+y2,'append':yAxis},axisSVG);
+		if( axisyShow != false ) { 
+			this.plotObject('path',{'d':d,'append':yAxis,'coords':'svg'},axisSVG); 
+			this.plotObject('path',{'d':'M '+x0+' '+y1+' V '+y2,'append':yAxis},axisSVG); 
+		}
 		yAxis.id = 'yAxisPlot';
 		axisGroup.appendChild(yAxis);
 		axisGroup.appendChild(yLabels);
@@ -443,10 +456,11 @@ createCoords.prototype.plotObject = function(objType,attributes,objSVG) {
 	
   if( objType == 'circle' ) { /* CIRCLE */
     let tempx = attributes['cx'] != undefined ? attributes['cx'] : attributes['x'];
-    let tempy = attributes['cy'] != undefined ? attributes['cy'] : attributes['y'];  	
+    let tempy = attributes['cy'] != undefined ? attributes['cy'] : attributes['y'];
+		let dr = attributes['dr'] != undefined ? attributes['dr'] : 0;
     objSVG['cx'] = u(tempx,tempy);
     objSVG['cy'] = v(tempy,tempx);
-		if( attributes['r'] != undefined ) { objSVG['r'] = r(attributes['r']); }
+		if( attributes['r'] != undefined ) { objSVG['r'] = r(attributes['r'])+dr; }
   }
 	else if ( objType == 'line' ) { /* LINE */
     objSVG['x1'] = u(attributes['x1']);
